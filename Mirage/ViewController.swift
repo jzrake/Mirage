@@ -64,7 +64,7 @@ class ViewController: NSViewController, NSSplitViewDelegate
     func refreshSource()
     {
         guard let url = representedObject else { print("no source file"); return }
-        PythonRuntime.evalFile((url as! NSURL) as URL!)
+        PythonRuntime.evalFile((url as! NSURL) as URL?)
     }
 
     @objc func notify(_ notification: Notification)
