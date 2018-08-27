@@ -4,7 +4,7 @@
 
 
 // ============================================================================
-@interface PythonEnvironment : NSObject
+@interface PythonRuntime : NSObject
 + (void) initializeInterpreter;
 + (void) finalizeInterpreter;
 + (bool) evalFile: (NSURL*) filename;

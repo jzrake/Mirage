@@ -64,7 +64,7 @@ class ViewController: NSViewController, NSSplitViewDelegate
     func refreshSource()
     {
         guard let url = representedObject else { print("no source file"); return }
-        PythonEnvironment.evalFile((url as! NSURL) as URL!)
+        PythonRuntime.evalFile((url as! NSURL) as URL!)
     }
 
     @objc func notify(_ notification: Notification)
@@ -83,7 +83,7 @@ extension ViewController: NSTableViewDataSource
 {
     func numberOfRows(in tableView: NSTableView) -> Int
     {
-        return Int(PythonEnvironment.numberOfScenes())
+        return Int(PythonRuntime.numberOfScenes())
     }
 }
 
@@ -99,7 +99,7 @@ extension ViewController: NSTableViewDelegate
 
         if let cell = tableView.makeView(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView
         {
-            cell.textField?.stringValue = PythonEnvironment.sceneName(Int32(row))
+            cell.textField?.stringValue = PythonRuntime.sceneName(Int32(row))
             return cell
         }
         return nil

@@ -12,7 +12,9 @@
 		C63471E4213452A10061BA36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C63471E3213452A10061BA36 /* Assets.xcassets */; };
 		C63471E7213452A10061BA36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63471E5213452A10061BA36 /* Main.storyboard */; };
 		C654B6A521349411009BD4C1 /* Python in Frameworks */ = {isa = PBXBuildFile; fileRef = C654B6A421349411009BD4C1 /* Python */; };
-		C673062221347F620047DC3E /* PythonEnvironment.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonEnvironment.mm */; settings = {COMPILER_FLAGS = "-I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -I/Users/jzrake/Work/Mirage/3rdParty/pybind11/include"; }; };
+		C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C654B6A621349EF6009BD4C1 /* MetalView.swift */; };
+		C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C654B6AA2134A0C6009BD4C1 /* Shader.metal */; };
+		C673062221347F620047DC3E /* PythonRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonRuntime.mm */; settings = {COMPILER_FLAGS = "-I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -I/Users/jzrake/Work/Mirage/3rdParty/pybind11/include"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,8 +26,11 @@
 		C63471E8213452A10061BA36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C63471E9213452A10061BA36 /* Mirage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirage.entitlements; sourceTree = "<group>"; };
 		C654B6A421349411009BD4C1 /* Python */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = Python; path = ../../../../System/Library/Frameworks/Python.framework/Versions/2.7/Python; sourceTree = "<group>"; };
-		C673062021347F620047DC3E /* PythonEnvironment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PythonEnvironment.h; sourceTree = "<group>"; };
-		C673062121347F620047DC3E /* PythonEnvironment.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PythonEnvironment.mm; sourceTree = "<group>"; };
+		C654B6A621349EF6009BD4C1 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
+		C654B6A92134A0C6009BD4C1 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		C654B6AA2134A0C6009BD4C1 /* Shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
+		C673062021347F620047DC3E /* PythonRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PythonRuntime.h; sourceTree = "<group>"; };
+		C673062121347F620047DC3E /* PythonRuntime.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PythonRuntime.mm; sourceTree = "<group>"; };
 		C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mirage-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,22 +67,33 @@
 			isa = PBXGroup;
 			children = (
 				C6AEE05821346BED0093C598 /* Python */,
+				C654B6A82134A094009BD4C1 /* Rendering */,
 				C63471DF213452A10061BA36 /* AppDelegate.swift */,
-				C63471E1213452A10061BA36 /* ViewController.swift */,
-				C63471E3213452A10061BA36 /* Assets.xcassets */,
 				C63471E5213452A10061BA36 /* Main.storyboard */,
-				C63471E8213452A10061BA36 /* Info.plist */,
+				C63471E1213452A10061BA36 /* ViewController.swift */,
+				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
 				C63471E9213452A10061BA36 /* Mirage.entitlements */,
+				C63471E8213452A10061BA36 /* Info.plist */,
+				C63471E3213452A10061BA36 /* Assets.xcassets */,
 			);
 			path = Mirage;
+			sourceTree = "<group>";
+		};
+		C654B6A82134A094009BD4C1 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				C654B6A621349EF6009BD4C1 /* MetalView.swift */,
+				C654B6A92134A0C6009BD4C1 /* Shader.h */,
+				C654B6AA2134A0C6009BD4C1 /* Shader.metal */,
+			);
+			path = Rendering;
 			sourceTree = "<group>";
 		};
 		C6AEE05821346BED0093C598 /* Python */ = {
 			isa = PBXGroup;
 			children = (
-				C673062021347F620047DC3E /* PythonEnvironment.h */,
-				C673062121347F620047DC3E /* PythonEnvironment.mm */,
-				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
+				C673062021347F620047DC3E /* PythonRuntime.h */,
+				C673062121347F620047DC3E /* PythonRuntime.mm */,
 			);
 			path = Python;
 			sourceTree = "<group>";
@@ -162,8 +178,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */,
 				C63471E2213452A10061BA36 /* ViewController.swift in Sources */,
-				C673062221347F620047DC3E /* PythonEnvironment.mm in Sources */,
+				C673062221347F620047DC3E /* PythonRuntime.mm in Sources */,
+				C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -306,7 +324,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Python/Mirage-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Mirage-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
@@ -330,7 +348,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Python/Mirage-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Mirage-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;

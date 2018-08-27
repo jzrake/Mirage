@@ -872,7 +872,7 @@
                                             <splitView arrangesAllSubviews="NO" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="P1a-Bf-f4D">
                                                 <rect key="frame" x="0.0" y="0.0" width="433" height="424"/>
                                                 <subviews>
-                                                    <customView fixedFrame="YES" id="oKO-Bs-Ejo">
+                                                    <customView fixedFrame="YES" id="oKO-Bs-Ejo" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="433" height="346"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </customView>

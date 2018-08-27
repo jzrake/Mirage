@@ -1,4 +1,4 @@
-#import "PythonEnvironment.h"
+#import "PythonRuntime.h"
 #import "Python.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
@@ -21,7 +21,7 @@ static std::vector<Scene> mirageScenes;
 
 
 // ============================================================================
-@implementation PythonEnvironment
+@implementation PythonRuntime
 
 + (void) initializeInterpreter
 {

@@ -9,11 +9,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
 {
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
-        PythonEnvironment.initializeInterpreter()
+        PythonRuntime.initializeInterpreter()
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
     {
-        PythonEnvironment.finalizeInterpreter()
+        PythonRuntime.finalizeInterpreter()
     }
 }
