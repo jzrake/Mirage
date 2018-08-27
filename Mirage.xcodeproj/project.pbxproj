@@ -11,6 +11,8 @@
 		C63471E2213452A10061BA36 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63471E1213452A10061BA36 /* ViewController.swift */; };
 		C63471E4213452A10061BA36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C63471E3213452A10061BA36 /* Assets.xcassets */; };
 		C63471E7213452A10061BA36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63471E5213452A10061BA36 /* Main.storyboard */; };
+		C654B6A521349411009BD4C1 /* Python in Frameworks */ = {isa = PBXBuildFile; fileRef = C654B6A421349411009BD4C1 /* Python */; };
+		C673062221347F620047DC3E /* PythonEnvironment.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonEnvironment.mm */; settings = {COMPILER_FLAGS = "-I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -I/Users/jzrake/Work/Mirage/3rdParty/pybind11/include"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,10 @@
 		C63471E6213452A10061BA36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C63471E8213452A10061BA36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C63471E9213452A10061BA36 /* Mirage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirage.entitlements; sourceTree = "<group>"; };
+		C654B6A421349411009BD4C1 /* Python */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = Python; path = ../../../../System/Library/Frameworks/Python.framework/Versions/2.7/Python; sourceTree = "<group>"; };
+		C673062021347F620047DC3E /* PythonEnvironment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PythonEnvironment.h; sourceTree = "<group>"; };
+		C673062121347F620047DC3E /* PythonEnvironment.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PythonEnvironment.mm; sourceTree = "<group>"; };
+		C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mirage-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C654B6A521349411009BD4C1 /* Python in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,6 +46,7 @@
 			children = (
 				C63471DE213452A10061BA36 /* Mirage */,
 				C63471DD213452A10061BA36 /* Products */,
+				C6AEE05D21346F260093C598 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -53,6 +61,7 @@
 		C63471DE213452A10061BA36 /* Mirage */ = {
 			isa = PBXGroup;
 			children = (
+				C6AEE05821346BED0093C598 /* Python */,
 				C63471DF213452A10061BA36 /* AppDelegate.swift */,
 				C63471E1213452A10061BA36 /* ViewController.swift */,
 				C63471E3213452A10061BA36 /* Assets.xcassets */,
@@ -61,6 +70,24 @@
 				C63471E9213452A10061BA36 /* Mirage.entitlements */,
 			);
 			path = Mirage;
+			sourceTree = "<group>";
+		};
+		C6AEE05821346BED0093C598 /* Python */ = {
+			isa = PBXGroup;
+			children = (
+				C673062021347F620047DC3E /* PythonEnvironment.h */,
+				C673062121347F620047DC3E /* PythonEnvironment.mm */,
+				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
+			);
+			path = Python;
+			sourceTree = "<group>";
+		};
+		C6AEE05D21346F260093C598 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C654B6A421349411009BD4C1 /* Python */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +122,7 @@
 				TargetAttributes = {
 					C63471DB213452A10061BA36 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -135,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C63471E2213452A10061BA36 /* ViewController.swift in Sources */,
+				C673062221347F620047DC3E /* PythonEnvironment.mm in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,13 +292,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Mirage/Mirage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Mirage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/Python.framework/Versions/3.7",
+					/usr/local/Cellar/python/3.6.3/Frameworks/Python.framework/Versions/3.6,
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Python/Mirage-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -278,13 +316,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Mirage/Mirage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Mirage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/Python.framework/Versions/3.7",
+					/usr/local/Cellar/python/3.6.3/Frameworks/Python.framework/Versions/3.6,
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mirage/Python/Mirage-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
