@@ -11,7 +11,7 @@ class WindowController: NSWindowController
         viewController?.leftRightSplitView!.subviews[0].isHidden = (sender.state.rawValue == 0)
     }
 
-    @IBAction func refreshSource(_ sender: Any)
+    @IBAction func reload(_ sender: Any)
     {
         let viewController = self.window?.contentViewController as? ViewController
         viewController?.refreshSource()
@@ -30,6 +30,7 @@ class WindowController: NSWindowController
                 return
             }
             self.contentViewController?.representedObject = openPanel.url
+            self.window?.title = openPanel.url!.lastPathComponent
         }
     }
 }
@@ -48,7 +49,6 @@ class ViewController: NSViewController, NSSplitViewDelegate
     {
         super.viewDidLoad()
 
-        
         let name = Notification.Name("SceneListUpdated")
         NotificationCenter.default.addObserver(self, selector: #selector(notify), name: name, object: nil)
     }

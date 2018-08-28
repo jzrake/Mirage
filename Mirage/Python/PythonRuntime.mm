@@ -8,12 +8,14 @@ namespace py = pybind11;
 
 
 
+// ============================================================================
 class Scene
 {
 public:
+    Scene() {}
+    Scene(std::string name) : name (name) {}
     std::string name = "Scene";
 };
-
 
 static std::vector<Scene> mirageScenes;
 
@@ -69,6 +71,7 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 {
     py::class_<Scene>(m, "Scene")
     .def(py::init())
+    .def(py::init<std::string>())
     .def_readwrite("name", &Scene::name);
 
     m.def("show", [] (const std::vector<Scene>& scenes)
