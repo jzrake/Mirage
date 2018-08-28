@@ -13,7 +13,6 @@ static std::vector<Scene> pythonScenes;
 
 
 
-
 // ============================================================================
 @implementation PythonRuntime
 
@@ -38,37 +37,17 @@ static std::vector<Scene> pythonScenes;
     return true;
 }
 
-
 + (int) numberOfScenes
 {
     return int (pythonScenes.size());
 }
 
-+ (NSString*) sceneName: (int) sceneIndex
++ (struct Scene*) scene: (int) atIndex
 {
-    if (sceneIndex >= 0 && sceneIndex < pythonScenes.size())
+    if (atIndex >= 0 && atIndex < pythonScenes.size())
     {
-        return [[NSString alloc] initWithUTF8String:pythonScenes[sceneIndex].name.data()];
+        return &pythonScenes[atIndex];
     }
-    return @"";
-}
-
-+ (struct Node*) rootNode: (int) sceneIndex
-{
-    if (sceneIndex >= 0 && sceneIndex < pythonScenes.size())
-    {
-        return &pythonScenes[sceneIndex].root;
-    }
-    return nil;
-}
-
-+ (id<MTLBuffer>) nodeVertexData: (struct Node*) node
-{
-    return nil;
-}
-
-+ (id<MTLBuffer>) nodeColorsData: (struct Node*) node
-{
     return nil;
 }
 
@@ -80,10 +59,21 @@ static std::vector<Scene> pythonScenes;
 // ============================================================================
 PYBIND11_EMBEDDED_MODULE(mirage, m)
 {
+    pybind11::class_<Node>(m, "Node")
+    .def(pybind11::init())
+    .def_readwrite("vertices", &Node::vertices)
+    .def_readwrite("colors", &Node::colors)
+    .def_readwrite("x", &Node::x)
+    .def_readwrite("y", &Node::y)
+    .def_readwrite("z", &Node::z)
+    .def_property ("position", &Node::getPosition, &Node::setPosition)
+    .def_property ("type", &Node::getType, &Node::setType);
+
     py::class_<Scene>(m, "Scene")
     .def(py::init())
     .def(py::init<std::string>())
-    .def_readwrite("name", &Scene::name);
+    .def_readwrite("name", &Scene::name)
+    .def_readwrite("nodes", &Scene::nodes);
 
     m.def("show", [] (const std::vector<Scene>& scenes)
     {

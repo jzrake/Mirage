@@ -19,8 +19,8 @@ typedef struct
 // ============================================================================
 vertex RasterizerData
 vertexShader(uint                   vertexID   [[ vertex_id                        ]],
-             constant float4       *vertices   [[ buffer(VertexInputVertices)      ]],
-             constant float4       *colors     [[ buffer(VertexInputColors)        ]],
+             device float4         *vertices   [[ buffer(VertexInputVertices)      ]],
+             device float4         *colors     [[ buffer(VertexInputColors)        ]],
              constant float4x4      &model     [[ buffer(VertexInputModelMatrix)   ]],
              constant float4x4      &view      [[ buffer(VertexInputViewMatrix)    ]],
              constant float4x4      &proj      [[ buffer(VertexInputProjMatrix)    ]])

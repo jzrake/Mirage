@@ -879,11 +879,11 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="433" height="424"/>
                                                 <subviews>
                                                     <customView fixedFrame="YES" id="oKO-Bs-Ejo" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="433" height="346"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="433" height="362"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </customView>
                                                     <customView fixedFrame="YES" id="66x-u3-Rdm">
-                                                        <rect key="frame" x="0.0" y="347" width="433" height="77"/>
+                                                        <rect key="frame" x="0.0" y="363" width="433" height="61"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </customView>
                                                 </subviews>
@@ -892,7 +892,7 @@
                                                     <real value="250"/>
                                                 </holdingPriorities>
                                                 <connections>
-                                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="Xd6-aw-hHI"/>
+                                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="6UK-lZ-kz9"/>
                                                 </connections>
                                             </splitView>
                                         </subviews>
@@ -908,9 +908,6 @@
                                     <real value="250"/>
                                     <real value="250"/>
                                 </holdingPriorities>
-                                <connections>
-                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="7ss-3q-nqY"/>
-                                </connections>
                             </splitView>
                         </subviews>
                         <constraints>
@@ -922,13 +919,14 @@
                     </view>
                     <connections>
                         <outlet property="leftRightSplitView" destination="xoU-vd-cEO" id="yfq-3k-RBu"/>
+                        <outlet property="metalView" destination="oKO-Bs-Ejo" id="AT7-yx-z2G"/>
                         <outlet property="sceneList" destination="ka3-V1-arl" id="xy5-mT-wMQ"/>
                         <outlet property="topBottomSplitView" destination="P1a-Bf-f4D" id="1iL-Mu-M8v"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="76" y="843"/>
+            <point key="canvasLocation" x="75.5" y="843"/>
         </scene>
     </scenes>
     <resources>

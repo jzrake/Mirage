@@ -28,26 +28,6 @@ class MetalView: NSView
         self.initGraphics()
     }
 
-    override func resize(withOldSuperviewSize oldSize: NSSize)
-    {
-        self.metalLayer.drawableSize.width  = self.frame.size.width * 2
-        self.metalLayer.drawableSize.height = self.frame.size.height * 2
-        self.render()
-    }
-
-    override func scrollWheel(with event: NSEvent)
-    {
-        zcamera *= 1 + Float(event.deltaY) * 0.01
-        zcamera = clamp(x:zcamera, low:1, high:100)
-        self.render()
-    }
-
-    override func mouseDragged(with event: NSEvent)
-    {
-        rotation += Float(event.deltaX) * 0.01
-        self.render()
-    }
-
     private func initGraphics()
     {
         self.device = MTLCreateSystemDefaultDevice()
@@ -62,6 +42,44 @@ class MetalView: NSView
         } catch {
             print("MetalView: pipeline state creation failed")
         }
+    }
+
+    var representedObject: Int?
+    {
+        didSet
+        {
+            render()
+        }
+    }
+
+    func updateSize()
+    {
+        let newSize = CGSize(width: self.frame.size.width * 2,
+                             height: self.frame.size.height * 2)
+
+        if (self.metalLayer.drawableSize != newSize)
+        {
+            self.metalLayer.drawableSize = newSize
+            self.render()
+        }
+    }
+
+    override func resize(withOldSuperviewSize oldSize: NSSize)
+    {
+        self.updateSize()
+    }
+
+    override func scrollWheel(with event: NSEvent)
+    {
+        zcamera *= 1 + Float(event.deltaY) * 0.01
+        zcamera = clamp(x:zcamera, low:1, high:100)
+        self.render()
+    }
+
+    override func mouseDragged(with event: NSEvent)
+    {
+        rotation += Float(event.deltaX) * 0.01
+        self.render()
     }
 
     private func pipelineDescriptor() -> MTLRenderPipelineDescriptor
@@ -114,7 +132,7 @@ class MetalView: NSView
         d.colorAttachments[0].texture     = drawable.texture;
         d.colorAttachments[0].loadAction  = MTLLoadAction.clear;
         d.colorAttachments[0].storeAction = MTLStoreAction.store;
-        d.colorAttachments[0].clearColor  = MTLClearColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        d.colorAttachments[0].clearColor  = MTLClearColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1)
 
         d.depthAttachment.texture     = device.makeTexture(descriptor: self.depthTextureDescriptor(preparedFor: drawable.texture))
         d.depthAttachment.loadAction  = MTLLoadAction.clear
@@ -126,37 +144,25 @@ class MetalView: NSView
 
     private func render()
     {
+        guard let sceneIndex = self.representedObject else { return }
+
         let W = Float(self.frame.size.width)
         let H = Float(self.frame.size.height)
 
-        let vertexData:[Float] = [
-            +0.0, +1.0, 0.0, 0.0,
-            -1.0, -1.0, 0.0, 0.0,
-            +1.0, -1.0, 0.0, 0.0,
-
-            +0.0, +1.0, 1.0, 0.0,
-            -1.0, -1.0, 1.0, 0.0,
-            +1.0, -1.0, 1.0, 0.0,]
-
-        let layer = self.layer as! CAMetalLayer
-        let drawable = layer.nextDrawable()
-
-        var model = GLKMatrix4Rotate(GLKMatrix4Identity, rotation, 0, 1, 0)
-        var view  = GLKMatrix4MakeTranslation(0, 0, -zcamera)
-        var proj  = GLKMatrix4MakePerspective(1.0, W/H, 0.01, 1e3)
-
+        let drawable = self.metalLayer.nextDrawable()
         let renderPassDescriptor = self.renderPassDescriptor(preparedFor: drawable!)
         let commandBuffer = self.commandQueue?.makeCommandBuffer()
         let renderEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 
         renderEncoder!.setRenderPipelineState(self.pipelineState!)
         renderEncoder!.setDepthStencilState(self.depthStencilState!)
-        renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputVertices.rawValue))
-        renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputColors.rawValue))
-        renderEncoder!.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
-        renderEncoder!.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
-        renderEncoder!.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
-        renderEncoder!.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 6)
+
+        SceneAPI.encode(PythonRuntime.scene(Int32(sceneIndex)),
+                        encoder: renderEncoder,
+                        width: W,
+                        height: H,
+                        rot: rotation,
+                        zcam: zcamera)
 
         renderEncoder!.endEncoding()
         commandBuffer!.present(drawable!)
@@ -168,3 +174,53 @@ class MetalView: NSView
         return x > high ? high : (x < low) ? low : x
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+//private func testRender()
+//{
+//    let W = Float(self.frame.size.width)
+//    let H = Float(self.frame.size.height)
+//
+//    let vertexData:[Float] = [
+//        +0.0, +1.0, 0.0, 0.0,
+//        -1.0, -1.0, 0.0, 0.0,
+//        +1.0, -1.0, 0.0, 0.0,
+//
+//        +0.0, +1.0, 1.0, 0.0,
+//        -1.0, -1.0, 1.0, 0.0,
+//        +1.0, -1.0, 1.0, 0.0,]
+//
+//    let layer = self.layer as! CAMetalLayer
+//    let drawable = layer.nextDrawable()
+//
+//    var model = GLKMatrix4Rotate(GLKMatrix4Identity, rotation, 0, 1, 0)
+//    var view  = GLKMatrix4MakeTranslation(0, 0, -zcamera)
+//    var proj  = GLKMatrix4MakePerspective(1.0, W/H, 0.01, 1e3)
+//
+//    let renderPassDescriptor = self.renderPassDescriptor(preparedFor: drawable!)
+//    let commandBuffer = self.commandQueue?.makeCommandBuffer()
+//    let renderEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+//
+//    renderEncoder!.setRenderPipelineState(self.pipelineState!)
+//    renderEncoder!.setDepthStencilState(self.depthStencilState!)
+//    renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputVertices.rawValue))
+//    renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputColors.rawValue))
+//    renderEncoder!.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
+//    renderEncoder!.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
+//    renderEncoder!.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
+//    renderEncoder!.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 6)
+//
+//    renderEncoder!.endEncoding()
+//    commandBuffer!.present(drawable!)
+//    commandBuffer!.commit()
+//}

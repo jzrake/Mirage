@@ -61,9 +61,8 @@ struct Node
 
 
 // ============================================================================
-class Scene
+struct Scene
 {
-public:
     Scene();
     Scene(std::string name);
 
@@ -74,11 +73,32 @@ public:
 
     Node root;
 };
-#else
+#endif // __cplusplus
 
+
+
+
+// ============================================================================
 struct Node;
 struct Scene;
-void scene_encode (struct Scene* scene, id<MTLRenderCommandEncoder> encoder, float W, float H, float rot, float zcam);
 
-#endif // __cplusplus
+
+
+
+// ============================================================================
+@interface SceneAPI : NSObject
+
++ (void) encode: (struct Scene*) scene
+        encoder: (id<MTLRenderCommandEncoder>) encoder
+          width: (float) width
+         height: (float) height
+            rot: (float) rot
+           zcam: (float) zcam;
+
++ (int) numNodes: (struct Scene*) scene;
+//+ (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
++ (NSString*) name: (struct Scene*) scene;
+
+@end
+
 #endif // Scene_hpp

@@ -27,7 +27,7 @@
 		C63471E8213452A10061BA36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C63471E9213452A10061BA36 /* Mirage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirage.entitlements; sourceTree = "<group>"; };
 		C64A51842134E8BE0031941D /* Scene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Scene.mm; sourceTree = "<group>"; };
-		C64A51852134E8BE0031941D /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
+		C64A51852134E8BE0031941D /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		C654B6A421349411009BD4C1 /* Python */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = Python; path = ../../../../System/Library/Frameworks/Python.framework/Versions/2.7/Python; sourceTree = "<group>"; };
 		C654B6A621349EF6009BD4C1 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
 		C654B6A92134A0C6009BD4C1 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
@@ -72,9 +72,9 @@
 				C6AEE05821346BED0093C598 /* Python */,
 				C654B6A82134A094009BD4C1 /* Rendering */,
 				C63471DF213452A10061BA36 /* AppDelegate.swift */,
-				C63471E5213452A10061BA36 /* Main.storyboard */,
 				C63471E1213452A10061BA36 /* ViewController.swift */,
 				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
+				C63471E5213452A10061BA36 /* Main.storyboard */,
 				C63471E9213452A10061BA36 /* Mirage.entitlements */,
 				C63471E8213452A10061BA36 /* Info.plist */,
 				C63471E3213452A10061BA36 /* Assets.xcassets */,
@@ -87,7 +87,7 @@
 			children = (
 				C654B6A621349EF6009BD4C1 /* MetalView.swift */,
 				C64A51842134E8BE0031941D /* Scene.mm */,
-				C64A51852134E8BE0031941D /* Scene.hpp */,
+				C64A51852134E8BE0031941D /* Scene.h */,
 				C654B6A92134A0C6009BD4C1 /* Shader.h */,
 				C654B6AA2134A0C6009BD4C1 /* Shader.metal */,
 			);

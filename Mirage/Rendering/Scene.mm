@@ -2,7 +2,7 @@
 #import <simd/simd.h>
 #include <iostream>
 #include <Metal/Metal.h>
-#include "Scene.hpp"
+#include "Scene.h"
 #include "Shader.h"
 
 
@@ -140,7 +140,37 @@ void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float
 
 
 // ============================================================================
-void scene_encode (struct Scene* scene, id<MTLRenderCommandEncoder> encoder, float W, float H, float rot, float zcam)
+@implementation SceneAPI
+
++ (void) encode: (struct Scene*) scene
+        encoder: (id<MTLRenderCommandEncoder>) encoder
+          width: (float) width
+         height: (float) height
+            rot: (float) rot
+           zcam: (float) zcam
 {
-    scene->encode (encoder, W, H, rot, zcam);
+    scene->encode (encoder, width, height, rot, zcam);
 }
+
++ (int) numNodes: (struct Scene*) scene
+{
+    return int(scene->nodes.size());
+}
+
+//+ (struct Node*) node: (struct Scene*) scene
+//              atIndex: (int) index
+//{
+//    if (index >=0 && index < scene->nodes.size())
+//    {
+//        return &scene->nodes[index];
+//    }
+//    return nil;
+//}
+
++ (NSString*) name: (struct Scene*) scene
+{
+    return [[NSString alloc] initWithUTF8String:scene->name.data()];
+}
+
+
+@end

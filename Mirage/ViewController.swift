@@ -39,18 +39,19 @@ class WindowController: NSWindowController
 
 
 // ============================================================================
-class ViewController: NSViewController, NSSplitViewDelegate
+class ViewController: NSViewController
 {
     @IBOutlet weak var topBottomSplitView: NSSplitView!
     @IBOutlet weak var leftRightSplitView: NSSplitView!
     @IBOutlet weak var sceneList: NSTableView!
+    @IBOutlet weak var metalView: MetalView!
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
 
         let name = Notification.Name("SceneListUpdated")
-        NotificationCenter.default.addObserver(self, selector: #selector(notify), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneListUpdate), name: name, object: nil)
     }
 
     override var representedObject: Any?
@@ -67,11 +68,26 @@ class ViewController: NSViewController, NSSplitViewDelegate
         PythonRuntime.evalFile((url as! NSURL) as URL?)
     }
 
-    @objc func notify(_ notification: Notification)
+    @objc func sceneListUpdate(_ notification: Notification)
     {
         let selectedRowIndexes = sceneList.selectedRowIndexes
         sceneList.reloadData()
         sceneList.selectRowIndexes(selectedRowIndexes, byExtendingSelection: true)
+    }
+}
+
+
+
+
+// ============================================================================
+extension ViewController: NSSplitViewDelegate
+{
+    func splitViewDidResizeSubviews(_ notification: Notification)
+    {
+        // This is a work-around for a bug (maybe in NSSplitView) where the
+        // subview's resize method is not called, even though the split view
+        // has updated the subview's size.
+        self.metalView.updateSize()
     }
 }
 
@@ -99,7 +115,8 @@ extension ViewController: NSTableViewDelegate
 
         if let cell = tableView.makeView(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView
         {
-            cell.textField?.stringValue = PythonRuntime.sceneName(Int32(row))
+            let scene = PythonRuntime.scene(Int32(row))
+            cell.textField?.stringValue = SceneAPI.name(scene)
             return cell
         }
         return nil
@@ -107,6 +124,7 @@ extension ViewController: NSTableViewDelegate
 
     func tableViewSelectionDidChange(_ notification: Notification)
     {
-        print(notification)
+        let i = sceneList.selectedRow
+        self.metalView.representedObject = i == -1 ? nil : i
     }
 }
