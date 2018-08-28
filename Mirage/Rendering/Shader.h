@@ -6,9 +6,10 @@
 typedef enum VertexInputIndex
 {
     VertexInputVertices          = 0,
-    VertexInputModelMatrix       = 1,
-    VertexInputViewMatrix        = 2,
-    VertexInputProjMatrix        = 3,
+    VertexInputColors            = 1,
+    VertexInputModelMatrix       = 2,
+    VertexInputViewMatrix        = 3,
+    VertexInputProjMatrix        = 4,
 } VertexInputIndex;
 
 

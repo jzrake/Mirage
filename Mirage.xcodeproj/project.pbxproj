@@ -14,7 +14,7 @@
 		C654B6A521349411009BD4C1 /* Python in Frameworks */ = {isa = PBXBuildFile; fileRef = C654B6A421349411009BD4C1 /* Python */; };
 		C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C654B6A621349EF6009BD4C1 /* MetalView.swift */; };
 		C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C654B6AA2134A0C6009BD4C1 /* Shader.metal */; };
-		C673062221347F620047DC3E /* PythonRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonRuntime.mm */; settings = {COMPILER_FLAGS = "-I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -I/Users/jzrake/Work/Mirage/3rdParty/pybind11/include"; }; };
+		C673062221347F620047DC3E /* PythonRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonRuntime.mm */; settings = {COMPILER_FLAGS = "-I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -I3rdParty/pybind11/include"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,7 +133,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Jonathan Zrake";
 				TargetAttributes = {
 					C63471DB213452A10061BA36 = {
@@ -214,6 +214,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -221,6 +222,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -271,6 +273,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -278,6 +281,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -318,8 +322,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks/Python.framework/Versions/3.7",
-					/usr/local/Cellar/python/3.6.3/Frameworks/Python.framework/Versions/3.6,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;
@@ -342,8 +344,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks/Python.framework/Versions/3.7",
-					/usr/local/Cellar/python/3.6.3/Frameworks/Python.framework/Versions/3.6,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Zrake.Mirage;

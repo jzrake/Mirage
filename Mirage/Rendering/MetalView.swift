@@ -10,6 +10,8 @@ class MetalView: NSView
 {
     var device: MTLDevice!
     var pipelineState: MTLRenderPipelineState!
+    var depthStencilState: MTLDepthStencilState!
+
     var commandQueue: MTLCommandQueue!
     var metalLayer: CAMetalLayer!
     var rotation: Float = 0.0
@@ -51,6 +53,7 @@ class MetalView: NSView
     {
         self.device = MTLCreateSystemDefaultDevice()
         self.commandQueue = device.makeCommandQueue()
+        self.depthStencilState = device.makeDepthStencilState(descriptor: self.depthStencilDescriptor())
         self.metalLayer = CAMetalLayer()
         self.metalLayer.device = self.device
         self.layer = metalLayer
@@ -70,20 +73,55 @@ class MetalView: NSView
         
         let d = MTLRenderPipelineDescriptor()
 
-        d.vertexFunction   = vertexFunction;
-        d.fragmentFunction = fragmentFunction;
-        d.colorAttachments[0].pixelFormat = MTLPixelFormat.bgra8Unorm;
+        d.vertexFunction   = vertexFunction
+        d.fragmentFunction = fragmentFunction
+        d.colorAttachments[0].pixelFormat = MTLPixelFormat.bgra8Unorm
+        d.depthAttachmentPixelFormat      = MTLPixelFormat.depth32Float
 
         return d
     }
 
+    private func depthStencilDescriptor() -> MTLDepthStencilDescriptor
+    {
+        let d = MTLDepthStencilDescriptor()
+
+        d.depthCompareFunction = MTLCompareFunction.less
+        d.isDepthWriteEnabled  = true
+
+        return d;
+    }
+
+    private func depthTextureDescriptor(preparedFor texture: MTLTexture) -> MTLTextureDescriptor
+    {
+        // See the link below if multi-sampling will be used:
+        //
+        // https://developer.apple.com/library/archive/samplecode/MetalShaderShowcase/Listings/MetalShaderShowcase_AAPLView_mm.html
+        let d = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.depth32Float,
+                                                         width: texture.width,
+                                                         height: texture.height,
+                                                         mipmapped: false)
+        d.sampleCount     = 1
+        d.textureType     = MTLTextureType.type2D
+        d.resourceOptions = MTLResourceOptions.storageModePrivate
+        d.usage           = MTLTextureUsage.renderTarget
+
+        return d;
+    }
+
     private func renderPassDescriptor(preparedFor drawable: CAMetalDrawable) -> MTLRenderPassDescriptor
     {
-        let d                             = MTLRenderPassDescriptor()
+        let d = MTLRenderPassDescriptor()
+
         d.colorAttachments[0].texture     = drawable.texture;
         d.colorAttachments[0].loadAction  = MTLLoadAction.clear;
         d.colorAttachments[0].storeAction = MTLStoreAction.store;
         d.colorAttachments[0].clearColor  = MTLClearColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+
+        d.depthAttachment.texture     = device.makeTexture(descriptor: self.depthTextureDescriptor(preparedFor: drawable.texture))
+        d.depthAttachment.loadAction  = MTLLoadAction.clear
+        d.depthAttachment.storeAction = MTLStoreAction.dontCare
+        d.depthAttachment.clearDepth  = 1.0;
+
         return d;
     }
 
@@ -99,9 +137,13 @@ class MetalView: NSView
         let H = Float(self.frame.size.height)
 
         let vertexData:[Float] = [
-            +0.0, +1.0, 0.0,
-            -1.0, -1.0, 0.0,
-            +1.0, -1.0, 0.0]
+            +0.0, +1.0, 0.0, 0.0,
+            -1.0, -1.0, 0.0, 0.0,
+            +1.0, -1.0, 0.0, 0.0,
+
+            +0.0, +1.0, 1.0, 0.0,
+            -1.0, -1.0, 1.0, 0.0,
+            +1.0, -1.0, 1.0, 0.0,]
 
         let layer = self.layer as! CAMetalLayer
         let drawable = layer.nextDrawable()
@@ -115,11 +157,13 @@ class MetalView: NSView
         let renderEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 
         renderEncoder!.setRenderPipelineState(self.pipelineState!)
-        renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 9 , index: Int(VertexInputVertices.rawValue))
+        renderEncoder!.setDepthStencilState(self.depthStencilState!)
+        renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputVertices.rawValue))
+        renderEncoder!.setVertexBytes(vertexData, length: MemoryLayout<Float>.size * 24, index: Int(VertexInputColors.rawValue))
         renderEncoder!.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
         renderEncoder!.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
         renderEncoder!.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
-        renderEncoder!.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 3)
+        renderEncoder!.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 6)
 
         renderEncoder!.endEncoding()
         commandBuffer!.present(drawable!)
