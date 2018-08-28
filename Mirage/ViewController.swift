@@ -64,15 +64,21 @@ class ViewController: NSViewController
 
     func refreshSource()
     {
-        guard let url = representedObject else { print("no source file"); return }
-        PythonRuntime.evalFile((url as! NSURL) as URL?)
+        guard let url = representedObject as? URL else { print("no source file"); return }
+        //PythonRuntime.add(toSystemPath: url.deletingLastPathComponent())
+        PythonRuntime.evalFile(url)
     }
 
     @objc func sceneListUpdate(_ notification: Notification)
     {
         let selectedRowIndexes = sceneList.selectedRowIndexes
         sceneList.reloadData()
-        sceneList.selectRowIndexes(selectedRowIndexes, byExtendingSelection: true)
+        sceneList.selectRowIndexes(selectedRowIndexes, byExtendingSelection: false)
+
+        if (selectedRowIndexes.isEmpty && sceneList.numberOfRows > 0)
+        {
+            sceneList.selectRowIndexes([0], byExtendingSelection: false)
+        }
     }
 }
 

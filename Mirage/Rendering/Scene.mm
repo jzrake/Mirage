@@ -108,7 +108,7 @@ Scene::Scene(std::string name) : name(name)
 {
 }
 
-void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float rot, float zcam)
+void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float xrot, float yrot, float zcam)
 {
     for (const auto& node : nodes)
     {
@@ -121,7 +121,7 @@ void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float
         }
 
         GLKMatrix4 model = GLKMatrix4MakeTranslation (node.x, node.y, node.z);
-        GLKMatrix4 view  = GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcam), rot, 0, 1, 0);
+        GLKMatrix4 view  = GLKMatrix4Rotate (GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcam), xrot, 0, 1, 0), yrot, 1, 0, 0);
         GLKMatrix4 proj  = GLKMatrix4MakePerspective (1.f, W / H, 0.1f, 1024.f);
 
         id<MTLBuffer> vbuf = node.vertexBuffer (encoder.device);
@@ -146,10 +146,11 @@ void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float
         encoder: (id<MTLRenderCommandEncoder>) encoder
           width: (float) width
          height: (float) height
-            rot: (float) rot
+           xrot: (float) xrot
+           yrot: (float) yrot
            zcam: (float) zcam
 {
-    scene->encode (encoder, width, height, rot, zcam);
+    scene->encode (encoder, width, height, xrot, yrot, zcam);
 }
 
 + (int) numNodes: (struct Scene*) scene

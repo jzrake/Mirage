@@ -66,7 +66,7 @@ struct Scene
     Scene();
     Scene(std::string name);
 
-    void encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float rot, float zcam);
+    void encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float xrot, float yrot, float zcam);
 
     std::string name;
     std::vector<Node> nodes;
@@ -92,7 +92,8 @@ struct Scene;
         encoder: (id<MTLRenderCommandEncoder>) encoder
           width: (float) width
          height: (float) height
-            rot: (float) rot
+           xrot: (float) xrot
+           yrot: (float) yrot
            zcam: (float) zcam;
 
 + (int) numNodes: (struct Scene*) scene;

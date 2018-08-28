@@ -26,6 +26,12 @@ static std::vector<Scene> pythonScenes;
     py::finalize_interpreter();
 }
 
++ (void) addToSystemPath: (NSURL*) directory
+{
+    auto sys = py::module::import("sys");
+    sys.attr("path").attr("append")(std::string([directory.path UTF8String]));
+}
+
 + (bool) evalFile: (NSURL*) filename
 {
     try {
