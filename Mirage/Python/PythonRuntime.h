@@ -1,4 +1,6 @@
 #import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
+#include "Scene.hpp"
 
 
 
@@ -11,4 +13,8 @@
 
 + (int) numberOfScenes;
 + (NSString*) sceneName: (int) sceneIndex;
+
++ (struct Node*) rootNode: (int) sceneIndex;
++ (id<MTLBuffer>) nodeVertexData: (struct Node*) node;
++ (id<MTLBuffer>) nodeColorsData: (struct Node*) node;
 @end

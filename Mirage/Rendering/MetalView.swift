@@ -8,14 +8,13 @@ import GLKit
 // ============================================================================
 class MetalView: NSView
 {
-    var device: MTLDevice!
-    var pipelineState: MTLRenderPipelineState!
+    var device:            MTLDevice!
+    var pipelineState:     MTLRenderPipelineState!
     var depthStencilState: MTLDepthStencilState!
-
-    var commandQueue: MTLCommandQueue!
-    var metalLayer: CAMetalLayer!
-    var rotation: Float = 0.0
-    var zcamera: Float = 10.0
+    var commandQueue:      MTLCommandQueue!
+    var metalLayer:        CAMetalLayer!
+    var rotation:          Float = 0.0
+    var zcamera:           Float = 10.0
 
     override init(frame frameRect: NSRect)
     {
@@ -127,12 +126,6 @@ class MetalView: NSView
 
     private func render()
     {
-        if (device == nil)
-        {
-            print("device not ready yet")
-            return
-        }
-
         let W = Float(self.frame.size.width)
         let H = Float(self.frame.size.height)
 

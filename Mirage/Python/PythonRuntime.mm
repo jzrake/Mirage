@@ -8,16 +8,8 @@ namespace py = pybind11;
 
 
 
-// ============================================================================
-class Scene
-{
-public:
-    Scene() {}
-    Scene(std::string name) : name (name) {}
-    std::string name = "Scene";
-};
+static std::vector<Scene> pythonScenes;
 
-static std::vector<Scene> mirageScenes;
 
 
 
@@ -49,16 +41,35 @@ static std::vector<Scene> mirageScenes;
 
 + (int) numberOfScenes
 {
-    return int (mirageScenes.size());
+    return int (pythonScenes.size());
 }
 
 + (NSString*) sceneName: (int) sceneIndex
 {
-    if (sceneIndex >= 0 && sceneIndex < mirageScenes.size())
+    if (sceneIndex >= 0 && sceneIndex < pythonScenes.size())
     {
-        return [[NSString alloc] initWithUTF8String:mirageScenes[sceneIndex].name.data()];
+        return [[NSString alloc] initWithUTF8String:pythonScenes[sceneIndex].name.data()];
     }
     return @"";
+}
+
++ (struct Node*) rootNode: (int) sceneIndex
+{
+    if (sceneIndex >= 0 && sceneIndex < pythonScenes.size())
+    {
+        return &pythonScenes[sceneIndex].root;
+    }
+    return nil;
+}
+
++ (id<MTLBuffer>) nodeVertexData: (struct Node*) node
+{
+    return nil;
+}
+
++ (id<MTLBuffer>) nodeColorsData: (struct Node*) node
+{
+    return nil;
 }
 
 @end
@@ -76,7 +87,7 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 
     m.def("show", [] (const std::vector<Scene>& scenes)
     {
-        mirageScenes = scenes;
+        pythonScenes = scenes;
         NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdated" object:nil userInfo:nil];
         [NSNotificationCenter.defaultCenter postNotification:notification];
     });
