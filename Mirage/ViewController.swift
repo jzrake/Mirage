@@ -75,7 +75,11 @@ class ViewController: NSViewController
         sceneList.reloadData()
         sceneList.selectRowIndexes(selectedRowIndexes, byExtendingSelection: false)
 
-        if (selectedRowIndexes.isEmpty && sceneList.numberOfRows > 0)
+        if (sceneList.numberOfRows == 0)
+        {
+            self.metalView.representedObject = nil
+        }
+        else if (selectedRowIndexes.isEmpty)
         {
             sceneList.selectRowIndexes([0], byExtendingSelection: false)
         }

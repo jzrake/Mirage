@@ -146,7 +146,7 @@ class MetalView: NSView
 
     private func render()
     {
-        guard let sceneIndex = self.representedObject else { return }
+        let scene = PythonRuntime.scene(Int32(self.representedObject ?? -1))
 
         let W = Float(self.frame.size.width)
         let H = Float(self.frame.size.height)
@@ -159,14 +159,16 @@ class MetalView: NSView
         renderEncoder!.setRenderPipelineState(self.pipelineState!)
         renderEncoder!.setDepthStencilState(self.depthStencilState!)
 
-        SceneAPI.encode(PythonRuntime.scene(Int32(sceneIndex)),
-                        encoder: renderEncoder,
-                        width: W,
-                        height: H,
-                        xrot: xrotation,
-                        yrot: yrotation,
-                        zcam: zcamera)
-
+        if (scene != nil)
+        {
+            SceneAPI.encode(scene,
+                            encoder: renderEncoder,
+                            width: W,
+                            height: H,
+                            xrot: xrotation,
+                            yrot: yrotation,
+                            zcam: zcamera)
+        }
         renderEncoder!.endEncoding()
         commandBuffer!.present(drawable!)
         commandBuffer!.commit()
