@@ -2,19 +2,18 @@ import Cocoa
 
 
 
+
 // ============================================================================
 class WindowController: NSWindowController
 {
-    @IBAction func sidePanelButton(_ sender: NSButton)
+    @IBAction func sidePanelButtonAction(_ sender: NSButton)
     {
-        let viewController = self.window?.contentViewController as? ViewController
-        viewController?.leftRightSplitView!.subviews[0].isHidden = (sender.state.rawValue == 0)
+        (self.contentViewController as! ViewController).toggleSidebar(self)
     }
 
-    @IBAction func reload(_ sender: Any)
+    @IBAction func reloadSource(_ sender: Any)
     {
-        let viewController = self.window?.contentViewController as? ViewController
-        viewController?.refreshSource()
+        (self.contentViewController as! ViewController).reloadSource()
     }
 
     @IBAction func openDocument(_ sender: AnyObject?)
@@ -39,12 +38,41 @@ class WindowController: NSWindowController
 
 
 // ============================================================================
-class ViewController: NSViewController
+class ViewController: NSSplitViewController
 {
-    @IBOutlet weak var topBottomSplitView: NSSplitView!
-    @IBOutlet weak var leftRightSplitView: NSSplitView!
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+
+        (splitViewItems[0].viewController as! SceneListViewController).currentSceneIndexSetter = {
+            sceneIndex in
+            (self.splitViewItems[1].viewController.view as! MetalView).representedObject = sceneIndex
+        }
+    }
+
+    override var representedObject: Any?
+    {
+        didSet
+        {
+            reloadSource()
+        }
+    }
+
+    func reloadSource()
+    {
+        guard let url = representedObject as? URL else { return }
+        PythonRuntime.evalFile(url)
+    }
+}
+
+
+
+
+// ============================================================================
+class SceneListViewController: NSViewController
+{
     @IBOutlet weak var sceneList: NSTableView!
-    @IBOutlet weak var metalView: MetalView!
+    var currentSceneIndexSetter:((Int) -> Void)?
 
     override func viewDidLoad()
     {
@@ -52,21 +80,6 @@ class ViewController: NSViewController
 
         let name = Notification.Name("SceneListUpdated")
         NotificationCenter.default.addObserver(self, selector: #selector(sceneListUpdate), name: name, object: nil)
-    }
-
-    override var representedObject: Any?
-    {
-        didSet
-        {
-            refreshSource()
-        }
-    }
-
-    func refreshSource()
-    {
-        guard let url = representedObject as? URL else { print("no source file"); return }
-        //PythonRuntime.add(toSystemPath: url.deletingLastPathComponent())
-        PythonRuntime.evalFile(url)
     }
 
     @objc func sceneListUpdate(_ notification: Notification)
@@ -77,7 +90,7 @@ class ViewController: NSViewController
 
         if (sceneList.numberOfRows == 0)
         {
-            self.metalView.representedObject = nil
+            currentSceneIndexSetter! (-1)
         }
         else if (selectedRowIndexes.isEmpty)
         {
@@ -90,22 +103,7 @@ class ViewController: NSViewController
 
 
 // ============================================================================
-extension ViewController: NSSplitViewDelegate
-{
-    func splitViewDidResizeSubviews(_ notification: Notification)
-    {
-        // This is a work-around for a bug (maybe in NSSplitView) where the
-        // subview's resize method is not called, even though the split view
-        // has updated the subview's size.
-        self.metalView.updateSize()
-    }
-}
-
-
-
-
-// ============================================================================
-extension ViewController: NSTableViewDataSource
+extension SceneListViewController: NSTableViewDataSource
 {
     func numberOfRows(in tableView: NSTableView) -> Int
     {
@@ -117,12 +115,12 @@ extension ViewController: NSTableViewDataSource
 
 
 // ============================================================================
-extension ViewController: NSTableViewDelegate
+extension SceneListViewController: NSTableViewDelegate
 {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
     {
         let cellIdentifier = NSUserInterfaceItemIdentifier("C1")
-
+        
         if let cell = tableView.makeView(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView
         {
             let scene = PythonRuntime.scene(Int32(row))
@@ -135,6 +133,18 @@ extension ViewController: NSTableViewDelegate
     func tableViewSelectionDidChange(_ notification: Notification)
     {
         let i = sceneList.selectedRow
-        self.metalView.representedObject = i == -1 ? nil : i
+        currentSceneIndexSetter! (i)
+    }
+}
+
+
+
+
+// ============================================================================
+class ContentViewController: NSViewController
+{
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
     }
 }

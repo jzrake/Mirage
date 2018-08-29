@@ -67,6 +67,7 @@ class MetalView: NSView
 
     override func resize(withOldSuperviewSize oldSize: NSSize)
     {
+        print("metal view resized", self.frame.size)
         self.updateSize()
     }
 
