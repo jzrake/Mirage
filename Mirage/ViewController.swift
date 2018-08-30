@@ -11,6 +11,11 @@ class WindowController: NSWindowController
         (self.contentViewController as! ViewController).toggleSidebar(self)
     }
 
+    @IBAction func reload(_ sender: Any)
+    {
+        (self.contentViewController as! ViewController).reloadSource()
+    }
+
     @IBAction func reloadSource(_ sender: Any)
     {
         (self.contentViewController as! ViewController).reloadSource()

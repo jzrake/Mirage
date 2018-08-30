@@ -65,14 +65,43 @@ def triangulate(M):
 
 
 
+def reach(path, point):
+    """
+    Return a sequence of triangles, each having the given 3D point as a vertex,
+    and whose bases are the N - 1 segments in the given 3D path.
+    """
+    nseg = path.shape[0] - 1
+    T = np.array([path[:-1], path[1:], np.repeat([point], nseg, axis=0)]).swapaxes(0,1)
+    return T
+
+
+
+def circle(num, dtype=np.float32):
+    """
+    Return a sequence of `num` (unique) 3D vertices arranged on the unit
+    circle in the x-y plane. The first and last vertices are identical.
+    """
+    V = np.zeros([num + 1, 3], dtype=dtype)
+    t = np.linspace(0, 2 * np.pi, num + 1).astype(dtype)
+    V[:,0] = np.cos(t)
+    V[:,1] = np.sin(t)
+    return V
+
+
+
+def cone(num):
+    return reach(circle(num), [0, 0, 1])
+
+
+
 def tovert4(M):
     """
     Convert an array of 3D vertices to an array whose last axis has size 4 and
     is filled with ones. The result is flattened to a 1D array.
     """
     M4 = np.zeros(M.shape[:-1] + (4,), dtype=M.dtype)
-    M4[:,:,0:3] = M
-    M4[:,:,3] = 1.0
+    M4[...,0:3] = M
+    M4[...,3] = 1.0
     return M4.flatten()
 
 
@@ -102,19 +131,19 @@ def test():
 
 
 
-def solid_colors(num):
-    colors = np.zeros([num, 4])
-    colors[:,3] = 1
-    return colors.flatten()
-
-
-
 def height_colors(verts):
     verts = np.array(verts).reshape(-1, 4)
     colors = np.zeros([verts.shape[0], 4], dtype=np.float32)
     colors[:,0] = 0 + verts[:,2]
     colors[:,1] = 1 - verts[:,2]
     colors[:,2] = 1 - verts[:,2] * 0.5
+    colors[:,3] = 1.0
+    return colors.flatten()
+
+
+
+def solid_colors(verts):
+    colors = np.zeros_like(verts).reshape(-1, 4)
     colors[:,3] = 1.0
     return colors.flatten()
 
@@ -136,7 +165,7 @@ def example_gridlines():
 
     node = mirage.Node()
     node.vertices = tovert4(gridlines(lift(lattice(x, y))))
-    node.colors = solid_colors(len(node.vertices) // 4)
+    node.colors = solid_colors(node.vertices)
     node.type = 'line'
     scene = mirage.Scene()
     scene.nodes = [node]
@@ -159,14 +188,33 @@ def example_triangle():
     node.type = 'triangle'
     scene = mirage.Scene()
     scene.nodes = [node]
-    scene.name = "Triangulate lattice"
+    scene.name = "Triangular lattice"
+    return scene
+
+
+
+def example_cone():
+    import mirage
+    node1 = mirage.Node()
+    node1.vertices = tovert4(cone(24))
+    node1.colors = height_colors(node1.vertices)
+    node1.type = 'triangle'
+
+    node2 = mirage.Node()
+    node2.vertices = tovert4(cone(24) * 1.01)
+    node2.colors = solid_colors(node2.vertices)
+    node2.type = 'line strip'
+
+    scene = mirage.Scene()
+    scene.nodes = [node1, node2]
+    scene.name = "Cone"
     return scene
 
 
 
 def run_mirage():
     import mirage
-    mirage.show([example_gridlines(), example_triangle()])
+    mirage.show([example_gridlines(), example_triangle(), example_cone()])
 
 
 
