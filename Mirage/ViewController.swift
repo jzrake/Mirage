@@ -45,13 +45,22 @@ class WindowController: NSWindowController
 // ============================================================================
 class ViewController: NSSplitViewController
 {
+    var sceneListViewController: SceneListViewController?
+    var contentViewController: ContentViewController?
+    var consoleViewController: ConsoleViewController?
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
 
+        let consoleContentController = splitViewItems[1].viewController as? NSSplitViewController
+        self.sceneListViewController = splitViewItems[0].viewController as? SceneListViewController
+        self.contentViewController = consoleContentController?.splitViewItems[0].viewController as? ContentViewController
+        self.consoleViewController = consoleContentController?.splitViewItems[1].viewController as? ConsoleViewController
+
         (splitViewItems[0].viewController as! SceneListViewController).currentSceneIndexSetter = {
             sceneIndex in
-            (self.splitViewItems[1].viewController.view as! MetalView).representedObject = sceneIndex
+            (self.contentViewController?.view as! MetalView).representedObject = sceneIndex
         }
     }
 
@@ -151,5 +160,31 @@ class ContentViewController: NSViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
+    }
+}
+
+
+
+
+// ============================================================================
+class ConsoleViewController: NSViewController
+{
+    @IBOutlet var consoleOutput: NSTextView!
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+
+        let name = Notification.Name("ConsoleMessage")
+        NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: name, object: nil)
+    }
+
+    @objc func consoleMessage(_ notification: Notification)
+    {
+        let message = notification.object as! String
+        let font = NSFont(name: "Monaco", size: 10) as Any
+        let color = message.contains("Error") ? NSColor.red : NSColor.black
+        let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : color]
+        consoleOutput.textStorage?.append(NSAttributedString(string: ">>> " + message + "\n", attributes: attrs))
     }
 }

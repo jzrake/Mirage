@@ -36,9 +36,11 @@ static std::vector<Scene> pythonScenes;
 {
     try {
         py::eval_file([filename.path UTF8String]);
+        [PythonRuntime postMessageToConsole:"Success"];
     }
     catch (const std::exception& e) {
-        std::cout << e.what() << std::endl;
+        [PythonRuntime postMessageToConsole:e.what()];
+        // std::cerr << e.what() << std::endl;
     }
     return true;
 }
@@ -57,6 +59,18 @@ static std::vector<Scene> pythonScenes;
     return nil;
 }
 
++ (void) postMessageToConsole: (std::string) message
+{
+    NSString* m = [[NSString alloc] initWithUTF8String:message.data()];
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"ConsoleMessage" object:m userInfo:nil];
+    [NSNotificationCenter.defaultCenter postNotification:notification];
+}
+
++ (void) postSceneListUpdated
+{
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdated" object:nil userInfo:nil];
+    [NSNotificationCenter.defaultCenter postNotification:notification];
+}
 @end
 
 
@@ -81,10 +95,14 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("name", &Scene::name)
     .def_readwrite("nodes", &Scene::nodes);
 
+    m.def("log", [] (std::string message)
+    {
+        [PythonRuntime postMessageToConsole:message];
+    });
+
     m.def("show", [] (const std::vector<Scene>& scenes)
     {
         pythonScenes = scenes;
-        NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdated" object:nil userInfo:nil];
-        [NSNotificationCenter.defaultCenter postNotification:notification];
+        [PythonRuntime postSceneListUpdated];
     });
 }

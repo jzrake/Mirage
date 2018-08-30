@@ -757,7 +757,7 @@
                 <splitViewController id="TeU-vU-j0b" customClass="ViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
                         <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="lmv-Et-RiC"/>
-                        <splitViewItem id="Ea5-So-jMK"/>
+                        <splitViewItem id="KZB-TU-OKl"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="4UT-fn-qTN">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -769,7 +769,7 @@
                     <connections>
                         <outlet property="splitView" destination="4UT-fn-qTN" id="9TM-Fu-4ui"/>
                         <segue destination="EPq-vl-6ud" kind="relationship" relationship="splitItems" id="HZw-NG-T5y"/>
-                        <segue destination="KP3-kt-ua6" kind="relationship" relationship="splitItems" id="9I8-P7-c1U"/>
+                        <segue destination="F9o-Wj-bFw" kind="relationship" relationship="splitItems" id="KYi-8t-2QI"/>
                     </connections>
                 </splitViewController>
                 <customObject id="SM9-LU-2KJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -898,20 +898,95 @@
                 </viewController>
                 <customObject id="vHE-HE-XmJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-536" y="-204"/>
+            <point key="canvasLocation" x="-622" y="-14"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="yjG-bW-7aZ">
+            <objects>
+                <splitViewController id="F9o-Wj-bFw" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem id="jhd-cM-K0U"/>
+                        <splitViewItem id="A5W-ky-WIL"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" id="oT4-ED-Drx">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="F9o-Wj-bFw" id="7KI-Tr-M24"/>
+                        </connections>
+                    </splitView>
+                    <connections>
+                        <outlet property="splitView" destination="oT4-ED-Drx" id="lh8-AG-6cZ"/>
+                        <segue destination="DkV-C9-N8N" kind="relationship" relationship="splitItems" id="d4F-dq-AgX"/>
+                        <segue destination="tXG-Zl-MxZ" kind="relationship" relationship="splitItems" id="2Ob-eH-U28"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="47s-HZ-0Sm" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1131" y="441"/>
         </scene>
         <!--Content View Controller-->
-        <scene sceneID="X7W-X7-55a">
+        <scene sceneID="m8o-4H-ANA">
             <objects>
-                <viewController id="KP3-kt-ua6" customClass="ContentViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="7VW-WG-bNw" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
+                <viewController id="DkV-C9-N8N" customClass="ContentViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="24f-25-pmI" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </view>
                 </viewController>
-                <customObject id="4tj-Ix-5kD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="zYr-Gb-Tu0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-433" y="168"/>
+            <point key="canvasLocation" x="-535" y="441"/>
+        </scene>
+        <!--Console View Controller-->
+        <scene sceneID="Jku-56-F8a">
+            <objects>
+                <viewController id="tXG-Zl-MxZ" customClass="ConsoleViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="YuI-xU-JOB">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="124"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tQd-Oc-605">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="124"/>
+                                <clipView key="contentView" id="1j0-K2-gwX">
+                                    <rect key="frame" x="1" y="1" width="448" height="122"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="THs-KG-Luj">
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="122"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="minSize" width="448" height="122"/>
+                                            <size key="maxSize" width="463" height="10000000"/>
+                                            <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="BXD-YV-IGq">
+                                    <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="sR7-g7-88s">
+                                    <rect key="frame" x="433" y="1" width="16" height="122"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="tQd-Oc-605" secondAttribute="trailing" id="SLh-C7-POM"/>
+                            <constraint firstItem="tQd-Oc-605" firstAttribute="leading" secondItem="YuI-xU-JOB" secondAttribute="leading" id="eZb-Fw-Khv"/>
+                            <constraint firstItem="tQd-Oc-605" firstAttribute="top" secondItem="YuI-xU-JOB" secondAttribute="top" id="gUm-dg-gcN"/>
+                            <constraint firstAttribute="bottom" secondItem="tQd-Oc-605" secondAttribute="bottom" id="mDy-uD-z1K"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="consoleOutput" destination="THs-KG-Luj" id="KD0-i8-ZTf"/>
+                    </connections>
+                </viewController>
+                <customObject id="Qxx-1V-jWf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1131" y="853"/>
         </scene>
     </scenes>
     <resources>
