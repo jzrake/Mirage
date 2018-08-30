@@ -157,58 +157,45 @@ def cycle_colors(num):
 
 
 
+def node(vertices, colors=solid_colors, primitive='triangle'):
+    import mirage
+    node = mirage.Node()
+    node.vertices = tovert4(vertices)
+    node.colors = colors(node.vertices) if callable(colors) else colors
+    node.type = primitive
+    return node
+
+
+
+def scene(name="Scene", *nodes):
+    import mirage
+    s = mirage.Scene()
+    s.nodes = nodes
+    s.name = name
+    return s
+
+
+
 def example_gridlines():
     import mirage
-
     x = np.linspace(-1, 1, 24)
     y = np.linspace(-1, 1, 24)
-
-    node = mirage.Node()
-    node.vertices = tovert4(gridlines(lift(lattice(x, y))))
-    node.colors = solid_colors(node.vertices)
-    node.type = 'line'
-    scene = mirage.Scene()
-    scene.nodes = [node]
-    scene.name = "Grid lines"
-    return scene
+    return scene("Gridlines", node(gridlines(lift(lattice(x, y))), primitive='line'))
 
 
 
 def example_triangle():
-    import mirage
-
     x = np.linspace(-1, 1, 14)
     y = np.linspace(-1, 1, 11)
-
     f = lambda x, y: x**2 + y**2
-
-    node = mirage.Node()
-    node.vertices = tovert4(triangulate(lift(lattice(x, y), f)))
-    node.colors = height_colors(node.vertices)
-    node.type = 'triangle'
-    scene = mirage.Scene()
-    scene.nodes = [node]
-    scene.name = "Triangular lattice"
-    return scene
+    return scene("Triangular lattice", node(triangulate(lift(lattice(x, y), f)), height_colors))
 
 
 
 def example_cone():
-    import mirage
-    node1 = mirage.Node()
-    node1.vertices = tovert4(cone(24))
-    node1.colors = height_colors(node1.vertices)
-    node1.type = 'triangle'
-
-    node2 = mirage.Node()
-    node2.vertices = tovert4(cone(24) * 1.01)
-    node2.colors = solid_colors(node2.vertices)
-    node2.type = 'line strip'
-
-    scene = mirage.Scene()
-    scene.nodes = [node1, node2]
-    scene.name = "Cone"
-    return scene
+    node1 = node(cone(24) * 1.00, height_colors, 'triangle')
+    node2 = node(cone(24) * 1.01, solid_colors, 'line strip')
+    return scene("Cone", node1, node2)
 
 
 
