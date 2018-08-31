@@ -148,10 +148,6 @@ class MetalView: NSView
     private func render()
     {
         let scene = PythonRuntime.scene(Int32(self.representedObject ?? -1))
-
-        let W = Float(self.frame.size.width)
-        let H = Float(self.frame.size.height)
-
         let drawable = self.metalLayer.nextDrawable()
         let renderPassDescriptor = self.renderPassDescriptor(preparedFor: drawable!)
         let commandBuffer = self.commandQueue?.makeCommandBuffer()
@@ -162,17 +158,45 @@ class MetalView: NSView
 
         if (scene != nil)
         {
-            SceneAPI.encode(scene,
-                            encoder: renderEncoder,
-                            width: W,
-                            height: H,
-                            xrot: xrotation,
-                            yrot: yrotation,
-                            zcam: zcamera)
+            for i in 0...SceneAPI.numNodes(scene) - 1
+            {
+                render(node: SceneAPI.node(scene, at: i), with: renderEncoder!)
+            }
         }
         renderEncoder!.endEncoding()
         commandBuffer!.present(drawable!)
         commandBuffer!.commit()
+    }
+
+    private func render(node: OpaquePointer, with encoder: MTLRenderCommandEncoder)
+    {
+        let message = SceneAPI.nodeValidate(node)!
+
+        if (!message.isEmpty)
+        {
+            print(message)
+            return
+        }
+    
+        let W = Float(self.frame.size.width)
+        let H = Float(self.frame.size.height)
+        let x = SceneAPI.nodePositionX(node)
+        let y = SceneAPI.nodePositionY(node)
+        let z = SceneAPI.nodePositionZ(node)
+
+        var model = GLKMatrix4MakeTranslation (x, y, z)
+        var view  = GLKMatrix4Rotate (GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcamera), xrotation, 0, 1, 0), yrotation, 1, 0, 0)
+        var proj  = GLKMatrix4MakePerspective (1.0, W / H, 0.1, 1024.0)
+
+        let vbuf = SceneAPI.nodeVertices (node, for: self.device)
+        let cbuf = SceneAPI.nodeColors (node, for: self.device)
+
+        encoder.setVertexBuffer(vbuf, offset: 0, index: Int(VertexInputVertices.rawValue))
+        encoder.setVertexBuffer(cbuf, offset: 0, index: Int(VertexInputColors.rawValue))
+        encoder.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
+        encoder.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
+        encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
+        encoder.drawPrimitives(type: SceneAPI.nodeType(node), vertexStart: 0, vertexCount: SceneAPI.nodeNumVertices(node))
     }
 
     private func clamp(x:Float, low:Float, high:Float) -> Float

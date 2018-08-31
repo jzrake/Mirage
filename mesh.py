@@ -39,6 +39,17 @@ def lift(L, f=None):
 
 
 
+def bridge(path1, path2):
+    """
+    Return a 3D quadrilateral mesh linking the given 3D paths.
+    """
+    Q = np.zeros([path1.shape[0], 2, 3])
+    Q[:,0,:] = path1
+    Q[:,1,:] = path2
+    return Q
+
+
+
 def gridlines(M):
     """
     Return an array of 3D vertices, with shape ((Nu - 1) * Nv + Nu * (Nv - 1),
@@ -53,15 +64,16 @@ def gridlines(M):
 
 def triangulate(M):
     """
-    Return an array of 3D vertices, with shape ((Nu - 1) * (Nv - 1) * 4, 3, 3),
-    describing a list of triangles tesselating a 3D quadrilateral mesh.
+    Return an array of 3D vertices, with shape ((Nu - 1) * (Nv - 1), 4, 3, 3),
+    describing a list of triangles tesselating a 3D quadrilateral mesh. Each
+    quad is broken into 4 triangles, all sharing a vertex at the quad centroid.
     """
     a = M[:-1,:-1]
     b = M[:-1,+1:]
     c = M[+1:,+1:]
     d = M[+1:,:-1]
     e = 0.25 * (a + b + c + d)
-    return np.array([[e,a,b],[e,b,c],[e,c,d],[e,d,a]]).transpose(2,3,0,1,4).reshape(-1,3,3)
+    return np.array([[e,a,b],[e,b,c],[e,c,d],[e,d,a]]).transpose(2,3,0,1,4).reshape(-1,4,3,3)
 
 
 
@@ -106,31 +118,6 @@ def tovert4(M):
 
 
 
-def test():
-    x = np.linspace(0, 1, 8).astype(np.float32)
-    y = np.linspace(0, 1, 9).astype(np.float32)
-    L = lattice(x, y)
-    assert(L.shape == (8, 9, 2))
-    assert(L[2, 3, 0] == x[2])
-    assert(L[2, 3, 1] == y[3])
-
-    M = lift(L)
-    assert(M.shape == (8, 9, 3))
-
-    M = lift(L, lambda x, y: np.zeros((x.shape[0], y.shape[1], 3)))
-    assert(M.shape == (8, 9, 3))
-
-    M = lift(L, lambda x, y: x + y)
-    assert((M[:,:,2] == M[:,:,0] + M[:,:,1]).all())
-
-    lines = gridlines(M)
-    assert(lines.shape == ((len(x) - 1) * len(y) + len(x) * (len(y) - 1), 2, 3))
-
-    triangles = triangulate(M)
-    assert(triangles.shape == (224, 3, 3))
-
-
-
 def height_colors(verts):
     verts = np.array(verts).reshape(-1, 4)
     colors = np.zeros([verts.shape[0], 4], dtype=np.float32)
@@ -149,20 +136,21 @@ def solid_colors(verts):
 
 
 
-def cycle_colors(num):
-    colors = np.zeros([num, 4])
-    for n in range(num):
+def cycle_colors(verts):
+    colors = np.zeros_like(verts).reshape(-1, 4)
+    for n in range(colors.shape[0]):
         colors[n, n % 3] = 1
     return colors.flatten()
 
 
 
-def node(vertices, colors=solid_colors, primitive='triangle'):
+def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]):
     import mirage
     node = mirage.Node()
     node.vertices = tovert4(vertices)
     node.colors = colors(node.vertices) if callable(colors) else colors
     node.type = primitive
+    node.position = position
     return node
 
 
@@ -193,15 +181,82 @@ def example_triangle():
 
 
 def example_cone():
-    node1 = node(cone(24) * 1.00, height_colors, 'triangle')
-    node2 = node(cone(24) * 1.01, solid_colors, 'line strip')
+    node1 = node(cone(24), height_colors, 'triangle', [0, 0, 0.50])
+    node2 = node(cone(24), solid_colors, 'line strip', [0, 0, 0.51])
     return scene("Cone", node1, node2)
+
+
+
+def example_cylinder():
+    path1 = circle(10) + [0, 0, 1]
+    path2 = circle(10) - [0, 0, 1]
+    n = node(triangulate(bridge(path1, path2)), cycle_colors)
+    return scene("Cylinder", n)
+
+
+
+def example_sphere():
+    q = np.linspace(0, 1 * np.pi, 20)
+    p = np.linspace(0, 2 * np.pi, 20)
+
+    def to_spherical(q, p):
+        x = np.sin(q) * np.cos(p)
+        y = np.sin(q) * np.sin(p)
+        z = np.cos(q)
+        return np.array([x, y, z]).T
+
+    verts = triangulate(lift(lattice(q, p), to_spherical))
+
+    n = node(verts, cycle_colors)
+    return scene("Sphere", n)
+
+
+
+def example_helix():
+    t = np.linspace(-8 * np.pi, 8 * np.pi, 300)
+    path1 = np.array([np.cos(t), np.sin(t), t * 0.1]).T
+    path2 = path1.copy()
+    path2[:,0:2] *= 0.8
+    path2[:,2] += 0.1
+    n = node(triangulate(bridge(path1, path2)), cycle_colors)
+    return scene("Helix", n)
 
 
 
 def run_mirage():
     import mirage
-    mirage.show([example_gridlines(), example_triangle(), example_cone()])
+    mirage.show([
+        example_gridlines(),
+        example_triangle(),
+        example_cone(),
+        example_cylinder(),
+        example_helix(),
+        example_sphere()])
+
+
+
+def test():
+    x = np.linspace(0, 1, 8).astype(np.float32)
+    y = np.linspace(0, 1, 9).astype(np.float32)
+    L = lattice(x, y)
+    assert(L.shape == (8, 9, 2))
+    assert(L[2, 3, 0] == x[2])
+    assert(L[2, 3, 1] == y[3])
+
+    M = lift(L)
+    assert(M.shape == (8, 9, 3))
+
+    M = lift(L, lambda x, y: np.zeros((x.shape[0], y.shape[1], 3)))
+    assert(M.shape == (8, 9, 3))
+
+    M = lift(L, lambda x, y: x + y)
+    assert((M[:,:,2] == M[:,:,0] + M[:,:,1]).all())
+
+    lines = gridlines(M)
+    assert(lines.shape == ((len(x) - 1) * len(y) + len(x) * (len(y) - 1), 2, 3))
+
+    triangles = triangulate(M)
+    assert(triangles.shape == (224, 3, 3))
 
 
 

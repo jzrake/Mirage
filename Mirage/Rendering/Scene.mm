@@ -1,9 +1,4 @@
-#import <GLKit/GLKMath.h>
-#import <simd/simd.h>
-#include <iostream>
-#include <Metal/Metal.h>
 #include "Scene.h"
-#include "Shader.h"
 
 
 
@@ -108,70 +103,35 @@ Scene::Scene(std::string name) : name(name)
 {
 }
 
-void Scene::encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float xrot, float yrot, float zcam)
-{
-    for (const auto& node : nodes)
-    {
-        auto error = node.validate();
-
-        if (! error.empty())
-        {
-            std::cout << "Warning: " << error << std::endl;
-            continue;
-        }
-
-        GLKMatrix4 model = GLKMatrix4MakeTranslation (node.x, node.y, node.z);
-        GLKMatrix4 view  = GLKMatrix4Rotate (GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcam), xrot, 0, 1, 0), yrot, 1, 0, 0);
-        GLKMatrix4 proj  = GLKMatrix4MakePerspective (1.f, W / H, 0.1f, 1024.f);
-
-        id<MTLBuffer> vbuf = node.vertexBuffer (encoder.device);
-        id<MTLBuffer> cbuf = node.colorBuffer (encoder.device);
-
-        [encoder setVertexBuffer:vbuf offset:0 atIndex:VertexInputVertices];
-        [encoder setVertexBuffer:cbuf offset:0 atIndex:VertexInputColors];
-        [encoder setVertexBytes:&model length:sizeof (GLKMatrix4) atIndex:VertexInputModelMatrix];
-        [encoder setVertexBytes:&view  length:sizeof (GLKMatrix4) atIndex:VertexInputViewMatrix];
-        [encoder setVertexBytes:&proj  length:sizeof (GLKMatrix4) atIndex:VertexInputProjMatrix];
-        [encoder drawPrimitives:node.type vertexStart:0 vertexCount:node.numVertices()];
-    }
-}
-
 
 
 
 // ============================================================================
 @implementation SceneAPI
 
-+ (void) encode: (struct Scene*) scene
-        encoder: (id<MTLRenderCommandEncoder>) encoder
-          width: (float) width
-         height: (float) height
-           xrot: (float) xrot
-           yrot: (float) yrot
-           zcam: (float) zcam
-{
-    scene->encode (encoder, width, height, xrot, yrot, zcam);
-}
-
 + (int) numNodes: (struct Scene*) scene
 {
     return int(scene->nodes.size());
 }
 
-//+ (struct Node*) node: (struct Scene*) scene
-//              atIndex: (int) index
-//{
-//    if (index >=0 && index < scene->nodes.size())
-//    {
-//        return &scene->nodes[index];
-//    }
-//    return nil;
-//}
-
-+ (NSString*) name: (struct Scene*) scene
++ (struct Node*) node: (struct Scene*) scene
+              atIndex: (int) index
 {
-    return [[NSString alloc] initWithUTF8String:scene->name.data()];
+    if (index >=0 && index < scene->nodes.size())
+    {
+        return &scene->nodes[index];
+    }
+    return nil;
 }
 
++ (NSString*) name: (struct Scene*) scene { return [[NSString alloc] initWithUTF8String:scene->name.data()]; }
++ (float) nodePositionX: (struct Node*) node { return node->x; }
++ (float) nodePositionY: (struct Node*) node { return node->y; }
++ (float) nodePositionZ: (struct Node*) node { return node->z; }
++ (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->vertexBuffer (device); }
++ (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->colorBuffer (device); }
++ (size_t) nodeNumVertices: (struct Node*) node { return node->numVertices(); }
++ (MTLPrimitiveType) nodeType: (struct Node*) node { return node->type; }
++ (NSString*) nodeValidate: (struct Node*) node { return [[NSString alloc] initWithUTF8String:node->validate().data()]; }
 
 @end

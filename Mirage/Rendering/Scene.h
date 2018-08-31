@@ -66,8 +66,6 @@ struct Scene
     Scene();
     Scene(std::string name);
 
-    void encode (id<MTLRenderCommandEncoder> encoder, float W, float H, float xrot, float yrot, float zcam);
-
     std::string name;
     std::vector<Node> nodes;
 
@@ -88,17 +86,17 @@ struct Scene;
 // ============================================================================
 @interface SceneAPI : NSObject
 
-+ (void) encode: (struct Scene*) scene
-        encoder: (id<MTLRenderCommandEncoder>) encoder
-          width: (float) width
-         height: (float) height
-           xrot: (float) xrot
-           yrot: (float) yrot
-           zcam: (float) zcam;
-
 + (int) numNodes: (struct Scene*) scene;
-//+ (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
++ (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
 + (NSString*) name: (struct Scene*) scene;
++ (float) nodePositionX: (struct Node*) node;
++ (float) nodePositionY: (struct Node*) node;
++ (float) nodePositionZ: (struct Node*) node;
++ (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (size_t) nodeNumVertices: (struct Node*) node;
++ (MTLPrimitiveType) nodeType: (struct Node*) node;
++ (NSString*) nodeValidate: (struct Node*) node;
 
 @end
 
