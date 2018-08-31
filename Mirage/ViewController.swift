@@ -186,5 +186,6 @@ class ConsoleViewController: NSViewController
         let color = message.contains("Error") ? NSColor.red : NSColor.black
         let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : color]
         consoleOutput.textStorage?.append(NSAttributedString(string: ">>> " + message + "\n", attributes: attrs))
+        consoleOutput.scrollToEndOfDocument(self)
     }
 }

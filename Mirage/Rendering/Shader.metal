@@ -36,7 +36,23 @@ vertexShader(uint                   vertexID   [[ vertex_id                     
 
 
 // ============================================================================
-fragment float4 fragmentShader(RasterizerData in [[stage_in]])
+constexpr sampler textureSampler (mag_filter::linear,
+                                  min_filter::linear);
+
+
+
+
+// ============================================================================
+fragment float4 fragmentShader(RasterizerData            in      [[ stage_in ]],
+                               constant FragmentOptions &options [[ buffer(FragmentInputOptions) ]],
+                               texture2d<float>          texture [[ texture(FragmentInputTexture2D) ]])
 {
-    return in.color;
+    if (! options.isTextureActive)
+    {
+        return in.color;
+    }
+    else
+    {
+        return texture.sample(textureSampler, in.color.xy);
+    }
 }

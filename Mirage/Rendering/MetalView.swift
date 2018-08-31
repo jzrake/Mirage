@@ -184,9 +184,9 @@ class MetalView: NSView
         let y = SceneAPI.nodePositionY(node)
         let z = SceneAPI.nodePositionZ(node)
 
-        var model = GLKMatrix4MakeTranslation (x, y, z)
-        var view  = GLKMatrix4Rotate (GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcamera), xrotation, 0, 1, 0), yrotation, 1, 0, 0)
-        var proj  = GLKMatrix4MakePerspective (1.0, W / H, 0.1, 1024.0)
+        var model = GLKMatrix4MakeTranslation(x, y, z)
+        var view  = GLKMatrix4Rotate(GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcamera), xrotation, 0, 1, 0), yrotation, 1, 0, 0)
+        var proj  = GLKMatrix4MakePerspective(1.0, W / H, 0.1, 1024.0)
 
         let vbuf = SceneAPI.nodeVertices (node, for: self.device)
         let cbuf = SceneAPI.nodeColors (node, for: self.device)
@@ -196,6 +196,13 @@ class MetalView: NSView
         encoder.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
         encoder.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
         encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
+
+        var options = FragmentOptions()
+        let tex2d = SceneAPI.nodeTexture (node, for: self.device)
+        options.isTextureActive = SceneAPI.nodeHasTexture(node)
+
+        encoder.setFragmentTexture(tex2d, index: Int(FragmentInputTexture2D.rawValue))
+        encoder.setFragmentBytes(&options, length: MemoryLayout<FragmentOptions>.size, index: Int(FragmentInputOptions.rawValue))
         encoder.drawPrimitives(type: SceneAPI.nodeType(node), vertexStart: 0, vertexCount: SceneAPI.nodeNumVertices(node))
     }
 

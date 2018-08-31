@@ -16,13 +16,7 @@
 // ============================================================================
 struct Node
 {
-    MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
-
-    std::vector<float> vertices;
-    std::vector<float> colors;
-    float x = 0.f;
-    float y = 0.f;
-    float z = 0.f;
+    Node();
 
     /** Return an empty string if this node has valid vertex data. Otherwise, return
      an error message describing the problem.
@@ -37,24 +31,48 @@ struct Node
 
     void setType (std::string typeString);
 
+    /** Assign texture data to the node. Shape must be [W, H, 4] with RGBA data on the
+        last axis.
+     */
+    void setTexture (const std::vector<unsigned char>& data, const std::vector<int> shape);
+
     /** Return the number of vertices in this node.
      */
     size_t numVertices() const;
 
     /** Return the number of primitives in this node. Depends on the primitive type
-     and the number of vertices.
+        and the number of vertices.
      */
     size_t numPrimitives() const;
 
     /** Return a buffer of the vertex data. Do not call this function unless you're
-     sure the node is valid.
+        sure the node is valid.
      */
     id<MTLBuffer> vertexBuffer (id<MTLDevice> device) const;
 
     /** Return a buffer of the color data. Do not call this function unless you're
-     sure the node is valid.
+        sure the node is valid.
      */
     id<MTLBuffer> colorBuffer (id<MTLDevice> device) const;
+
+    /** Returns a buffer of texture data, if there is any.
+     */
+    id<MTLTexture> makeTexture (id<MTLDevice> device) const;
+
+
+    // ========================================================================
+    MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
+    
+    std::vector<float> vertices;
+    std::vector<float> colors;
+    std::vector<unsigned char> texture;
+    
+    int textureW = 0;
+    int textureH = 0;
+    
+    float x = 0.f;
+    float y = 0.f;
+    float z = 0.f;
 };
 
 
@@ -65,10 +83,8 @@ struct Scene
 {
     Scene();
     Scene(std::string name);
-
     std::string name;
     std::vector<Node> nodes;
-
     Node root;
 };
 #endif // __cplusplus
@@ -94,6 +110,10 @@ struct Scene;
 + (float) nodePositionZ: (struct Node*) node;
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (id<MTLTexture>) nodeTexture: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (int) nodeTextureW: (struct Node*) node;
++ (int) nodeTextureH: (struct Node*) node;
++ (bool) nodeHasTexture: (struct Node*) node;
 + (size_t) nodeNumVertices: (struct Node*) node;
 + (MTLPrimitiveType) nodeType: (struct Node*) node;
 + (NSString*) nodeValidate: (struct Node*) node;

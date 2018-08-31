@@ -3,6 +3,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 namespace py = pybind11;
 
 
@@ -79,6 +80,8 @@ static std::vector<Scene> pythonScenes;
 // ============================================================================
 PYBIND11_EMBEDDED_MODULE(mirage, m)
 {
+    using texture_t = py::array_t<unsigned char, py::array::c_style | py::array::forcecast>;
+
     pybind11::class_<Node>(m, "Node")
     .def(pybind11::init())
     .def_readwrite("vertices", &Node::vertices)
@@ -86,8 +89,14 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("x", &Node::x)
     .def_readwrite("y", &Node::y)
     .def_readwrite("z", &Node::z)
-    .def_property ("position", &Node::getPosition, &Node::setPosition)
-    .def_property ("type", &Node::getType, &Node::setType);
+    .def_property("position", nullptr, &Node::setPosition)
+    .def_property("type", &Node::getType, &Node::setType)
+    .def_property("texture", nullptr, [] (Node& node, texture_t data)
+    {
+        auto buffer = std::vector<unsigned char> (data.data(0), data.data(0) + data.size());
+        auto shape = std::vector<int> (data.shape(), data.shape() + data.ndim());
+        node.setTexture (buffer, shape);
+    });
 
     py::class_<Scene>(m, "Scene")
     .def(py::init())
