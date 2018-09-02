@@ -96,8 +96,16 @@ class MetalView: NSView
 
         d.vertexFunction   = vertexFunction
         d.fragmentFunction = fragmentFunction
-        d.colorAttachments[0].pixelFormat = MTLPixelFormat.bgra8Unorm
         d.depthAttachmentPixelFormat      = MTLPixelFormat.depth32Float
+
+        d.colorAttachments[0].pixelFormat = MTLPixelFormat.bgra8Unorm
+        d.colorAttachments[0].isBlendingEnabled = true
+        d.colorAttachments[0].rgbBlendOperation = .add
+        d.colorAttachments[0].alphaBlendOperation = .add
+        d.colorAttachments[0].sourceRGBBlendFactor = .one
+        d.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        d.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+        d.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
         return d
     }
@@ -199,24 +207,17 @@ class MetalView: NSView
         encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
 
         var options = FragmentOptions()
-        let imageTexture = SceneAPI.nodeTextureImage(node)
+        let imageTexture = SceneAPI.nodeImageTexture(node)
 
         if (imageTexture == nil)
         {
-            let d = MTLTextureDescriptor()
-            d.usage = MTLTextureUsage.shaderRead
-            d.width = 1
-            d.height = 1
-            d.pixelFormat = MTLPixelFormat.rgba8Unorm
-            let t = device.makeTexture(descriptor: d)
-
-            encoder.setFragmentTexture(t, index: Int(FragmentInputTexture2D.rawValue))
             options.isTextureActive = false
         }
         else
         {
             let loader = MTKTextureLoader(device: device)
-            let t = try! loader.newTexture(cgImage: imageTexture!.cgImage!, options: [:])
+            let t = try! loader.newTexture(cgImage: imageTexture!.cgImage!,
+                                           options: [MTKTextureLoader.Option.SRGB: false])
             encoder.setFragmentTexture(t, index: Int(FragmentInputTexture2D.rawValue))
             options.isTextureActive = true
         }

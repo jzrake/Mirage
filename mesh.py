@@ -139,6 +139,7 @@ def cycle_colors(verts):
     colors = np.zeros_like(verts).reshape(-1, 4)
     for n in range(colors.shape[0]):
         colors[n, n % 3] = 1
+    colors[:,3] = 1.0
     return colors.flatten()
 
 
@@ -150,7 +151,6 @@ def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]
     node.colors = colors(node.vertices) if callable(colors) else colors
     node.type = primitive
     node.position = position
-    # node.texture = (np.random.random(400).reshape(10, 10, 4) * 255).astype(np.uint8)
     return node
 
 
@@ -162,7 +162,7 @@ def textured_quad():
     node.colors = node.vertices
     node.type = 'triangle'
     node.position = [-0.5, -0.5, 0]
-    node.texture = mirage.Image(130, 120)
+    node.texture = mirage.text("Here is some text for you!")
     return node
 
 

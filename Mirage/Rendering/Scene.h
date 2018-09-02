@@ -32,12 +32,9 @@ struct Node
 
     void setType (std::string typeString);
 
-    /** Assign texture data to the node. Shape must be [W, H, 4] with RGBA data on the
-        last axis.
+    /** Assign bitmap texture data to the node.
      */
-    void setTexture (const std::vector<unsigned char>& data, const std::vector<int> shape);
-
-    void setTexture (NSBitmapImageRep* image);
+    void setImageTexture (NSBitmapImageRep* image);
 
     /** Return the number of vertices in this node.
      */
@@ -58,20 +55,13 @@ struct Node
      */
     id<MTLBuffer> colorBuffer (id<MTLDevice> device) const;
 
-    /** Returns a buffer of texture data, if there is any.
-     */
-    id<MTLTexture> makeTexture (id<MTLDevice> device) const;
-
     // ========================================================================
     MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
     
     std::vector<float> vertices;
     std::vector<float> colors;
-    NSBitmapImageRep* image;
-    //std::vector<unsigned char> texture;
-    //int textureW = 0;
-    //int textureH = 0;
-    
+    NSBitmapImageRep* imageTexture;
+
     float x = 0.f;
     float y = 0.f;
     float z = 0.f;
@@ -112,11 +102,7 @@ struct Scene;
 + (float) nodePositionZ: (struct Node*) node;
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
-+ (id<MTLTexture>) nodeTexture: (struct Node*) node forDevice: (id<MTLDevice>) device;
-+ (NSInteger) nodeTextureW: (struct Node*) node;
-+ (NSInteger) nodeTextureH: (struct Node*) node;
-+ (bool) nodeHasTexture: (struct Node*) node;
-+ (NSBitmapImageRep*) nodeTextureImage: (struct Node*) node;
++ (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node;
 + (size_t) nodeNumVertices: (struct Node*) node;
 + (MTLPrimitiveType) nodeType: (struct Node*) node;
 + (NSString*) nodeValidate: (struct Node*) node;

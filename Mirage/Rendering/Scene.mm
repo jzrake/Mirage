@@ -8,9 +8,6 @@
 // ============================================================================
 Node::Node()
 {
-//    textureW = 1;
-//    textureH = 1;
-//    texture.resize(4, 0);
 }
 
 size_t Node::numVertices() const
@@ -65,25 +62,6 @@ id<MTLBuffer> Node::colorBuffer(id<MTLDevice> device) const
                               options:MTLResourceStorageModeShared];
 }
 
-id<MTLTexture> Node::makeTexture(id<MTLDevice> device) const
-{
-//    MTLTextureDescriptor* d = [[MTLTextureDescriptor alloc] init];
-//    [d setUsage:MTLTextureUsageShaderRead];
-//    [d setWidth:textureW];
-//    [d setHeight:textureH];
-//    [d setPixelFormat:MTLPixelFormatRGBA8Unorm];
-//    MTLRegion region;
-//    region.origin.x = 0;
-//    region.origin.y = 0;
-//    region.origin.z = 0;
-//    region.size.width = textureW;
-//    region.size.height = textureH;
-//    region.size.depth = 1;
-//    id<MTLTexture> t = [device newTextureWithDescriptor:d];
-//    [t replaceRegion:region mipmapLevel:0 withBytes:texture.data() bytesPerRow:textureW * 4];
-    return nil;
-}
-
 std::array<float, 3> Node::getPosition() const
 {
     return { x, y, z };
@@ -119,24 +97,9 @@ void Node::setType(std::string typeString)
     else throw std::invalid_argument ("Node: invalid primitive type string '" + typeString + "'");
 }
 
-void Node::setTexture(const std::vector<unsigned char> &data, const std::vector<int> shape)
+void Node::setImageTexture(NSBitmapImageRep* image)
 {
-//    if (shape.size() != 3 || shape[2] != 4)
-//    {
-//        throw std::invalid_argument("node.texture data must have shape [H, W, 4]");
-//    }
-//    if (shape[0] <= 1 || shape[1] <= 1)
-//    {
-//        throw std::invalid_argument("node.texture must have width and height greater than 1");
-//    }
-//    texture = data;
-//    textureW = shape[1];
-//    textureH = shape[0];
-}
-
-void Node::setTexture(NSBitmapImageRep* imageToUse)
-{
-    image = imageToUse;
+    imageTexture = image;
 }
 
 
@@ -165,14 +128,7 @@ Scene::Scene(std::string name) : name(name)
 + (float) nodePositionZ: (struct Node*) node { return node->z; }
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->vertexBuffer (device); }
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->colorBuffer (device); }
-+ (id<MTLTexture>) nodeTexture: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->makeTexture (device); }
-//+ (int) nodeTextureW: (struct Node*) node { return node->textureW; }
-//+ (int) nodeTextureH: (struct Node*) node { return node->textureH; }
-//+ (bool) nodeHasTexture: (struct Node*) node { return node->textureW > 1 && node->textureH > 1; }
-+ (NSInteger) nodeTextureW: (struct Node*) node { return node->image.pixelsWide; }
-+ (NSInteger) nodeTextureH: (struct Node*) node { return node->image.pixelsHigh; }
-+ (bool) nodeHasTexture: (struct Node*) node { return node->image != nil; }
-+ (NSBitmapImageRep*) nodeTextureImage: (struct Node*) node { return node->image; }
++ (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node { return node->imageTexture; }
 + (size_t) nodeNumVertices: (struct Node*) node { return node->numVertices(); }
 + (MTLPrimitiveType) nodeType: (struct Node*) node { return node->type; }
 + (NSString*) nodeValidate: (struct Node*) node { return [[NSString alloc] initWithUTF8String:node->validate().data()]; }
