@@ -144,6 +144,14 @@ def cycle_colors(verts):
 
 
 
+def texture_coordinate_colors(verts):
+    """
+    Return an array the same shape as verts, which
+    """
+    pass
+
+
+
 def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]):
     import mirage
     node = mirage.Node()
@@ -155,14 +163,32 @@ def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]
 
 
 
-def textured_quad():
+def text_node(text, scale=10):
     import mirage
+
+    text = mirage.text(text)
+    w = text.width
+    h = text.height
+
+    va = [0.0, 0.0 * h / w, 0, 0]
+    vb = [0.0, 1.0 * h / w, 0, 0]
+    vc = [1.0, 1.0 * h / w, 0, 0]
+    vd = [1.0, 0.0 * h / w, 0, 0]
+    ve = [0.5, 0.5 * h / w, 0, 0]
+    ta = [0.0, 0.0, 0, 0]
+    tb = [0.0, 1.0, 0, 0]
+    tc = [1.0, 1.0, 0, 0]
+    td = [1.0, 0.0, 0, 0]
+    te = [0.5, 0.5, 0, 0]
+    verts = [[ve,va,vb],[ve,vb,vc],[ve,vc,vd],[ve,vd,va]]
+    texts = [[te,ta,tb],[te,tb,tc],[te,tc,td],[te,td,ta]]
+
     node = mirage.Node()
-    node.vertices = tovert4(triangulate(lift(lattice([0, 1], [0, 1]))))
-    node.colors = node.vertices
+    node.vertices = np.array(verts).flatten() * scale
+    node.colors = np.array(texts).flatten()
     node.type = 'triangle'
-    node.position = [-0.5, -0.5, 0]
-    node.texture = mirage.text("Here is some text for you!")
+    node.position = [-ve[0] * scale, -ve[1] * scale, 0]
+    node.texture = text
     return node
 
 
@@ -224,8 +250,8 @@ def example_sphere():
 
 
 
-def example_textured_quad():
-    return scene("Textured quad", textured_quad())
+def example_text_quad():
+    return scene("Text quad", text_node("Here you go the text for you!"))
 
 
 

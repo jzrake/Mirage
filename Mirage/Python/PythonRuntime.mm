@@ -16,6 +16,8 @@ class Image
 {
 public:
     Image (NSBitmapImageRep* image) : image (image) {}
+    int getWidth() const { return int(image.pixelsWide); }
+    int getHeight() const { return int(image.pixelsHigh); }
     NSBitmapImageRep* image;
 };
 
@@ -112,7 +114,9 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("name", &Scene::name)
     .def_readwrite("nodes", &Scene::nodes);
 
-    py::class_<Image>(m, "Image");
+    py::class_<Image>(m, "Image")
+    .def_property_readonly("width", &Image::getWidth)
+    .def_property_readonly("height", &Image::getHeight);
 
     m.def("log", [] (py::object obj)
     {
@@ -127,12 +131,22 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 
     m.def("text", [] (std::string str)
     {
+        NSFont* font = [NSFont fontWithName:@"Monaco" size:72];
+        NSMutableParagraphStyle* paragraph = [[NSMutableParagraphStyle alloc] init];
+        paragraph.lineBreakMode = NSLineBreakByClipping;
+
+        NSAttributedString* A = [[NSAttributedString alloc]
+                                 initWithString:[[NSString alloc] initWithUTF8String:str.data()]
+                                 attributes:@{NSFontAttributeName: font,
+                                              NSParagraphStyleAttributeName: paragraph}];
+
         NSTextField* L = [[NSTextField alloc] init];
-        L.stringValue = [[NSString alloc] initWithUTF8String:str.data()];
+        L.attributedStringValue = A;
         L.bezeled         = NO;
         L.editable        = NO;
         L.drawsBackground = NO;
-        L.frame = NSMakeRect(0, 0, 100, 100);
+        L.frame = NSMakeRect(0, 0, A.size.width, A.size.height);
+
         NSBitmapImageRep* image = [L bitmapImageRepForCachingDisplayInRect:L.bounds];
         [L cacheDisplayInRect:L.bounds toBitmapImageRep:image];
         return Image (image);
