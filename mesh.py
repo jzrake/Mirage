@@ -2,13 +2,12 @@ import numpy as np
 
 
 
-def lattice(u, v):
+def lattice(u, v, dtype=np.float32):
     """
     Return an array of lattice points in 2D space, with shape (Nu, Nv, 2),
     from two 1D arrays of u and v coordinates.
     """
-    assert(u.dtype == v.dtype)
-    L = np.zeros((len(u), len(v), 2), dtype=u.dtype)
+    L = np.zeros((len(u), len(v), 2), dtype=dtype)
     for i in range(len(u)): L[i,:,1] = v
     for j in range(len(v)): L[:,j,0] = u
     return L
@@ -36,6 +35,17 @@ def lift(L, f=None):
             M[:,:,1] = L[:,:,1]
             M[:,:,2] = F
     return M
+
+
+
+def reach(path, point):
+    """
+    Return a sequence of triangles, each having the given 3D point as a vertex,
+    and whose bases are the N - 1 segments in the given 3D path.
+    """
+    nseg = path.shape[0] - 1
+    T = np.array([path[:-1], path[1:], np.repeat([point], nseg, axis=0)]).swapaxes(0,1)
+    return T
 
 
 
@@ -74,17 +84,6 @@ def triangulate(M):
     d = M[+1:,:-1]
     e = 0.25 * (a + b + c + d)
     return np.array([[e,a,b],[e,b,c],[e,c,d],[e,d,a]]).transpose(2,3,0,1,4).reshape(-1,4,3,3)
-
-
-
-def reach(path, point):
-    """
-    Return a sequence of triangles, each having the given 3D point as a vertex,
-    and whose bases are the N - 1 segments in the given 3D path.
-    """
-    nseg = path.shape[0] - 1
-    T = np.array([path[:-1], path[1:], np.repeat([point], nseg, axis=0)]).swapaxes(0,1)
-    return T
 
 
 
@@ -156,6 +155,18 @@ def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]
 
 
 
+def textured_quad():
+    import mirage
+    node = mirage.Node()
+    node.vertices = tovert4(triangulate(lift(lattice([0, 1], [0, 1]))))
+    node.colors = node.vertices
+    node.type = 'triangle'
+    node.position = [-0.5, -0.5, 0]
+    node.texture = mirage.Image(130, 120)
+    return node
+
+
+
 def scene(name="Scene", *nodes):
     import mirage
     s = mirage.Scene()
@@ -213,6 +224,11 @@ def example_sphere():
 
 
 
+def example_textured_quad():
+    return scene("Textured quad", textured_quad())
+
+
+
 def example_helix():
     t = np.linspace(-8 * np.pi, 8 * np.pi, 300)
     path1 = np.array([np.cos(t), np.sin(t), t * 0.1]).T
@@ -232,7 +248,8 @@ def run_mirage():
         example_cone(),
         example_cylinder(),
         example_helix(),
-        example_sphere()])
+        example_sphere(),
+        example_textured_quad()])
 
 
 
@@ -257,7 +274,10 @@ def test():
     assert(lines.shape == ((len(x) - 1) * len(y) + len(x) * (len(y) - 1), 2, 3))
 
     triangles = triangulate(M)
-    assert(triangles.shape == (224, 3, 3))
+    assert(triangles.shape == (56, 4, 3, 3))
+
+    import mirage
+    mirage.log(np.array(mirage.Image(), copy=False).shape)
 
 
 

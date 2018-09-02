@@ -9,6 +9,39 @@ namespace py = pybind11;
 
 
 
+// ============================================================================
+#import <Cocoa/Cocoa.h>
+
+class Image
+{
+public:
+    Image(int w, int h)
+    {
+        NSTextField* L = [[NSTextField alloc] init];
+        L.stringValue = @"Hello!";
+        L.frame = NSMakeRect(0, 0, w, h);
+        image = [L bitmapImageRepForCachingDisplayInRect:L.bounds];
+        [L cacheDisplayInRect:L.bounds toBitmapImageRep:image];
+    }
+    const void* data() const
+    {
+        return image.bitmapData;
+    }
+    int width() const
+    {
+        return int(image.pixelsWide);
+    }
+    int height() const
+    {
+        return int(image.pixelsHigh);
+    }
+
+    NSBitmapImageRep* image;
+};
+
+
+
+
 static std::vector<Scene> pythonScenes;
 
 
@@ -91,11 +124,15 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("z", &Node::z)
     .def_property("position", nullptr, &Node::setPosition)
     .def_property("type", &Node::getType, &Node::setType)
-    .def_property("texture", nullptr, [] (Node& node, texture_t data)
+//    .def_property("texture", nullptr, [] (Node& node, texture_t data)
+//    {
+//        auto buffer = std::vector<unsigned char> (data.data(0), data.data(0) + data.size());
+//        auto shape = std::vector<int> (data.shape(), data.shape() + data.ndim());
+//        node.setTexture (buffer, shape);
+//    })
+    .def_property("texture", nullptr, [] (Node& node, const Image& image)
     {
-        auto buffer = std::vector<unsigned char> (data.data(0), data.data(0) + data.size());
-        auto shape = std::vector<int> (data.shape(), data.shape() + data.ndim());
-        node.setTexture (buffer, shape);
+        node.setTexture (image.image);
     });
 
     py::class_<Scene>(m, "Scene")
@@ -104,14 +141,40 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("name", &Scene::name)
     .def_readwrite("nodes", &Scene::nodes);
 
-    m.def("log", [] (std::string message)
+    py::class_<Image>(m, "Image")
+    .def(py::init<int, int>());
+
+//    py::class_<Image>(m, "Image", py::buffer_protocol())
+//    .def(py::init<int, int>())
+//    .def_buffer([] (const Image& image)
+//    {
+//        auto W = image.width();
+//        auto H = image.height();
+//        auto data = const_cast<void*>(image.data());
+//
+//        return py::buffer_info(data,
+//                               1,
+//                               py::format_descriptor<uint8>::format(),
+//                               3,
+//                               { H, W, 4 },
+//                               { W * 4, 4, 1 });
+//    });
+
+    m.def("log", [] (py::object obj)
     {
-        [PythonRuntime postMessageToConsole:message];
+        [PythonRuntime postMessageToConsole:py::str(obj)];
     });
 
     m.def("show", [] (const std::vector<Scene>& scenes)
     {
         pythonScenes = scenes;
         [PythonRuntime postSceneListUpdated];
+    });
+
+    m.def("text", [] ()
+    {
+        //auto i = py::buffer_info();
+        //auto b = py::buffer(i);
+        //return py::array_t<uint8>();
     });
 }

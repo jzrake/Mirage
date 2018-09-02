@@ -1,5 +1,6 @@
 import Cocoa
 import Metal
+import MetalKit
 import GLKit
 
 
@@ -198,10 +199,27 @@ class MetalView: NSView
         encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
 
         var options = FragmentOptions()
-        let tex2d = SceneAPI.nodeTexture (node, for: self.device)
-        options.isTextureActive = SceneAPI.nodeHasTexture(node)
+        let imageTexture = SceneAPI.nodeTextureImage(node)
 
-        encoder.setFragmentTexture(tex2d, index: Int(FragmentInputTexture2D.rawValue))
+        if (imageTexture == nil)
+        {
+            let d = MTLTextureDescriptor()
+            d.usage = MTLTextureUsage.shaderRead
+            d.width = 1
+            d.height = 1
+            d.pixelFormat = MTLPixelFormat.rgba8Unorm
+            let t = device.makeTexture(descriptor: d)
+
+            encoder.setFragmentTexture(t, index: Int(FragmentInputTexture2D.rawValue))
+            options.isTextureActive = false
+        }
+        else
+        {
+            let loader = MTKTextureLoader(device: device)
+            let t = try! loader.newTexture(cgImage: imageTexture!.cgImage!, options: [:])
+            encoder.setFragmentTexture(t, index: Int(FragmentInputTexture2D.rawValue))
+            options.isTextureActive = true
+        }
         encoder.setFragmentBytes(&options, length: MemoryLayout<FragmentOptions>.size, index: Int(FragmentInputOptions.rawValue))
         encoder.drawPrimitives(type: SceneAPI.nodeType(node), vertexStart: 0, vertexCount: SceneAPI.nodeNumVertices(node))
     }

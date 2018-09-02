@@ -3,6 +3,7 @@
 
 
 
+#include <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus
 #include <Metal/Metal.h>
@@ -36,6 +37,8 @@ struct Node
      */
     void setTexture (const std::vector<unsigned char>& data, const std::vector<int> shape);
 
+    void setTexture (NSBitmapImageRep* image);
+
     /** Return the number of vertices in this node.
      */
     size_t numVertices() const;
@@ -59,16 +62,15 @@ struct Node
      */
     id<MTLTexture> makeTexture (id<MTLDevice> device) const;
 
-
     // ========================================================================
     MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
     
     std::vector<float> vertices;
     std::vector<float> colors;
-    std::vector<unsigned char> texture;
-    
-    int textureW = 0;
-    int textureH = 0;
+    NSBitmapImageRep* image;
+    //std::vector<unsigned char> texture;
+    //int textureW = 0;
+    //int textureH = 0;
     
     float x = 0.f;
     float y = 0.f;
@@ -111,9 +113,10 @@ struct Scene;
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLTexture>) nodeTexture: (struct Node*) node forDevice: (id<MTLDevice>) device;
-+ (int) nodeTextureW: (struct Node*) node;
-+ (int) nodeTextureH: (struct Node*) node;
++ (NSInteger) nodeTextureW: (struct Node*) node;
++ (NSInteger) nodeTextureH: (struct Node*) node;
 + (bool) nodeHasTexture: (struct Node*) node;
++ (NSBitmapImageRep*) nodeTextureImage: (struct Node*) node;
 + (size_t) nodeNumVertices: (struct Node*) node;
 + (MTLPrimitiveType) nodeType: (struct Node*) node;
 + (NSString*) nodeValidate: (struct Node*) node;

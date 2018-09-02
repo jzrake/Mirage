@@ -189,3 +189,16 @@ class ConsoleViewController: NSViewController
         consoleOutput.scrollToEndOfDocument(self)
     }
 }
+
+
+
+// Notes on caching NSView to an image:
+//
+//let L = NSTextField()
+//L.stringValue = "Hello!"
+//L.frame = NSRect(x: 0, y: 0, width: 100, height: 100)
+//
+//let bm = L.bitmapImageRepForCachingDisplay(in: L.bounds)!
+//L.cacheDisplay(in: L.bounds, to: bm)
+//let da = bm.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [:])!
+//try! da.write(to: URL(fileURLWithPath: "/Users/jzrake/Desktop/test.jpeg"))
