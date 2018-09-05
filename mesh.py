@@ -275,7 +275,7 @@ def run_mirage():
         example_cylinder(),
         example_helix(),
         example_sphere(),
-        example_textured_quad()])
+        example_text_quad()])
 
 
 

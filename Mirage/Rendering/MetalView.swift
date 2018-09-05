@@ -137,6 +137,19 @@ class MetalView: NSView
         return d;
     }
 
+    private func dummyTextureDescriptor() -> MTLTextureDescriptor
+    {
+        let d = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm,
+                                                         width: 1,
+                                                         height: 1,
+                                                         mipmapped: false)
+        d.sampleCount     = 1
+        d.textureType     = MTLTextureType.type2D
+        d.resourceOptions = MTLResourceOptions.storageModePrivate
+        d.usage           = MTLTextureUsage.shaderRead
+        return d;
+    }
+
     private func renderPassDescriptor(preparedFor drawable: CAMetalDrawable) -> MTLRenderPassDescriptor
     {
         let d = MTLRenderPassDescriptor()
@@ -167,7 +180,7 @@ class MetalView: NSView
 
         if (scene != nil)
         {
-            for i in 0...SceneAPI.numNodes(scene) - 1
+            for i in 0..<SceneAPI.numNodes(scene)
             {
                 render(node: SceneAPI.node(scene, at: i), with: renderEncoder!)
             }
@@ -186,7 +199,7 @@ class MetalView: NSView
             print(message)
             return
         }
-    
+
         let W = Float(self.frame.size.width)
         let H = Float(self.frame.size.height)
         let x = SceneAPI.nodePositionX(node)
@@ -194,7 +207,7 @@ class MetalView: NSView
         let z = SceneAPI.nodePositionZ(node)
 
         var model = GLKMatrix4MakeTranslation(x, y, z)
-        var view  = GLKMatrix4Rotate(GLKMatrix4Rotate (GLKMatrix4MakeTranslation (0, 0, -zcamera), xrotation, 0, 1, 0), yrotation, 1, 0, 0)
+        var view  = GLKMatrix4Rotate(GLKMatrix4Rotate(GLKMatrix4MakeTranslation(0, 0, -zcamera), xrotation, 0, 1, 0), yrotation, 1, 0, 0)
         var proj  = GLKMatrix4MakePerspective(1.0, W / H, 0.1, 1024.0)
 
         let vbuf = SceneAPI.nodeVertices (node, for: self.device)
@@ -206,21 +219,14 @@ class MetalView: NSView
         encoder.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
         encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
 
-        var options = FragmentOptions()
-        let imageTexture = SceneAPI.nodeImageTexture(node)
+        let L = MTKTextureLoader(device: device)
+        let I = SceneAPI.nodeImageTexture(node)
+        let T = I != nil ? try! L.newTexture(cgImage: I!.cgImage!) : device.makeTexture(descriptor: self.dummyTextureDescriptor())!
 
-        if (imageTexture == nil)
-        {
-            options.isTextureActive = false
-        }
-        else
-        {
-            let loader = MTKTextureLoader(device: device)
-            let t = try! loader.newTexture(cgImage: imageTexture!.cgImage!,
-                                           options: [MTKTextureLoader.Option.SRGB: false])
-            encoder.setFragmentTexture(t, index: Int(FragmentInputTexture2D.rawValue))
-            options.isTextureActive = true
-        }
+        var options = FragmentOptions()
+        options.isTextureActive = I != nil
+
+        encoder.setFragmentTexture(T, index: Int(FragmentInputTexture2D.rawValue))
         encoder.setFragmentBytes(&options, length: MemoryLayout<FragmentOptions>.size, index: Int(FragmentInputOptions.rawValue))
         encoder.drawPrimitives(type: SceneAPI.nodeType(node), vertexStart: 0, vertexCount: SceneAPI.nodeNumVertices(node))
     }
