@@ -128,9 +128,9 @@ def height_colors(verts):
 
 
 
-def solid_colors(verts):
+def solid_colors(verts, rgba=[0,0,0,1]):
     colors = np.zeros_like(verts).reshape(-1, 4)
-    colors[:,3] = 1.0
+    colors[...] = rgba
     return colors.flatten()
 
 
@@ -266,6 +266,28 @@ def example_helix():
 
 
 
+def example_plot_axes():
+    path1 = circle(10) * 0.5 + [0, 0, 10]
+    path2 = circle(10) * 0.5
+    verts = triangulate(bridge(path1, path2))
+    cyl = node(verts, cycle_colors)
+
+    r = lambda v: solid_colors(v, [1,0,0,1])
+    g = lambda v: solid_colors(v, [0,1,0,1])
+    b = lambda v: solid_colors(v, [0,0,1,1])
+
+    xaxis = node(verts, r)
+    yaxis = node(verts, g)
+    zaxis = node(verts, b)
+
+    xaxis.rotation = [1, 0, 0, np.pi / 2]
+    yaxis.rotation = [0, 1, 0, np.pi / 2]
+    zaxis.rotation = [0, 0, 1, np.pi / 2]
+
+    return scene("Plot axes", xaxis, yaxis, zaxis)
+
+
+
 def run_mirage():
     import mirage
     mirage.show([
@@ -275,7 +297,8 @@ def run_mirage():
         example_cylinder(),
         example_helix(),
         example_sphere(),
-        example_text_quad()])
+        example_text_quad(),
+        example_plot_axes()])
 
 
 

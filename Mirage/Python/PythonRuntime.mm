@@ -116,6 +116,7 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def_readwrite("y", &Node::y)
     .def_readwrite("z", &Node::z)
     .def_property("position", nullptr, &Node::setPosition)
+    .def_property("rotation", nullptr, &Node::setRotation)
     .def_property("type", &Node::getType, &Node::setType)
     .def_property("texture", nullptr, [] (Node& node, const Image& image) { node.setImageTexture (image.image); });
 

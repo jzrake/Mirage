@@ -62,16 +62,19 @@ id<MTLBuffer> Node::colorBuffer(id<MTLDevice> device) const
                               options:MTLResourceStorageModeShared];
 }
 
-std::array<float, 3> Node::getPosition() const
-{
-    return { x, y, z };
-}
-
 void Node::setPosition(std::array<float, 3> position)
 {
     x = position[0];
     y = position[1];
     z = position[2];
+}
+
+void Node::setRotation(std::array<float, 4> rotation)
+{
+    ex = rotation[0];
+    ey = rotation[1];
+    ez = rotation[2];
+    et = rotation[3];
 }
 
 std::string Node::getType() const
@@ -126,6 +129,10 @@ Scene::Scene(std::string name) : name(name)
 + (float) nodePositionX: (struct Node*) node { return node->x; }
 + (float) nodePositionY: (struct Node*) node { return node->y; }
 + (float) nodePositionZ: (struct Node*) node { return node->z; }
++ (float) nodeRotationVectorX: (struct Node*) node { return node->ex; }
++ (float) nodeRotationVectorY: (struct Node*) node { return node->ey; }
++ (float) nodeRotationVectorZ: (struct Node*) node { return node->ez; }
++ (float) nodeRotationVectorT: (struct Node*) node { return node->et; }
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->vertexBuffer (device); }
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->colorBuffer (device); }
 + (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node { return node->imageTexture; }

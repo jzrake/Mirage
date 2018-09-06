@@ -24,9 +24,10 @@ struct Node
      */
     std::string validate() const;
 
-    std::array<float, 3> getPosition() const;
+    // std::array<float, 3> getPosition() const;
 
     void setPosition (std::array<float, 3> position);
+    void setRotation (std::array<float, 4> rotation);
 
     std::string getType() const;
 
@@ -65,6 +66,11 @@ struct Node
     float x = 0.f;
     float y = 0.f;
     float z = 0.f;
+
+    float ex = 0.f;
+    float ey = 0.f;
+    float ez = 1.f;
+    float et = 0.f;
 };
 
 
@@ -100,6 +106,10 @@ struct Scene;
 + (float) nodePositionX: (struct Node*) node;
 + (float) nodePositionY: (struct Node*) node;
 + (float) nodePositionZ: (struct Node*) node;
++ (float) nodeRotationVectorX: (struct Node*) node;
++ (float) nodeRotationVectorY: (struct Node*) node;
++ (float) nodeRotationVectorZ: (struct Node*) node;
++ (float) nodeRotationVectorT: (struct Node*) node;
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node;
