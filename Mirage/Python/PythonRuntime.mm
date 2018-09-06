@@ -1,5 +1,7 @@
+#include <locale>
+#include <codecvt>
+#include <string>
 #import "PythonRuntime.h"
-#import "Python.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/stl.h"
@@ -34,6 +36,15 @@ static std::vector<Scene> pythonScenes;
 
 + (void) initializeInterpreter
 {
+    NSURL* python37 = [[NSBundle mainBundle] URLForResource:@"python37" withExtension:nil];
+    NSURL* dynload = [python37 URLByAppendingPathComponent:@"lib-dynload"];
+    NSURL* zipfile = [python37 URLByAppendingPathComponent:@"python37.zip"];
+    NSString* pythonPath = [@[dynload.path, zipfile.path] componentsJoinedByString:@":"];
+
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring pythonPathWide = converter.from_bytes(pythonPath.UTF8String);
+
+    Py_SetPath(pythonPathWide.data());
     py::initialize_interpreter();
 }
 
