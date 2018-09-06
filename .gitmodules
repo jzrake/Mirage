@@ -1,0 +1,6 @@
+[submodule "3rdParty/python37"]
+	path = 3rdParty/python37
+	url = https://github.com/jzrake/embed-python-macos.git
+[submodule "3rdParty/pybind11"]
+	path = 3rdParty/pybind11
+	url = https://github.com/pybind/pybind11.git
