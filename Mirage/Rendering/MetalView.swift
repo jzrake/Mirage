@@ -223,24 +223,28 @@ class MetalView: NSView
         var view  = float4x4.makeTranslation(0, 0, -zcamera) * camera.rotation
         var proj  = float4x4.makePerspective(fovyRadians: 1.0, W / H, 1e-1, 1e3)
 
-        let vbuf = SceneAPI.nodeVertices (node, for: self.device)
-        let cbuf = SceneAPI.nodeColors (node, for: self.device)
-
-        encoder.setVertexBuffer(vbuf, offset: 0, index: Int(VertexInputVertices.rawValue))
-        encoder.setVertexBuffer(cbuf, offset: 0, index: Int(VertexInputColors.rawValue))
-        encoder.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputModelMatrix.rawValue))
-        encoder.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputViewMatrix.rawValue))
-        encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size, index: Int(VertexInputProjMatrix.rawValue))
+        let vbuf = SceneAPI.nodeVertices(node, for: self.device)
+        let cbuf = SceneAPI.nodeColors  (node, for: self.device)
+        let nbuf = SceneAPI.nodeNormals (node, for: self.device)
 
         let L = MTKTextureLoader(device: device)
         let I = SceneAPI.nodeImageTexture(node)
         let T = I != nil ? try! L.newTexture(cgImage: I!.cgImage!) : device.makeTexture(descriptor: self.dummyTextureDescriptor())!
 
-        var options = FragmentOptions()
+        var options = ShaderOptions()
         options.isTextureActive = I != nil
+        options.hasNormals = SceneAPI.nodeHasNormals(node)
+
+        encoder.setVertexBuffer(vbuf, offset: 0, index: Int(VertexInputVertices.rawValue))
+        encoder.setVertexBuffer(cbuf, offset: 0, index: Int(VertexInputColors.rawValue))
+        encoder.setVertexBuffer(nbuf, offset: 0, index: Int(VertexInputNormals.rawValue))
+        encoder.setVertexBytes(&model,     length: MemoryLayout<GLKMatrix4>.size,    index: Int(VertexInputModelMatrix.rawValue))
+        encoder.setVertexBytes(&view,      length: MemoryLayout<GLKMatrix4>.size,    index: Int(VertexInputViewMatrix.rawValue))
+        encoder.setVertexBytes(&proj,      length: MemoryLayout<GLKMatrix4>.size,    index: Int(VertexInputProjMatrix.rawValue))
+        encoder.setVertexBytes(&options,   length: MemoryLayout<ShaderOptions>.size, index: Int(VertexInputOptions.rawValue))
 
         encoder.setFragmentTexture(T, index: Int(FragmentInputTexture2D.rawValue))
-        encoder.setFragmentBytes(&options, length: MemoryLayout<FragmentOptions>.size, index: Int(FragmentInputOptions.rawValue))
+        encoder.setFragmentBytes(&options, length: MemoryLayout<ShaderOptions>.size, index: Int(FragmentInputOptions.rawValue))
         encoder.drawPrimitives(type: SceneAPI.nodeType(node), vertexStart: 0, vertexCount: SceneAPI.nodeNumVertices(node))
     }
 

@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include <Cocoa/Cocoa.h>
 #include <Metal/Metal.h>
+#include <simd/simd.h>
 
 
 
@@ -50,21 +51,50 @@ size_t Node::numPrimitives() const
 
 std::vector<float> Node::computeNormals() const
 {
-    return {};
+    if (type != MTLPrimitiveTypeTriangle)
+        return {0, 0, 0, 0}; // return a single number so the buffer is not empty
+
+    std::vector<float> normals(vertices.size());
+
+    for (size_t n = 0; n < vertices.size(); n += 12)
+    {
+        auto a = simd_make_float3(vertices[n + 0], vertices[n + 1], vertices[n + 2]);
+        auto b = simd_make_float3(vertices[n + 4], vertices[n + 5], vertices[n + 6]);
+        auto c = simd_make_float3(vertices[n + 8], vertices[n + 9], vertices[n + 10]);
+        auto N = simd_cross(b - a, c - b);
+        normals[n + 0] = normals[n + 4] = normals[n + 8]  = N.x;
+        normals[n + 1] = normals[n + 5] = normals[n + 9]  = N.y;
+        normals[n + 2] = normals[n + 6] = normals[n + 10] = N.z;
+        normals[n + 3] = normals[n + 7] = normals[n + 11] = 0.f;
+    }
+    return normals;
 }
 
 id<MTLBuffer> Node::vertexBuffer(id<MTLDevice> device) const
 {
     return [device newBufferWithBytes:&vertices[0]
-                               length:vertices.size() * sizeof (float)
+                               length:vertices.size() * sizeof(float)
                               options:MTLResourceStorageModeShared];
 }
 
 id<MTLBuffer> Node::colorBuffer(id<MTLDevice> device) const
 {
     return [device newBufferWithBytes:&colors[0]
-                               length:colors.size() * sizeof (float)
+                               length:colors.size() * sizeof(float)
                               options:MTLResourceStorageModeShared];
+}
+
+id<MTLBuffer> Node::normalsBuffer(id<MTLDevice> device) const
+{
+    auto normals = computeNormals();
+    return [device newBufferWithBytes:&normals[0]
+                               length:normals.size() * sizeof(float)
+                              options:MTLResourceStorageModeShared];
+}
+
+bool Node::hasNormals() const
+{
+    return type == MTLPrimitiveTypeTriangle;
 }
 
 void Node::setPosition(std::array<float, 3> position)
@@ -140,6 +170,8 @@ Scene::Scene(std::string name) : name(name)
 + (float) nodeRotationVectorT: (struct Node*) node { return node->et; }
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->vertexBuffer (device); }
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->colorBuffer (device); }
++ (id<MTLBuffer>) nodeNormals: (struct Node*) node forDevice: (id<MTLDevice>) device { return node->normalsBuffer (device); }
++ (bool) nodeHasNormals:(struct Node *) node { return node->hasNormals(); }
 + (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node { return node->imageTexture; }
 + (size_t) nodeNumVertices: (struct Node*) node { return node->numVertices(); }
 + (MTLPrimitiveType) nodeType: (struct Node*) node { return node->type; }

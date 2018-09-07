@@ -60,6 +60,16 @@ struct Node
      */
     id<MTLBuffer> colorBuffer (id<MTLDevice> device) const;
 
+    /** Return a buffer of normal vector data, containing the result of computeNormals.
+        If no normals are available, this returns a buffer that may be bound to a shader,
+        but which should be used or accessed.
+     */
+    id<MTLBuffer> normalsBuffer (id<MTLDevice> device) const;
+
+    /** Return true if the buffer returned by normalsBuffer may be used and accessed.
+     */
+    bool hasNormals() const;
+
     // ========================================================================
     MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
     
@@ -116,6 +126,8 @@ struct Scene;
 + (float) nodeRotationVectorT: (struct Node*) node;
 + (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
 + (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (id<MTLBuffer>) nodeNormals: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (bool) nodeHasNormals: (struct Node*) node;
 + (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node;
 + (size_t) nodeNumVertices: (struct Node*) node;
 + (MTLPrimitiveType) nodeType: (struct Node*) node;

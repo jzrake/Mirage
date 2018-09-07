@@ -119,6 +119,14 @@ def tovert4(M):
 
 
 
+def to_spherical(q, p):
+    x = np.sin(q) * np.cos(p)
+    y = np.sin(q) * np.sin(p)
+    z = np.cos(q)
+    return np.array([x, y, z]).T
+
+
+
 def height_colors(verts):
     verts = np.array(verts).reshape(-1, 4)
     colors = np.zeros([verts.shape[0], 4], dtype=np.float32)
@@ -238,15 +246,7 @@ def example_cylinder():
 def example_sphere():
     q = np.linspace(0, 1 * np.pi, 20)
     p = np.linspace(0, 2 * np.pi, 20)
-
-    def to_spherical(q, p):
-        x = np.sin(q) * np.cos(p)
-        y = np.sin(q) * np.sin(p)
-        z = np.cos(q)
-        return np.array([x, y, z]).T
-
     verts = triangulate(lift(lattice(q, p), to_spherical))
-
     n = node(verts, cycle_colors)
     return scene("Sphere", n)
 
@@ -269,26 +269,32 @@ def example_helix():
 
 
 def example_plot_axes():
-    path1 = circle(10) * 0.5 + [0, 0, 10]
-    path2 = circle(10) * 0.5
+    path1 = circle(90) * 0.25 + [0, 0, 10]
+    path2 = circle(90) * 0.25
     verts = triangulate(bridge(path1, path2))
     cyl = node(verts, cycle_colors)
+
+    q = np.linspace(0, 1 * np.pi, 30)
+    p = np.linspace(0, 2 * np.pi, 30)
+    sphere_verts = triangulate(lift(lattice(q, p), to_spherical))
 
     r = lambda v: solid_colors(v, [1,0,0,1])
     g = lambda v: solid_colors(v, [0,1,0,1])
     b = lambda v: solid_colors(v, [0,0,1,1])
+    k = lambda v: solid_colors(v, [0.8,0.8,0.8,1])
 
     xaxis = node(verts, r)
     yaxis = node(verts, g)
     zaxis = node(verts, b)
+    origin = node(sphere_verts, k)
 
-    xaxis.x = 1
-    yaxis.y = 1
-    zaxis.z = 1
+    #xaxis.x = 1
+    #yaxis.y = 1
+    #zaxis.z = 1
     xaxis.rotation = [0, 1, 0, np.pi / 2]
     yaxis.rotation = [1, 0, 0,-np.pi / 2]
 
-    return scene("Plot axes", xaxis, yaxis, zaxis, example_sphere().nodes[0])
+    return scene("Plot axes", xaxis, yaxis, zaxis, origin)
 
 
 
@@ -332,5 +338,5 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
-    #run_mirage()
+    #test()
+    run_mirage()

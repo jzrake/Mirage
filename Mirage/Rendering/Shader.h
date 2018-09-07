@@ -6,10 +6,12 @@
 typedef enum VertexInputIndex
 {
     VertexInputVertices          = 0,
-    VertexInputColors            = 1,
+    VertexInputNormals           = 1,
+    VertexInputColors            = 2,
     VertexInputModelMatrix       = 3,
     VertexInputViewMatrix        = 4,
     VertexInputProjMatrix        = 5,
+    VertexInputOptions           = 6,
 } VertexInputIndex;
 
 
@@ -20,9 +22,10 @@ typedef enum FramgentInputIndex
 } FramgentInputIndex;
 
 
-typedef struct FragmentOptions
+typedef struct ShaderOptions
 {
     bool isTextureActive;
-} FragmentOptions;
+    bool hasNormals;
+} ShaderOptions;
 
 #endif /* ShaderTypes_h */
