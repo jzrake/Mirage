@@ -13,6 +13,7 @@
 		C63471E7213452A10061BA36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63471E5213452A10061BA36 /* Main.storyboard */; };
 		C63E01BC21418F00000F3E85 /* Python in Frameworks */ = {isa = PBXBuildFile; fileRef = C63E01BB21418F00000F3E85 /* Python */; };
 		C63E01BE21418F14000F3E85 /* python37 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C63E01BD21418F14000F3E85 /* python37 */; };
+		C63E01C42141E49B000F3E85 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63E01C32141E49B000F3E85 /* Camera.swift */; };
 		C64A51862134E8BE0031941D /* Scene.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64A51842134E8BE0031941D /* Scene.mm */; };
 		C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C654B6A621349EF6009BD4C1 /* MetalView.swift */; };
 		C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C654B6AA2134A0C6009BD4C1 /* Shader.metal */; };
@@ -42,6 +43,7 @@
 		C63471E9213452A10061BA36 /* Mirage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirage.entitlements; sourceTree = "<group>"; };
 		C63E01BB21418F00000F3E85 /* Python */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = Python; path = 3rdParty/python37/python37/Python; sourceTree = "<group>"; };
 		C63E01BD21418F14000F3E85 /* python37 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = python37; path = 3rdParty/python37/python37; sourceTree = "<group>"; };
+		C63E01C32141E49B000F3E85 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		C64A51842134E8BE0031941D /* Scene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Scene.mm; sourceTree = "<group>"; };
 		C64A51852134E8BE0031941D /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		C654B6A621349EF6009BD4C1 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				C654B6A621349EF6009BD4C1 /* MetalView.swift */,
+				C63E01C32141E49B000F3E85 /* Camera.swift */,
 				C64A51842134E8BE0031941D /* Scene.mm */,
 				C64A51852134E8BE0031941D /* Scene.h */,
 				C654B6A92134A0C6009BD4C1 /* Shader.h */,
@@ -205,6 +208,7 @@
 				C63471E2213452A10061BA36 /* ViewController.swift in Sources */,
 				C673062221347F620047DC3E /* PythonRuntime.mm in Sources */,
 				C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */,
+				C63E01C42141E49B000F3E85 /* Camera.swift in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -18,6 +18,8 @@ class MetalView: NSView
     var yrotation:         Float = 0.0
     var zcamera:           Float = 10.0
 
+    var camera = Camera()
+
     override init(frame frameRect: NSRect)
     {
         super.init(frame: frameRect)
@@ -59,6 +61,8 @@ class MetalView: NSView
         let newSize = CGSize(width: self.frame.size.width * 2,
                              height: self.frame.size.height * 2)
 
+        camera.viewport = self.frame.size
+
         if (self.metalLayer.drawableSize != newSize)
         {
             self.metalLayer.drawableSize = newSize
@@ -68,7 +72,6 @@ class MetalView: NSView
 
     override func resize(withOldSuperviewSize oldSize: NSSize)
     {
-        //print("metal view resized", self.frame.size)
         self.updateSize()
     }
 
@@ -81,9 +84,15 @@ class MetalView: NSView
 
     override func mouseDragged(with event: NSEvent)
     {
+        camera.dragAroundAnchor(with: self.convert(event.locationInWindow, from: nil))
         xrotation += Float(event.deltaX) * 0.01
         yrotation += Float(event.deltaY) * 0.01
         self.render()
+    }
+
+    override func mouseDown(with event: NSEvent)
+    {
+        camera.setAnchor(with: self.convert(event.locationInWindow, from: nil))
     }
 
     private func pipelineDescriptor() -> MTLRenderPipelineDescriptor
