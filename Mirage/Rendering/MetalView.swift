@@ -219,7 +219,7 @@ class MetalView: NSView
         let ez = SceneAPI.nodeRotationVectorZ(node)
         let et = SceneAPI.nodeRotationVectorT(node)
 
-        var model = float4x4.makeTranslation(x, y, z) * float4x4.makeRotate(radians: et, ez, ex, ey)
+        var model = float4x4.makeTranslation(x, y, z) * float4x4.makeRotate(radians: et, ex, ey, ez)
         var view  = float4x4.makeTranslation(0, 0, -zcamera) * camera.rotation
         var proj  = float4x4.makePerspective(fovyRadians: 1.0, W / H, 1e-1, 1e3)
 

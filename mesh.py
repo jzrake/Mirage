@@ -280,11 +280,15 @@ def example_plot_axes():
     yaxis = node(verts, g)
     zaxis = node(verts, b)
 
-    xaxis.rotation = [1, 0, 0, np.pi / 2]
-    yaxis.rotation = [0, 1, 0, np.pi / 2]
-    zaxis.rotation = [0, 0, 1, np.pi / 2]
+    xaxis.x = 1
+    yaxis.y = 1
+    zaxis.z = 1
 
-    return scene("Plot axes", xaxis, yaxis, zaxis)
+    xaxis.rotation = [0, 1, 0, np.pi / 2]
+    yaxis.rotation = [1, 0, 0,-np.pi / 2]
+    # zaxis.rotation = [0, 0, 1, np.pi / 2]
+
+    return scene("Plot axes", xaxis, yaxis, zaxis, example_sphere().nodes[0])
 
 
 
