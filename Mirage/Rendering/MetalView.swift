@@ -219,9 +219,9 @@ class MetalView: NSView
         let ez = SceneAPI.nodeRotationVectorZ(node)
         let et = SceneAPI.nodeRotationVectorT(node)
 
-        var model = GLKMatrix4Translate(GLKMatrix4MakeRotation(et, ex, ey, ez), x, y, z)
-        var view  = GLKMatrix4RotateX(GLKMatrix4RotateY(GLKMatrix4MakeTranslation(0, 0, -zcamera), xrotation), yrotation)
-        var proj  = GLKMatrix4MakePerspective(1.0, W / H, 0.1, 1024.0)
+        var model = float4x4.makeTranslation(x, y, z) * float4x4.makeRotate(radians: et, ez, ex, ey)
+        var view  = float4x4.makeTranslation(0, 0, -zcamera) * camera.rotation
+        var proj  = float4x4.makePerspective(fovyRadians: 1.0, W / H, 1e-1, 1e3)
 
         let vbuf = SceneAPI.nodeVertices (node, for: self.device)
         let cbuf = SceneAPI.nodeColors (node, for: self.device)

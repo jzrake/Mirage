@@ -44,6 +44,7 @@ static std::vector<Scene> pythonScenes;
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::wstring pythonPathWide = converter.from_bytes(pythonPath.UTF8String);
 
+    Py_SetPythonHome(L"");
     Py_SetPath(pythonPathWide.data());
     py::initialize_interpreter();
 }
