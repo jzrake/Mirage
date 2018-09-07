@@ -14,10 +14,7 @@ class MetalView: NSView
     var depthStencilState: MTLDepthStencilState!
     var commandQueue:      MTLCommandQueue!
     var metalLayer:        CAMetalLayer!
-    var xrotation:         Float = 0.0
-    var yrotation:         Float = 0.0
     var zcamera:           Float = 10.0
-
     var camera = Camera()
 
     override init(frame frameRect: NSRect)
@@ -40,6 +37,7 @@ class MetalView: NSView
         self.metalLayer = CAMetalLayer()
         self.metalLayer.device = self.device
         self.layer = metalLayer
+        self.camera.changeCallback = { [weak self] in self?.render() }
 
         do {
             try self.pipelineState = device.makeRenderPipelineState(descriptor: self.pipelineDescriptor())
@@ -85,14 +83,18 @@ class MetalView: NSView
     override func mouseDragged(with event: NSEvent)
     {
         camera.dragAroundAnchor(with: self.convert(event.locationInWindow, from: nil))
-        xrotation += Float(event.deltaX) * 0.01
-        yrotation += Float(event.deltaY) * 0.01
-        self.render()
     }
 
     override func mouseDown(with event: NSEvent)
     {
-        camera.setAnchor(with: self.convert(event.locationInWindow, from: nil))
+        if (event.clickCount == 2)
+        {
+            camera.animateToNoRotation()
+        }
+        else
+        {
+            camera.setAnchor(with: self.convert(event.locationInWindow, from: nil))
+        }
     }
 
     private func pipelineDescriptor() -> MTLRenderPipelineDescriptor

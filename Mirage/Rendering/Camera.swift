@@ -5,16 +5,80 @@ import GLKit
 
 
 // ============================================================================
+class EasingFunction
+{
+    var timer: Timer?
+    let duration: Double = 0.33
+    let frames: Int = 30
+    var current: Int = 0
+    var notification: ((Double) -> Void)?
+
+    var parameter: Double {
+        get {
+            let x = Double(self.current) / Double(self.frames - 1)
+            return 2 * pow(x, 2) / (1 + pow(x, 4))
+        }
+    }
+
+    func ease(callback: @escaping (Double) -> Void)
+    {
+        notification = callback
+        startTimer()
+    }
+
+    private func startTimer()
+    {
+        timer?.invalidate()
+        current = 0
+
+        timer = Timer.scheduledTimer(withTimeInterval: duration / Double(frames), repeats: true)
+        {
+            [weak self] _ in
+            guard let s = self else { return }
+
+            s.notification?(s.parameter)
+            s.current += 1
+
+            if (s.current == s.frames)
+            {
+                s.timer?.invalidate()
+            }
+        }
+    }
+
+    deinit
+    {
+        self.timer?.invalidate()
+    }
+}
+
+
+
+
+// ============================================================================
 class Camera
 {
     var anchor = float3()
     var viewport = NSSize()
-    var anchoredRotation: simd_quatf = simd_quaternion(0.0, 0.0, 0.0, 1.0)
-    var currentRotation: simd_quatf = simd_quaternion(0.0, 0.0, 0.0, 1.0)
+    var anchoredRotation: simd_quatf = simd_quaternion(0, 0, 0, 1)
+    var currentRotation: simd_quatf = simd_quaternion(0, 0, 0, 1)
+    var easing = EasingFunction()
+    var changeCallback: (() -> Void)?
 
     var rotation: simd_float4x4
     {
         get { return simd_float4x4(currentRotation) }
+    }
+
+    func animateToNoRotation()
+    {
+        anchoredRotation = currentRotation
+        easing.ease(callback: {
+            [weak self] t in
+            guard let s = self else { return }
+            s.currentRotation = s.anchoredRotation.slerp(to: simd_quaternion(0, 0, 0, 1), frac: Float(t))
+            s.changeCallback?()
+        })
     }
 
     func setAnchor(with point: NSPoint)
@@ -30,6 +94,7 @@ class Camera
         let angle = acosf(dot(anchor, current))
         let Q = simd_quaternion(angle * 2, axis).normalized
         currentRotation = Q * anchoredRotation
+        self.changeCallback?()
     }
 
     func projectToUnitSphere(_ point: NSPoint) -> simd_float3
@@ -39,6 +104,20 @@ class Camera
         let y = Float(point.y - viewport.height / 2)
         let p = simd_float3(x, y, r - sqrt(x * x + y * y))
         return p / length(p)
+    }
+}
+
+
+
+
+// ============================================================================
+extension simd_quatf
+{
+    func slerp(to end: simd_quatf, frac: Float) -> simd_quatf
+    {
+        let A = unsafeBitCast(self, to: GLKQuaternion.self)
+        let B = unsafeBitCast(end, to: GLKQuaternion.self)
+        return unsafeBitCast(GLKQuaternionSlerp(A, B, frac), to: simd_quatf.self)
     }
 }
 
