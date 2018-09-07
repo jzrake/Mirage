@@ -10,23 +10,6 @@ Node::Node()
 {
 }
 
-size_t Node::numVertices() const
-{
-    return vertices.size() / 4;
-}
-
-size_t Node::numPrimitives() const
-{
-    switch (type)
-    {
-        case MTLPrimitiveTypePoint         : return numVertices();
-        case MTLPrimitiveTypeLine          : return numVertices() / 2;
-        case MTLPrimitiveTypeLineStrip     : return numVertices() - 1;
-        case MTLPrimitiveTypeTriangle      : return numVertices() / 3;
-        case MTLPrimitiveTypeTriangleStrip : return numVertices() - 2;
-    }
-}
-
 std::string Node::validate() const
 {
     if (vertices.empty())
@@ -46,6 +29,28 @@ std::string Node::validate() const
         return "color data did not have the same shape as vertex data";
     }
     return std::string();
+}
+
+size_t Node::numVertices() const
+{
+    return vertices.size() / 4;
+}
+
+size_t Node::numPrimitives() const
+{
+    switch (type)
+    {
+        case MTLPrimitiveTypePoint         : return numVertices();
+        case MTLPrimitiveTypeLine          : return numVertices() / 2;
+        case MTLPrimitiveTypeLineStrip     : return numVertices() - 1;
+        case MTLPrimitiveTypeTriangle      : return numVertices() / 3;
+        case MTLPrimitiveTypeTriangleStrip : return numVertices() - 2;
+    }
+}
+
+std::vector<float> Node::computeNormals() const
+{
+    return {};
 }
 
 id<MTLBuffer> Node::vertexBuffer(id<MTLDevice> device) const

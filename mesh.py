@@ -74,23 +74,25 @@ def gridlines(M):
 
 def triangulate(M):
     """
-    Return an array of 3D vertices, with shape ((Nu - 1) * (Nv - 1), 4, 3, 3),
+    Return an array of 3D vertices, with shape (Nu - 1, Nv - 1, 4, 3, 3),
     describing a list of triangles tesselating a 3D quadrilateral mesh. Each
     quad is broken into 4 triangles, all sharing a vertex at the quad centroid.
     """
+    Nu = M.shape[0]
+    Nv = M.shape[1]
     a = M[:-1,:-1]
     b = M[:-1,+1:]
     c = M[+1:,+1:]
     d = M[+1:,:-1]
     e = 0.25 * (a + b + c + d)
-    return np.array([[e,a,b],[e,b,c],[e,c,d],[e,d,a]]).transpose(2,3,0,1,4).reshape(-1,4,3,3)
+    return np.array([[e,a,b],[e,b,c],[e,c,d],[e,d,a]]).transpose(2,3,0,1,4).reshape(Nu-1,Nv-1,4,3,3)
 
 
 
 def circle(num, dtype=np.float32):
     """
-    Return a sequence of `num` (unique) 3D vertices arranged on the unit
-    circle in the x-y plane. The first and last vertices are identical.
+    Return a sequence of 3D vertices of shape (num + 1, 3), arranged on the
+    unit circle in the x-y plane. The first and last vertices are identical.
     """
     V = np.zeros([num + 1, 3], dtype=dtype)
     t = np.linspace(0, 2 * np.pi, num + 1).astype(dtype)
@@ -325,13 +327,10 @@ def test():
     assert(lines.shape == ((len(x) - 1) * len(y) + len(x) * (len(y) - 1), 2, 3))
 
     triangles = triangulate(M)
-    assert(triangles.shape == (56, 4, 3, 3))
-
-    import mirage
-    mirage.log(np.array(mirage.Image(), copy=False).shape)
+    assert(triangles.shape == (7, 8, 4, 3, 3))
 
 
 
 if __name__ == "__main__":
-    #test()
-    run_mirage()
+    test()
+    #run_mirage()

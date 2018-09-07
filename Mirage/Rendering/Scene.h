@@ -20,11 +20,9 @@ struct Node
     Node();
 
     /** Return an empty string if this node has valid vertex data. Otherwise, return
-     an error message describing the problem.
+        an error message describing the problem.
      */
     std::string validate() const;
-
-    // std::array<float, 3> getPosition() const;
 
     void setPosition (std::array<float, 3> position);
     void setRotation (std::array<float, 4> rotation);
@@ -45,6 +43,12 @@ struct Node
         and the number of vertices.
      */
     size_t numPrimitives() const;
+
+    /** Return data, one float4 per vertex, describing normal vectors for triangles.
+        Currently this method is only implemented for triangle primitives. For other
+        types, it returns and empty vector.
+     */
+    std::vector<float> computeNormals() const;
 
     /** Return a buffer of the vertex data. Do not call this function unless you're
         sure the node is valid.
