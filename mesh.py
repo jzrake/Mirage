@@ -128,45 +128,51 @@ def to_spherical(q, p):
 
 
 def height_colors(verts):
-    verts = np.array(verts).reshape(-1, 4)
-    colors = np.zeros([verts.shape[0], 4], dtype=np.float32)
-    colors[:,0] = 0 + verts[:,2]
-    colors[:,1] = 1 - verts[:,2]
-    colors[:,2] = 1 - verts[:,2] * 0.5
-    colors[:,3] = 1.0
-    return colors.flatten()
+    colors = np.zeros(verts.shape[:-1] + (4,), dtype=np.float32)
+    colors[...,0] = 0 + verts[...,2]
+    colors[...,1] = 1 - verts[...,2]
+    colors[...,2] = 1 - verts[...,2] * 0.5
+    colors[...,3] = 1.0
+    return colors
 
 
 
 def solid_colors(verts, rgba=[0,0,0,1]):
-    colors = np.zeros_like(verts).reshape(-1, 4)
+    colors = np.zeros(verts.shape[:-1] + (4,), dtype=np.float32)
     colors[...] = rgba
-    return colors.flatten()
+    return colors
 
 
 
 def cycle_colors(verts):
-    colors = np.zeros_like(verts).reshape(-1, 4)
-    for n in range(colors.shape[0]):
-        colors[n, n % 3] = 1
-    colors[:,3] = 1.0
-    return colors.flatten()
+    colors = np.zeros(verts.shape[:-1] + (4,), dtype=np.float32).reshape(-1, 4)
+    colors[0::3] = [1.0, 0.0, 0.0, 1]
+    colors[1::3] = [0.0, 1.0, 0.0, 1]
+    colors[2::3] = [0.0, 0.0, 1.0, 1]
+    return colors
 
 
 
-def texture_coordinate_colors(verts):
+def checkerboard(verts):
     """
-    Return an array the same shape as verts, which
+    Return an array of RGBA colors corresponding to an array of 3D vertices
+    having a shape (Nu, Nv, ..., 3). The ellipses stands for any number of
+    intermediate axes.
     """
-    pass
-
+    e = np.indices(verts.shape[:2]).sum(axis=0) % 2 == 0
+    o = np.indices(verts.shape[:2]).sum(axis=0) % 2 == 1
+    colors = np.zeros(verts.shape[:-1] + (4,), dtype=np.float32)
+    colors[e] = [0.4, 0.4, 0.4, 1]
+    colors[o] = [0.5, 0.5, 0.5, 1]
+    return colors
+    
 
 
 def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]):
     import mirage
     node = mirage.Node()
     node.vertices = tovert4(vertices)
-    node.colors = colors(node.vertices) if callable(colors) else colors
+    node.colors = colors(vertices).flatten() if callable(colors) else colors.flatten()
     node.type = primitive
     node.position = position
     return node
@@ -185,10 +191,10 @@ def text_node(text, scale=10):
     vc = [1.0, 1.0 * h / w, 0, 0]
     vd = [1.0, 0.0 * h / w, 0, 0]
     ve = [0.5, 0.5 * h / w, 0, 0]
-    ta = [0.0, 0.0, 0, 0]
-    tb = [0.0, 1.0, 0, 0]
-    tc = [1.0, 1.0, 0, 0]
-    td = [1.0, 0.0, 0, 0]
+    tb = [0.0, 0.0, 0, 0]
+    ta = [0.0, 1.0, 0, 0]
+    td = [1.0, 1.0, 0, 0]
+    tc = [1.0, 0.0, 0, 0]
     te = [0.5, 0.5, 0, 0]
     verts = [[ve,va,vb],[ve,vb,vc],[ve,vc,vd],[ve,vd,va]]
     texts = [[te,ta,tb],[te,tb,tc],[te,tc,td],[te,td,ta]]
@@ -274,9 +280,13 @@ def example_plot_axes():
     verts = triangulate(bridge(path1, path2))
     cyl = node(verts, cycle_colors)
 
+    x = np.linspace(0, 10, 30)
+    y = np.linspace(0, 10, 30)
+
     q = np.linspace(0, 1 * np.pi, 30)
     p = np.linspace(0, 2 * np.pi, 30)
     sphere_verts = triangulate(lift(lattice(q, p), to_spherical))
+    plane_verts = triangulate(lift(lattice(x, y)))
 
     r = lambda v: solid_colors(v, [1,0,0,1])
     g = lambda v: solid_colors(v, [0,1,0,1])
@@ -286,15 +296,16 @@ def example_plot_axes():
     xaxis = node(verts, r)
     yaxis = node(verts, g)
     zaxis = node(verts, b)
+    plane = node(plane_verts, checkerboard)
     origin = node(sphere_verts, k)
 
-    #xaxis.x = 1
-    #yaxis.y = 1
-    #zaxis.z = 1
+    for n in [xaxis, yaxis, zaxis, plane, origin]:
+        n.position = [-5, -5, 0]
+
     xaxis.rotation = [0, 1, 0, np.pi / 2]
     yaxis.rotation = [1, 0, 0,-np.pi / 2]
 
-    return scene("Plot axes", xaxis, yaxis, zaxis, origin)
+    return scene("Plot axes", xaxis, yaxis, zaxis, origin, plane)
 
 
 

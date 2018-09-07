@@ -53,7 +53,7 @@ fragment float4 fragmentShader(RasterizerData            in       [[ stage_in ]]
 {
     if (! options.isTextureActive)
     {
-        return float4(in.color.rgb * (0.3 + 0.7 * in.normal.z), in.color.a);
+        return float4(in.color.rgb * (0.3 + 0.7 * abs(in.normal.z)), in.color.a);
     }
     else
     {
