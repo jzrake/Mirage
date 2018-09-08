@@ -123,7 +123,7 @@ def to_spherical(q, p):
     x = np.sin(q) * np.cos(p)
     y = np.sin(q) * np.sin(p)
     z = np.cos(q)
-    return np.array([x, y, z]).T
+    return np.array([x, y, z]).transpose(1,2,0)
 
 
 
@@ -153,7 +153,7 @@ def cycle_colors(verts):
 
 
 
-def checkerboard(verts):
+def checkerboard(verts, dark=[0.4,0.4,0.4,1], light=[0.5,0.5,0.5,1]):
     """
     Return an array of RGBA colors corresponding to an array of 3D vertices
     having a shape (Nu, Nv, ..., 3). The ellipses stands for any number of
@@ -162,8 +162,8 @@ def checkerboard(verts):
     e = np.indices(verts.shape[:2]).sum(axis=0) % 2 == 0
     o = np.indices(verts.shape[:2]).sum(axis=0) % 2 == 1
     colors = np.zeros(verts.shape[:-1] + (4,), dtype=np.float32)
-    colors[e] = [0.4, 0.4, 0.4, 1]
-    colors[o] = [0.5, 0.5, 0.5, 1]
+    colors[e] = dark
+    colors[o] = light
     return colors
     
 
@@ -275,6 +275,8 @@ def example_helix():
 
 
 def example_plot_axes():
+    from functools import partial
+
     path1 = circle(90) * 0.25 + [0, 0, 10]
     path2 = circle(90) * 0.25
     verts = triangulate(bridge(path1, path2))
@@ -283,21 +285,22 @@ def example_plot_axes():
     x = np.linspace(0, 10, 30)
     y = np.linspace(0, 10, 30)
 
-    q = np.linspace(0, 1 * np.pi, 30)
-    p = np.linspace(0, 2 * np.pi, 30)
-    sphere_verts = triangulate(lift(lattice(q, p), to_spherical))
+    q = np.linspace(0, 1 * np.pi, 15)
+    p = np.linspace(0, 2 * np.pi, 31)
+
+    sphere_verts = triangulate(lift(lattice(q, p), to_spherical)) * 0.75
     plane_verts = triangulate(lift(lattice(x, y)))
 
-    r = lambda v: solid_colors(v, [1,0,0,1])
-    g = lambda v: solid_colors(v, [0,1,0,1])
-    b = lambda v: solid_colors(v, [0,0,1,1])
-    k = lambda v: solid_colors(v, [0.8,0.8,0.8,1])
+    r = partial(solid_colors, rgba=[1,0,0,1])
+    g = partial(solid_colors, rgba=[0,1,0,1])
+    b = partial(solid_colors, rgba=[0,0,1,1])
+    k = partial(solid_colors, rgba=[0.8,0.0,0.8,1])
 
     xaxis = node(verts, r)
     yaxis = node(verts, g)
     zaxis = node(verts, b)
     plane = node(plane_verts, checkerboard)
-    origin = node(sphere_verts, k)
+    origin = node(sphere_verts, partial(checkerboard, dark=[0.5,0,0.7,1],light=[0.7,0,0.5,1]))
 
     for n in [xaxis, yaxis, zaxis, plane, origin]:
         n.position = [-5, -5, 0]
