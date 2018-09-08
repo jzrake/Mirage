@@ -58,11 +58,19 @@ class ViewController: NSSplitViewController
         self.contentViewController = consoleContentController?.splitViewItems[0].viewController as? ContentViewController
         self.consoleViewController = consoleContentController?.splitViewItems[1].viewController as? ConsoleViewController
 
-        (splitViewItems[0].viewController as! SceneListViewController).currentSceneIndexSetter = {
+        (splitViewItems[0].viewController as! SceneListViewController).currentSceneIndexSetter =
+        {
             sceneIndex in
             (self.contentViewController?.view as! MetalView).representedObject = sceneIndex
         }
+
+        NotificationCenter.default.addObserver(forName: Notification.Name("SceneReplaced"), object: nil, queue: nil, using:
+        {
+            [weak self] obj in
+            (self?.contentViewController?.view as! MetalView).render()
+        })
     }
+
 
     override var representedObject: Any?
     {

@@ -113,6 +113,13 @@ static py::object pythonEventHandler;
     NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdated" object:nil userInfo:nil];
     [NSNotificationCenter.defaultCenter postNotification:notification];
 }
+
++ (void) postSceneReplaced: (std::string) name
+{
+    NSString* m = [[NSString alloc] initWithUTF8String:name.data()];
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneReplaced" object:m userInfo:nil];
+    [NSNotificationCenter.defaultCenter postNotification:notification];
+}
 @end
 
 
@@ -155,6 +162,18 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     {
         pythonScenes = scenes;
         [PythonRuntime postSceneListUpdated];
+    });
+
+    m.def("replace_scene", [] (const Scene& scene)
+    {
+        for (auto& s : pythonScenes)
+        {
+            if (s.name == scene.name)
+            {
+                s = scene;
+            }
+        }
+        [PythonRuntime postSceneReplaced:scene.name];
     });
 
     m.def("set_event_handler", [] (py::object handler)

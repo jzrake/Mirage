@@ -314,7 +314,9 @@ def example_plot_axes(t=0.75):
 
 def run_mirage():
     import mirage
-    mirage.set_event_handler(lambda t: mirage.show([example_plot_axes(t)]))
+
+    mirage.set_event_handler(lambda t: mirage.replace_scene(example_plot_axes(t)))
+
     mirage.show([
         example_gridlines(),
         example_triangle(),

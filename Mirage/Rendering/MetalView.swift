@@ -178,7 +178,7 @@ class MetalView: NSView
         return d;
     }
 
-    private func render()
+    func render()
     {
         let scene = PythonRuntime.scene(Int32(self.representedObject ?? -1))
         let drawable = self.metalLayer.nextDrawable()
