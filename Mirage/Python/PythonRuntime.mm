@@ -12,20 +12,6 @@ namespace py = pybind11;
 
 
 // ============================================================================
-#include <Cocoa/Cocoa.h>
-
-class Image
-{
-public:
-    Image (NSBitmapImageRep* image) : image (image) {}
-    int getWidth() const { return int(image.pixelsWide); }
-    int getHeight() const { return int(image.pixelsHigh); }
-    NSBitmapImageRep* image;
-};
-
-
-
-
 static std::vector<Scene> pythonScenes;
 static py::object pythonEventHandler;
 
@@ -126,22 +112,41 @@ static py::object pythonEventHandler;
 
 
 // ============================================================================
+static Node nodeHaving(const Node& node, py::kwargs kwargs)
+{
+    py::object n = py::cast(node);
+
+    for (auto k : kwargs)
+        py::setattr(n, k.first, k.second);
+    return n.cast<Node>();
+}
+
+static Node nodeFrom(py::kwargs kwargs)
+{
+    return nodeHaving(Node(), kwargs);
+}
+
+
+
+
+// ============================================================================
 PYBIND11_EMBEDDED_MODULE(mirage, m)
 {
     using texture_t = py::array_t<unsigned char, py::array::c_style | py::array::forcecast>;
 
     pybind11::class_<Node>(m, "Node")
-    .def(pybind11::init())
-    //.def(pybind11::init([] () { return std::make_unique<Node>(); }))
-    .def_readwrite("vertices", &Node::vertices)
-    .def_readwrite("colors", &Node::colors)
-    .def_readwrite("x", &Node::x)
-    .def_readwrite("y", &Node::y)
-    .def_readwrite("z", &Node::z)
-    .def_property("position", nullptr, &Node::setPosition)
-    .def_property("rotation", nullptr, &Node::setRotation)
-    .def_property("type", &Node::getType, &Node::setType)
-    .def_property("texture", nullptr, [] (Node& node, const Image& image) { node.setImageTexture (image.image); });
+    .def(py::init())
+    .def(py::init(&nodeFrom))
+    .def_property("primitive", nullptr, &Node::setType)
+    .def_property("vertices",  nullptr, &Node::setVertices)
+    .def_property("colors",    nullptr, &Node::setColors)
+    .def_property("texture",   nullptr, &Node::setImageTexture)
+    .def_property("position",  nullptr, &Node::setPosition)
+    .def_property("rotation",  nullptr, &Node::setRotation)
+    .def("with_vertices", &Node::withVertices)
+    .def("with_colors",   &Node::withColors)
+    .def("with_texture",  &Node::withImageTexture)
+    .def("having", nodeHaving);
 
     py::class_<Scene>(m, "Scene")
     .def(py::init())

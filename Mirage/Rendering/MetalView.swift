@@ -220,14 +220,13 @@ class MetalView: NSView
         let ey = SceneAPI.nodeRotationVectorY(node)
         let ez = SceneAPI.nodeRotationVectorZ(node)
         let et = SceneAPI.nodeRotationVectorT(node)
+        let vbuf = SceneAPI.nodeVertices(node)
+        let cbuf = SceneAPI.nodeColors(node)
+        let nbuf = SceneAPI.nodeNormals(node)
 
         var model = float4x4.makeTranslation(x, y, z) * float4x4.makeRotate(radians: et, ex, ey, ez)
         var view  = float4x4.makeTranslation(0, 0, -zcamera) * camera.rotation
         var proj  = float4x4.makePerspective(fovyRadians: 1.0, W / H, 1e-1, 1e3)
-
-        let vbuf = SceneAPI.nodeVertices(node, for: self.device)
-        let cbuf = SceneAPI.nodeColors  (node, for: self.device)
-        let nbuf = SceneAPI.nodeNormals (node, for: self.device)
 
         let L = MTKTextureLoader(device: device)
         let I = SceneAPI.nodeImageTexture(node)

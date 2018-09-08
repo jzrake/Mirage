@@ -170,11 +170,13 @@ def checkerboard(verts, dark=[0.4,0.4,0.4,1], light=[0.5,0.5,0.5,1]):
 
 def node(vertices, colors=solid_colors, primitive='triangle', position=[0, 0, 0]):
     import mirage
+
+    # Demonstates data member piecewise construction
     node = mirage.Node()
-    node.vertices = tovert4(vertices)
-    node.colors = colors(vertices).flatten() if callable(colors) else colors.flatten()
-    node.type = primitive
-    node.position = position
+    node.vertices  = tovert4(vertices)
+    node.colors    = colors(vertices).flatten() if callable(colors) else colors.flatten()
+    node.primitive = primitive
+    node.position  = position
     return node
 
 
@@ -199,13 +201,13 @@ def text_node(text, scale=10):
     verts = [[ve,va,vb],[ve,vb,vc],[ve,vc,vd],[ve,vd,va]]
     texts = [[te,ta,tb],[te,tb,tc],[te,tc,td],[te,td,ta]]
 
-    node = mirage.Node()
-    node.vertices = np.array(verts).flatten() * scale
-    node.colors = np.array(texts).flatten()
-    node.type = 'triangle'
-    node.position = [-ve[0] * scale, -ve[1] * scale, 0]
-    node.texture = text
-    return node
+    # Demonstates all-at-once construction
+    return mirage.Node(
+        vertices  = np.array(verts).flatten() * scale,
+        colors    = np.array(texts).flatten(),
+        position  = [-ve[0] * scale, -ve[1] * scale, 0],
+        primitive = 'triangle',
+        texture   = text)
 
 
 
@@ -356,5 +358,9 @@ def test():
 
 if __name__ == "__main__":
     #test()
+
+    import mirage
+    n = mirage.Node()
+    n.having(vertices=[1, 2, 3])
     run_mirage()
 

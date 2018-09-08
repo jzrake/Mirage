@@ -1,8 +1,5 @@
 #ifndef Scene_hpp
 #define Scene_hpp
-
-
-
 #include <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus
@@ -15,67 +12,54 @@
 
 
 // ============================================================================
+class Image
+{
+public:
+    Image (NSBitmapImageRep* image) : image (image) {}
+    int getWidth() const { return int(image.pixelsWide); }
+    int getHeight() const { return int(image.pixelsHigh); }
+    NSBitmapImageRep* image;
+};
+
+
+
+
+// ============================================================================
 struct Node
 {
     Node();
 
-    /** Return an empty string if this node has valid vertex data. Otherwise, return
-        an error message describing the problem.
-     */
     std::string validate() const;
-
-    void setPosition (std::array<float, 3> position);
-    void setRotation (std::array<float, 4> rotation);
-
     std::string getType() const;
-
-    void setType (std::string typeString);
-
-    /** Assign bitmap texture data to the node.
-     */
-    void setImageTexture (NSBitmapImageRep* image);
-
-    /** Return the number of vertices in this node.
-     */
+    bool hasNormals() const;
     size_t numVertices() const;
-
-    /** Return the number of primitives in this node. Depends on the primitive type
-        and the number of vertices.
-     */
     size_t numPrimitives() const;
 
-    /** Return data, one float4 per vertex, describing normal vectors for triangles.
-        Currently this method is only implemented for triangle primitives. For other
-        types, it returns and empty vector.
-     */
-    std::vector<float> computeNormals() const;
+    Node withVertices(const std::vector<float>& vertices) const;
+    Node withColors(const std::vector<float>& colors) const;
+    Node withImageTexture(const Image& imageTextureToUse) const;
+    Node withPosition(std::array<float, 3> position) const;
+    Node withRotation(std::array<float, 4> rotation) const;
+    Node withType(std::string typeString) const;
 
-    /** Return a buffer of the vertex data. Do not call this function unless you're
-        sure the node is valid.
-     */
-    id<MTLBuffer> vertexBuffer (id<MTLDevice> device) const;
-
-    /** Return a buffer of the color data. Do not call this function unless you're
-        sure the node is valid.
-     */
-    id<MTLBuffer> colorBuffer (id<MTLDevice> device) const;
-
-    /** Return a buffer of normal vector data, containing the result of computeNormals.
-        If no normals are available, this returns a buffer that may be bound to a shader,
-        but which should be used or accessed.
-     */
-    id<MTLBuffer> normalsBuffer (id<MTLDevice> device) const;
-
-    /** Return true if the buffer returned by normalsBuffer may be used and accessed.
-     */
-    bool hasNormals() const;
+    void setVertices(const std::vector<float>& vertices);
+    void setColors(const std::vector<float>& colors);
+    void setImageTexture(const Image& imageTextureToUse);
+    void setPosition (std::array<float, 3> position);
+    void setRotation (std::array<float, 4> rotation);
+    void setType(std::string typeString);
 
     // ========================================================================
+    id<MTLDevice> device;
+    id<MTLBuffer> vertexBuffer;
+    id<MTLBuffer> normalBuffer;
+    id<MTLBuffer> colorsBuffer;
     MTLPrimitiveType type = MTLPrimitiveTypeTriangle;
-    
-    std::vector<float> vertices;
-    std::vector<float> colors;
-    NSBitmapImageRep* imageTexture;
+
+    NSBitmapImageRep* imageTexture = nil;
+    size_t vertexArraySize = 0;
+    size_t normalArraySize = 0;
+    size_t colorsArraySize = 0;
 
     float x = 0.f;
     float y = 0.f;
@@ -85,9 +69,10 @@ struct Node
     float ey = 0.f;
     float ez = 1.f;
     float et = 0.f;
+
+    // ========================================================================
+    static std::vector<float> computeTriangleNormals(const std::vector<float>& vertices);
 };
-
-
 
 
 // ============================================================================
@@ -124,9 +109,9 @@ struct Scene;
 + (float) nodeRotationVectorY: (struct Node*) node;
 + (float) nodeRotationVectorZ: (struct Node*) node;
 + (float) nodeRotationVectorT: (struct Node*) node;
-+ (id<MTLBuffer>) nodeVertices: (struct Node*) node forDevice: (id<MTLDevice>) device;
-+ (id<MTLBuffer>) nodeColors: (struct Node*) node forDevice: (id<MTLDevice>) device;
-+ (id<MTLBuffer>) nodeNormals: (struct Node*) node forDevice: (id<MTLDevice>) device;
++ (id<MTLBuffer>) nodeVertices: (struct Node*) node;
++ (id<MTLBuffer>) nodeColors: (struct Node*) node;
++ (id<MTLBuffer>) nodeNormals: (struct Node*) node;
 + (bool) nodeHasNormals: (struct Node*) node;
 + (NSBitmapImageRep*) nodeImageTexture: (struct Node*) node;
 + (size_t) nodeNumVertices: (struct Node*) node;
