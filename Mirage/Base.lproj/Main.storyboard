@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dk9-yQ-CUF">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dk9-yQ-CUF">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -943,20 +943,20 @@
             <objects>
                 <viewController id="tXG-Zl-MxZ" customClass="ConsoleViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="YuI-xU-JOB">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="124"/>
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="114"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tQd-Oc-605">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="124"/>
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="99"/>
                                 <clipView key="contentView" id="1j0-K2-gwX">
-                                    <rect key="frame" x="1" y="1" width="448" height="122"/>
+                                    <rect key="frame" x="1" y="1" width="448" height="97"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="THs-KG-Luj">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="122"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="97"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="448" height="122"/>
+                                            <size key="minSize" width="448" height="97"/>
                                             <size key="maxSize" width="463" height="10000000"/>
                                             <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </textView>
@@ -967,17 +967,30 @@
                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="sR7-g7-88s">
-                                    <rect key="frame" x="433" y="1" width="16" height="122"/>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="sR7-g7-88s">
+                                    <rect key="frame" x="433" y="1" width="16" height="97"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rza-dC-keM">
+                                <rect key="frame" x="-2" y="97" width="454" height="19"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="C0b-ba-sLT"/>
+                                </constraints>
+                                <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="eiG-fW-IP7"/>
+                                <connections>
+                                    <action selector="sliderMoved:" target="tXG-Zl-MxZ" id="UzR-KK-ax4"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="tQd-Oc-605" secondAttribute="trailing" id="SLh-C7-POM"/>
+                            <constraint firstAttribute="trailing" secondItem="rza-dC-keM" secondAttribute="trailing" id="T6N-hT-DcP"/>
+                            <constraint firstItem="rza-dC-keM" firstAttribute="leading" secondItem="YuI-xU-JOB" secondAttribute="leading" id="Y1y-ai-1Sn"/>
                             <constraint firstItem="tQd-Oc-605" firstAttribute="leading" secondItem="YuI-xU-JOB" secondAttribute="leading" id="eZb-Fw-Khv"/>
-                            <constraint firstItem="tQd-Oc-605" firstAttribute="top" secondItem="YuI-xU-JOB" secondAttribute="top" id="gUm-dg-gcN"/>
                             <constraint firstAttribute="bottom" secondItem="tQd-Oc-605" secondAttribute="bottom" id="mDy-uD-z1K"/>
+                            <constraint firstItem="rza-dC-keM" firstAttribute="top" secondItem="YuI-xU-JOB" secondAttribute="top" id="n5l-28-0GZ"/>
+                            <constraint firstItem="tQd-Oc-605" firstAttribute="top" secondItem="rza-dC-keM" secondAttribute="bottom" id="sak-3u-GeV"/>
                         </constraints>
                     </view>
                     <connections>
@@ -986,7 +999,7 @@
                 </viewController>
                 <customObject id="Qxx-1V-jWf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1131" y="853"/>
+            <point key="canvasLocation" x="-1131" y="902"/>
         </scene>
     </scenes>
     <resources>

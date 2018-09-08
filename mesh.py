@@ -274,7 +274,7 @@ def example_helix():
 
 
 
-def example_plot_axes():
+def example_plot_axes(t=0.75):
     from functools import partial
 
     path1 = circle(90) * 0.25 + [0, 0, 10]
@@ -288,7 +288,7 @@ def example_plot_axes():
     q = np.linspace(0, 1 * np.pi, 15)
     p = np.linspace(0, 2 * np.pi, 31)
 
-    sphere_verts = triangulate(lift(lattice(q, p), to_spherical)) * 0.75
+    sphere_verts = triangulate(lift(lattice(q, p), to_spherical)) * t
     plane_verts = triangulate(lift(lattice(x, y)))
 
     r = partial(solid_colors, rgba=[1,0,0,1])
@@ -314,6 +314,7 @@ def example_plot_axes():
 
 def run_mirage():
     import mirage
+    mirage.set_event_handler(lambda t: mirage.show([example_plot_axes(t)]))
     mirage.show([
         example_gridlines(),
         example_triangle(),
@@ -354,3 +355,4 @@ def test():
 if __name__ == "__main__":
     #test()
     run_mirage()
+

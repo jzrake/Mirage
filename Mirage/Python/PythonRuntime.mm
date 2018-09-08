@@ -1,7 +1,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
-#import "PythonRuntime.h"
+#include "PythonRuntime.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/stl.h"
@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 
 // ============================================================================
-#import <Cocoa/Cocoa.h>
+#include <Cocoa/Cocoa.h>
 
 class Image
 {
@@ -27,6 +27,7 @@ public:
 
 
 static std::vector<Scene> pythonScenes;
+static py::object pythonEventHandler;
 
 
 
@@ -46,11 +47,14 @@ static std::vector<Scene> pythonScenes;
 
     Py_SetPythonHome(L"");
     Py_SetPath(pythonPathWide.data());
+
+    pythonEventHandler = py::none();
     py::initialize_interpreter();
 }
 
 + (void) finalizeInterpreter
 {
+    pythonEventHandler = py::object();
     py::finalize_interpreter();
 }
 
@@ -87,6 +91,16 @@ static std::vector<Scene> pythonScenes;
     return nil;
 }
 
++ (void) handleEvent: (double) value
+{
+    try {
+        pythonEventHandler(value);
+    }
+    catch (std::exception& e) {
+        [PythonRuntime postMessageToConsole:e.what()];
+    }
+}
+
 + (void) postMessageToConsole: (std::string) message
 {
     NSString* m = [[NSString alloc] initWithUTF8String:message.data()];
@@ -111,6 +125,7 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 
     pybind11::class_<Node>(m, "Node")
     .def(pybind11::init())
+    //.def(pybind11::init([] () { return std::make_unique<Node>(); }))
     .def_readwrite("vertices", &Node::vertices)
     .def_readwrite("colors", &Node::colors)
     .def_readwrite("x", &Node::x)
@@ -140,6 +155,11 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     {
         pythonScenes = scenes;
         [PythonRuntime postSceneListUpdated];
+    });
+
+    m.def("set_event_handler", [] (py::object handler)
+    {
+        pythonEventHandler = handler;
     });
 
     m.def("text", [] (std::string str)

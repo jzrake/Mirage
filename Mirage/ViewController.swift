@@ -171,6 +171,11 @@ class ConsoleViewController: NSViewController
 {
     @IBOutlet var consoleOutput: NSTextView!
 
+    @IBAction func sliderMoved(_ sender: NSSlider)
+    {
+        PythonRuntime.handleEvent(sender.doubleValue)
+    }
+
     override func viewDidLoad()
     {
         super.viewDidLoad()

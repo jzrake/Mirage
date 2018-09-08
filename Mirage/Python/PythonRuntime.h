@@ -13,4 +13,5 @@
 + (bool) evalFile: (NSURL*) filename;
 + (int) numberOfScenes;
 + (struct Scene*) scene: (int) atIndex;
++ (void) handleEvent: (double) value;
 @end
