@@ -67,17 +67,17 @@ size_t Node::numPrimitives() const
     }
 }
 
-Node Node::withVertices(const std::vector<float>& vertices) const
+Node Node::withVertices(const float* data, size_t size) const
 {
     auto n = *this;
-    n.setVertices(vertices);
+    n.setVertices(data, size);
     return n;
 }
 
-Node Node::withColors(const std::vector<float>& colors) const
+Node Node::withColors(const float* data, size_t size) const
 {
     auto n = *this;
-    n.setColors(colors);
+    n.setColors(data, size);
     return n;
 }
 
@@ -109,9 +109,9 @@ Node Node::withType(std::string typeString) const
     return n;
 }
 
-void Node::setVertices(const std::vector<float>& vertices)
+void Node::setVertices(const float* data, size_t size)
 {
-    if (vertices.empty())
+    if (size == 0)
     {
         vertexBuffer = nil;
         normalBuffer = nil;
@@ -120,25 +120,25 @@ void Node::setVertices(const std::vector<float>& vertices)
     }
     else
     {
-        auto normals = computeTriangleNormals(vertices);
-        vertexBuffer = [device newBufferWithBytes:&vertices[0] length:vertices.size() * sizeof(float) options:MTLResourceStorageModeShared];
-        normalBuffer = [device newBufferWithBytes:&normals[0] length:normals.size() * sizeof(float) options:MTLResourceStorageModeShared];
-        vertexArraySize = vertices.size();
+        auto normals = computeTriangleNormals(data, size);
+        vertexBuffer = [device newBufferWithBytes:data length:size * sizeof(float) options:MTLResourceStorageModeManaged];
+        normalBuffer = [device newBufferWithBytes:normals.data() length:normals.size() * sizeof(float) options:MTLResourceStorageModeManaged];
+        vertexArraySize = size;
         normalArraySize = normals.size();
     }
 }
 
-void Node::setColors(const std::vector<float>& colors)
+void Node::setColors(const float* data, size_t size)
 {
-    if (colors.empty())
+    if (size == 0)
     {
         colorsBuffer = nil;
         colorsArraySize = 0;
     }
     else
     {
-        colorsBuffer = [device newBufferWithBytes:&colors[0] length:colors.size() * sizeof(float) options:MTLResourceStorageModeShared];
-        colorsArraySize = colors.size();
+        colorsBuffer = [device newBufferWithBytes:data length:size * sizeof(float) options:MTLResourceStorageModeManaged];
+        colorsArraySize = size;
     }
 }
 
@@ -173,14 +173,14 @@ void Node::setType(std::string typeString)
     else throw std::invalid_argument("Node: invalid primitive type string '" + typeString + "'");
 }
 
-std::vector<float> Node::computeTriangleNormals(const std::vector<float> &vertices)
+std::vector<float> Node::computeTriangleNormals(const float* vertices, size_t size)
 {
-    if (vertices.size() % 12 != 0)
+    if (size % 12 != 0)
         return {0, 0, 0, 0}; // return a single vector so the buffer is not empty
 
-    std::vector<float> normals(vertices.size());
+    std::vector<float> normals(size);
 
-    for (size_t n = 0; n < vertices.size(); n += 12)
+    for (size_t n = 0; n < size; n += 12)
     {
         auto a = simd_make_float3(vertices[n + 0], vertices[n + 1], vertices[n + 2]);
         auto b = simd_make_float3(vertices[n + 4], vertices[n + 5], vertices[n + 6]);

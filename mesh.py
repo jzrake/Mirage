@@ -228,9 +228,9 @@ def example_gridlines():
 
 
 
-def example_triangle():
-    x = np.linspace(-1, 1, 14)
-    y = np.linspace(-1, 1, 11)
+def example_triangle(t=1.0):
+    x = np.linspace(-1, 1, 14) * t
+    y = np.linspace(-1, 1, 11) * t
     f = lambda x, y: x**2 + y**2
     return scene("Triangular lattice", node(triangulate(lift(lattice(x, y), f)), height_colors))
 
@@ -282,11 +282,9 @@ def example_plot_axes(t=0.75):
     path1 = circle(90) * 0.25 + [0, 0, 10]
     path2 = circle(90) * 0.25
     verts = triangulate(bridge(path1, path2))
-    cyl = node(verts, cycle_colors)
 
     x = np.linspace(0, 10, 30)
     y = np.linspace(0, 10, 30)
-
     q = np.linspace(0, 1 * np.pi, 15)
     p = np.linspace(0, 2 * np.pi, 31)
 
@@ -302,7 +300,7 @@ def example_plot_axes(t=0.75):
     yaxis = node(verts, g)
     zaxis = node(verts, b)
     plane = node(plane_verts, checkerboard)
-    origin = node(sphere_verts, partial(checkerboard, dark=[0.5,0,0.7,1],light=[0.7,0,0.5,1]))
+    origin = node(sphere_verts, partial(checkerboard, dark=[0.5,0,0.7,1], light=[0.7,0,0.5,1]))
 
     for n in [xaxis, yaxis, zaxis, plane, origin]:
         n.position = [-5, -5, 0]
@@ -314,10 +312,58 @@ def example_plot_axes(t=0.75):
 
 
 
+class Plot3D(object):
+    def __init__(self):
+        from functools import partial
+
+        path1 = circle(90) * 0.25 + [0, 0, 10]
+        path2 = circle(90) * 0.25
+        verts = triangulate(bridge(path1, path2))
+
+        x = np.linspace(0, 10, 30)
+        y = np.linspace(0, 10, 30)
+        q = np.linspace(0, 1 * np.pi, 16)
+        p = np.linspace(0, 2 * np.pi, 31)
+
+        sphere_verts = triangulate(lift(lattice(q, p), to_spherical))
+        plane_verts = triangulate(lift(lattice(x, y)))
+
+        r = partial(solid_colors, rgba=[1,0,0,1])
+        g = partial(solid_colors, rgba=[0,1,0,1])
+        b = partial(solid_colors, rgba=[0,0,1,1])
+        k = partial(solid_colors, rgba=[0.8,0.0,0.8,1])
+
+        xaxis = node(verts, r)
+        yaxis = node(verts, g)
+        zaxis = node(verts, b)
+        plane = node(plane_verts, checkerboard)
+        origin = node(sphere_verts, partial(checkerboard, dark=[0.5,0,0.7,1], light=[0.7,0,0.5,1]))
+
+        for n in [xaxis, yaxis, zaxis, plane, origin]:
+            n.position = [-5, -5, 0]
+
+        xaxis.rotation = [0, 1, 0, np.pi / 2]
+        yaxis.rotation = [1, 0, 0,-np.pi / 2]
+
+        self.nodes = [xaxis, yaxis, zaxis, plane, origin]
+        self.sphere_verts = tovert4(sphere_verts)
+
+    def scene(self, t=1):
+        self.nodes[-1].vertices = self.sphere_verts * t
+        return scene("Plot axes", *self.nodes)
+
+
+
 def run_mirage():
     import mirage
 
-    mirage.set_event_handler(lambda t: mirage.replace_scene(example_plot_axes(t)))
+    plot3d = Plot3D()
+
+    def handler(t):
+        mirage.replace_scene(plot3d.scene(t))
+        mirage.replace_scene(example_triangle(t))
+
+    mirage.set_event_handler(handler)
 
     mirage.show([
         example_gridlines(),
@@ -327,7 +373,7 @@ def run_mirage():
         example_helix(),
         example_sphere(),
         example_text_quad(),
-        example_plot_axes()])
+        plot3d.scene()])
 
 
 

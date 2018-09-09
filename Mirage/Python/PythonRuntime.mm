@@ -112,6 +112,8 @@ static py::object pythonEventHandler;
 
 
 // ============================================================================
+using array_t = py::array_t<float, py::array::c_style | py::array::forcecast>;
+
 static Node nodeHaving(const Node& node, py::kwargs kwargs)
 {
     py::object n = py::cast(node);
@@ -138,14 +140,16 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def(py::init())
     .def(py::init(&nodeFrom))
     .def_property("primitive", nullptr, &Node::setType)
-    .def_property("vertices",  nullptr, &Node::setVertices)
-    .def_property("colors",    nullptr, &Node::setColors)
+    .def_property("vertices",  nullptr, [] (Node& node, array_t data) { node.setVertices(data.data(0), data.size()); })
+    .def_property("colors",    nullptr, [] (Node& node, array_t data) { node.setColors(data.data(0), data.size()); })
     .def_property("texture",   nullptr, &Node::setImageTexture)
     .def_property("position",  nullptr, &Node::setPosition)
     .def_property("rotation",  nullptr, &Node::setRotation)
-    .def("with_vertices", &Node::withVertices)
-    .def("with_colors",   &Node::withColors)
+    .def("with_vertices", [] (Node& node, array_t data) { return node.withVertices(data.data(0), data.size()); })
+    .def("with_colors",   [] (Node& node, array_t data) { return node.withColors(data.data(0), data.size()); })
     .def("with_texture",  &Node::withImageTexture)
+    .def("with_position", &Node::withPosition)
+    .def("with_rotation", &Node::withRotation)
     .def("having", nodeHaving);
 
     py::class_<Scene>(m, "Scene")

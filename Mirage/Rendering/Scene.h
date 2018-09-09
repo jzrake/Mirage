@@ -35,15 +35,15 @@ struct Node
     size_t numVertices() const;
     size_t numPrimitives() const;
 
-    Node withVertices(const std::vector<float>& vertices) const;
-    Node withColors(const std::vector<float>& colors) const;
+    Node withVertices(const float* data, size_t size) const;
+    Node withColors(const float* data, size_t size) const;
     Node withImageTexture(const Image& imageTextureToUse) const;
     Node withPosition(std::array<float, 3> position) const;
     Node withRotation(std::array<float, 4> rotation) const;
     Node withType(std::string typeString) const;
 
-    void setVertices(const std::vector<float>& vertices);
-    void setColors(const std::vector<float>& colors);
+    void setVertices(const float* data, size_t size);
+    void setColors(const float* data, size_t size);
     void setImageTexture(const Image& imageTextureToUse);
     void setPosition (std::array<float, 3> position);
     void setRotation (std::array<float, 4> rotation);
@@ -71,7 +71,7 @@ struct Node
     float et = 0.f;
 
     // ========================================================================
-    static std::vector<float> computeTriangleNormals(const std::vector<float>& vertices);
+    static std::vector<float> computeTriangleNormals(const float* vertices, size_t size);
 };
 
 
