@@ -54,11 +54,33 @@ static py::object pythonEventHandler;
 {
     try {
         py::eval_file([filename.path UTF8String]);
-        [PythonRuntime postMessageToConsole:"Success"];
+        // [PythonRuntime postMessageToConsole:"Success"];
     }
     catch (const std::exception& e) {
         [PythonRuntime postMessageToConsole:e.what()];
         // std::cerr << e.what() << std::endl;
+    }
+    return true;
+}
+
++ (bool) evalString: (NSString*) expression
+{
+    try {
+        py::eval([expression UTF8String]);
+    }
+    catch (const std::exception& e) {
+        [PythonRuntime postMessageToConsole:e.what()];
+    }
+    return true;
+}
+
++ (bool) execString: (NSString*) expression
+{
+    try {
+        py::exec([expression UTF8String]);
+    }
+    catch (const std::exception& e) {
+        [PythonRuntime postMessageToConsole:e.what()];
     }
     return true;
 }

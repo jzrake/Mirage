@@ -187,7 +187,6 @@ class ConsoleViewController: NSViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-
         let name = Notification.Name("ConsoleMessage")
         NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: name, object: nil)
     }

@@ -11,6 +11,8 @@
 + (void) finalizeInterpreter;
 + (void) addToSystemPath: (NSURL*) directory;
 + (bool) evalFile: (NSURL*) filename;
++ (bool) evalString: (NSString*) expression;
++ (bool) execString: (NSString*) expression;
 + (int) numberOfScenes;
 + (struct Scene*) scene: (int) atIndex;
 + (void) handleEvent: (double) value;
