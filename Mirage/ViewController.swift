@@ -4,40 +4,40 @@ import Cocoa
 
 
 // ============================================================================
-class WindowController: NSWindowController
-{
-    @IBAction func sidePanelButtonAction(_ sender: NSButton)
-    {
-        (self.contentViewController as! ViewController).toggleSidebar(self)
-    }
-
-    @IBAction func reload(_ sender: Any)
-    {
-        (self.contentViewController as! ViewController).reloadSource()
-    }
-
-    @IBAction func reloadSource(_ sender: Any)
-    {
-        (self.contentViewController as! ViewController).reloadSource()
-    }
-
-    @IBAction func openDocument(_ sender: AnyObject?)
-    {
-        let openPanel = NSOpenPanel()
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = true
-        openPanel.canChooseDirectories = true
-        openPanel.allowedFileTypes = ["py"]
-
-        openPanel.beginSheetModal(for: window!) { response in
-            guard response.rawValue == NSFileHandlingPanelOKButton else {
-                return
-            }
-            self.contentViewController?.representedObject = openPanel.url
-            self.window?.title = openPanel.url!.lastPathComponent
-        }
-    }
-}
+//class WindowController: NSWindowController
+//{
+//    @IBAction func sidePanelButtonAction(_ sender: NSButton)
+//    {
+//        (self.contentViewController as! ViewController).toggleSidebar(self)
+//    }
+//
+//    @IBAction func reload(_ sender: Any)
+//    {
+//        (self.contentViewController as! ViewController).reloadSource()
+//    }
+//
+//    @IBAction func reloadSource(_ sender: Any)
+//    {
+//        (self.contentViewController as! ViewController).reloadSource()
+//    }
+//
+//    @IBAction func openDocument(_ sender: AnyObject?)
+//    {
+//        let openPanel = NSOpenPanel()
+//        openPanel.showsHiddenFiles = false
+//        openPanel.canChooseFiles = true
+//        openPanel.canChooseDirectories = true
+//        openPanel.allowedFileTypes = ["py"]
+//
+//        openPanel.beginSheetModal(for: window!) { response in
+//            guard response.rawValue == NSFileHandlingPanelOKButton else {
+//                return
+//            }
+//            self.contentViewController?.representedObject = openPanel.url
+//            self.window?.title = openPanel.url!.lastPathComponent
+//        }
+//    }
+//}
 
 
 

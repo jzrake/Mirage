@@ -75,6 +75,8 @@ struct Node
 };
 
 
+
+
 // ============================================================================
 struct Scene
 {
@@ -82,7 +84,6 @@ struct Scene
     Scene(std::string name);
     std::string name;
     std::vector<Node> nodes;
-    Node root;
 };
 #endif // __cplusplus
 

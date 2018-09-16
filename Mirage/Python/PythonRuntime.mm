@@ -118,14 +118,14 @@ static py::object pythonEventHandler;
 
 + (void) postSceneListUpdated
 {
-    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdated" object:nil userInfo:nil];
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneListUpdate" object:nil userInfo:nil];
     [NSNotificationCenter.defaultCenter postNotification:notification];
 }
 
 + (void) postSceneReplaced: (std::string) name
 {
     NSString* m = [[NSString alloc] initWithUTF8String:name.data()];
-    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneReplaced" object:m userInfo:nil];
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"SceneReplace" object:m userInfo:nil];
     [NSNotificationCenter.defaultCenter postNotification:notification];
 }
 @end
@@ -158,7 +158,7 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 {
     using texture_t = py::array_t<unsigned char, py::array::c_style | py::array::forcecast>;
 
-    pybind11::class_<Node>(m, "Node")
+    py::class_<Node>(m, "Node")
     .def(py::init())
     .def(py::init(&nodeFrom))
     .def_property("primitive", nullptr, &Node::setType)

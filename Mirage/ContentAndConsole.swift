@@ -7,7 +7,7 @@ import Foundation
 class ContentAndConsole: NSViewController
 {
     @IBOutlet weak var consoleView: NSView!
-
+    @IBOutlet weak var metalView: MetalView!
     @IBOutlet var consoleOutput: NSTextView!
 
     @IBAction func toggleConsole(_ sender: NSButton)
@@ -22,8 +22,13 @@ class ContentAndConsole: NSViewController
 
     override func viewDidLoad()
     {
-        let name = Notification.Name("ConsoleMessage")
-        NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: AppDelegate.ConsoleMesssage, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
+    }
+
+    @objc func currentSceneChange(_ notification: Notification)
+    {
+        metalView.representedObject = notification.object as? Int
     }
 
     @objc func consoleMessage(_ notification: Notification)

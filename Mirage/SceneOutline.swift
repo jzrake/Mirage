@@ -4,60 +4,50 @@ import Foundation
 
 
 // ============================================================================
-class TreeNode: NSObject
-{
-    var data: String
-    var children: [TreeNode]
-
-    init(data: String="", children: [TreeNode]=[])
-    {
-        self.data = data
-        self.children = children
-    }
-
-    static func makeTestTree() -> TreeNode
-    {
-        return TreeNode(data: "Root", children: [TreeNode(data: "Child 1"),
-                                                 TreeNode(data: "Child 2", children: [TreeNode(data: "Grand 1"),
-                                                                                      TreeNode(data: "Grand 2")])])
-    }
-}
-
-
-
-
-// ============================================================================
 class SceneOutline: NSViewController, NSOutlineViewDelegate, NSOutlineViewDataSource
 {
-    let root = TreeNode.makeTestTree()
+    @IBOutlet weak var outlineView: NSOutlineView!
+
     let dataCellId = NSUserInterfaceItemIdentifier(rawValue: "DataCell")
 
+    override func viewDidLoad()
+    {
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneListUpdate), name: AppDelegate.SceneListUpdate, object: nil)
+    }
+    @objc func sceneListUpdate(_ notification: Notification)
+    {
+        outlineView.reloadData()
+    }
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool
     {
-        return !(item as! TreeNode).children.isEmpty
+        return false
     }
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int
     {
-        return item == nil ? 1 : (item as! TreeNode).children.count
+        return Int(PythonRuntime.numberOfScenes())
     }
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any
     {
-        return item == nil ? root : (item as! TreeNode).children[index]
+        return PythonRuntime.scene(Int32(index))
     }
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView?
     {
         var view: NSTableCellView?
 
-        if let node = item as? TreeNode
+        if let scene = item as? OpaquePointer
         {
             view = outlineView.makeView(withIdentifier: dataCellId, owner: self) as? NSTableCellView
 
             if let textField = view?.textField
             {
-                textField.stringValue = node.data
+                textField.stringValue = SceneAPI.name(scene)
             }
         }
         return view
     }
+    func outlineViewSelectionDidChange(_ notification: Notification)
+    {
+        NotificationCenter.default.post(name: AppDelegate.CurrentSceneChange,
+                                        object: (notification.object as! NSOutlineView).selectedRow)
+    }
 }
-

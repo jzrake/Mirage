@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="agE-en-VgW">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="670-nH-cDz">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
@@ -689,7 +689,28 @@ CA
                     </connections>
                 </application>
             </objects>
-            <point key="canvasLocation" x="-1878" y="-968"/>
+            <point key="canvasLocation" x="-1884" y="-1397"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="2Iy-dQ-puf">
+            <objects>
+                <windowController id="670-nH-cDz" customClass="WindowController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Faz-ha-bcf">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+                        <connections>
+                            <outlet property="delegate" destination="670-nH-cDz" id="xRh-vB-yrA"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="agE-en-VgW" kind="relationship" relationship="window.shadowedContentViewController" id="zqV-G5-4Cf"/>
+                    </connections>
+                </windowController>
+                <customObject id="uGP-KV-0cj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1884" y="-1111"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Jli-3m-eCP">
@@ -714,7 +735,7 @@ CA
                 </splitViewController>
                 <customObject id="gzx-YF-lTY" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1878" y="-667"/>
+            <point key="canvasLocation" x="-1884" y="-666"/>
         </scene>
         <!--Scene Outline-->
         <scene sceneID="wEE-fX-POW">
@@ -820,6 +841,9 @@ CA
                             <constraint firstAttribute="trailing" secondItem="FK4-pV-MLW" secondAttribute="trailing" id="nsB-Li-Mdg"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="outlineView" destination="kkx-h1-eSs" id="cgS-Od-NaN"/>
+                    </connections>
                 </viewController>
                 <customObject id="Fx0-P8-VTl" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -932,19 +956,29 @@ CA
                                     <constraint firstItem="0ro-KQ-CZI" firstAttribute="top" secondItem="jc4-3T-CKV" secondAttribute="bottom" id="ryK-yX-BHJ"/>
                                 </constraints>
                             </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="T8a-ij-cSF" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
+                                <rect key="frame" x="20" y="230" width="460" height="350"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="460" id="SOv-Oh-17B"/>
+                                    <constraint firstAttribute="height" constant="350" id="uad-uV-aVD"/>
+                                </constraints>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="cuN-0S-i56" secondAttribute="bottom" id="70Y-vD-Ewg"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="DDl-Jn-qnv"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" constant="20" id="Jm8-XA-vx3"/>
                             <constraint firstItem="cuN-0S-i56" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="KNA-7M-n21"/>
                             <constraint firstAttribute="trailing" secondItem="cuN-0S-i56" secondAttribute="trailing" id="PrY-52-nlb"/>
                             <constraint firstAttribute="bottom" secondItem="huH-fB-aL4" secondAttribute="bottom" id="Vxv-9U-I7I"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="centerX" secondItem="8lE-GX-vtn" secondAttribute="centerX" id="iQU-FB-O8a"/>
                             <constraint firstAttribute="trailing" secondItem="huH-fB-aL4" secondAttribute="trailing" id="rZB-ab-vsy"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="consoleOutput" destination="TOB-oM-zhe" id="2h4-pO-jYf"/>
                         <outlet property="consoleView" destination="cuN-0S-i56" id="bQa-CC-Zem"/>
+                        <outlet property="metalView" destination="T8a-ij-cSF" id="MV5-n6-pAk"/>
                     </connections>
                 </viewController>
                 <customObject id="rfb-of-pcj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

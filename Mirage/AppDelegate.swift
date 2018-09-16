@@ -7,6 +7,10 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
+    static let ConsoleMesssage = Notification.Name("ConsoleMessage")
+    static let SceneListUpdate = Notification.Name("SceneListUpdate")
+    static let CurrentSceneChange = Notification.Name("CurrentSceneChange")
+
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         PythonRuntime.initializeInterpreter()
