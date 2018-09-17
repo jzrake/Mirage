@@ -630,10 +630,15 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
-                                        <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
-                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                        <menuItem title="Show Sidebar" keyEquivalent="k" id="kIP-vf-haE">
                                             <connections>
-                                                <action selector="toggleSourceList:" target="Ady-hI-5gd" id="iwa-gc-5KM"/>
+                                                <action selector="toggleSidebar:" target="Ady-hI-5gd" id="ak1-sM-hJV"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Toggle Console" keyEquivalent="i" id="zUE-55-eWs" userLabel="Show Console">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                            <connections>
+                                                <action selector="toggleConsole:" target="Ady-hI-5gd" id="sPr-jb-OpV"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
@@ -715,7 +720,7 @@ CA
         <!--Split View Controller-->
         <scene sceneID="Jli-3m-eCP">
             <objects>
-                <splitViewController id="agE-en-VgW" sceneMemberID="viewController">
+                <splitViewController id="agE-en-VgW" customClass="SplitViewController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
                         <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="KBg-8X-cef"/>
                         <splitViewItem id="CGS-tV-7Es"/>
@@ -857,48 +862,11 @@ CA
                         <rect key="frame" x="0.0" y="0.0" width="500" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="huH-fB-aL4">
-                                <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
-                                <subviews>
-                                    <box boxType="custom" borderType="bezel" borderWidth="0.0" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="z8M-Fy-sXy">
-                                        <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
-                                        <view key="contentView" id="LoJ-Aq-IzC">
-                                            <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <subviews>
-                                                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6k3-Nl-6gC">
-                                                    <rect key="frame" x="12" y="4" width="14" height="14"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="disclosureTriangle" bezelStyle="disclosure" imagePosition="overlaps" alignment="left" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8Kc-cq-KrC">
-                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                                        <font key="font" metaFont="system"/>
-                                                    </buttonCell>
-                                                    <connections>
-                                                        <action selector="toggleConsole:" target="RIU-PX-KI4" id="6Wq-LM-VTk"/>
-                                                    </connections>
-                                                </button>
-                                                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iV2-3r-pnD">
-                                                    <rect key="frame" x="34" y="4" width="14" height="14"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAdvanced" imagePosition="overlaps" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="cmy-lW-eBz">
-                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="system"/>
-                                                    </buttonCell>
-                                                    <connections>
-                                                        <segue destination="HID-gB-rcy" kind="popover" popoverAnchorView="iV2-3r-pnD" popoverBehavior="t" preferredEdge="maxY" id="fgu-po-MqO"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                        </view>
-                                        <color key="fillColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
-                                    </box>
-                                </subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="T8a-ij-cSF" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="80" width="500" height="500"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="9vh-gb-1Yp"/>
-                                    <constraint firstItem="z8M-Fy-sXy" firstAttribute="leading" secondItem="huH-fB-aL4" secondAttribute="leading" id="LvR-sc-eCj"/>
-                                    <constraint firstAttribute="bottom" secondItem="z8M-Fy-sXy" secondAttribute="bottom" id="gCJ-2K-BYu"/>
-                                    <constraint firstItem="z8M-Fy-sXy" firstAttribute="top" secondItem="huH-fB-aL4" secondAttribute="top" id="uBO-g4-uir"/>
-                                    <constraint firstAttribute="trailing" secondItem="z8M-Fy-sXy" secondAttribute="trailing" id="wwp-x2-7P4"/>
+                                    <constraint firstAttribute="width" constant="500" id="8TY-EN-s70"/>
+                                    <constraint firstAttribute="height" constant="500" id="9yA-eu-VSi"/>
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="cuN-0S-i56">
@@ -956,32 +924,71 @@ CA
                                     <constraint firstItem="0ro-KQ-CZI" firstAttribute="top" secondItem="jc4-3T-CKV" secondAttribute="bottom" id="ryK-yX-BHJ"/>
                                 </constraints>
                             </customView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="T8a-ij-cSF" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
-                                <rect key="frame" x="20" y="230" width="460" height="350"/>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="huH-fB-aL4" userLabel="Bottom Bar">
+                                <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
+                                <subviews>
+                                    <box boxType="custom" borderType="bezel" borderWidth="0.0" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="z8M-Fy-sXy">
+                                        <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
+                                        <view key="contentView" id="LoJ-Aq-IzC">
+                                            <rect key="frame" x="0.0" y="0.0" width="500" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6k3-Nl-6gC">
+                                                    <rect key="frame" x="12" y="4" width="14" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="disclosureTriangle" bezelStyle="disclosure" imagePosition="overlaps" alignment="left" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8Kc-cq-KrC">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="toggleConsole:" target="RIU-PX-KI4" id="FAa-gj-htu"/>
+                                                    </connections>
+                                                </button>
+                                                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iV2-3r-pnD">
+                                                    <rect key="frame" x="34" y="4" width="14" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAdvanced" imagePosition="overlaps" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="cmy-lW-eBz">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <segue destination="HID-gB-rcy" kind="popover" popoverAnchorView="iV2-3r-pnD" popoverBehavior="t" preferredEdge="maxY" id="fgu-po-MqO"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </view>
+                                        <color key="fillColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                    </box>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="460" id="SOv-Oh-17B"/>
-                                    <constraint firstAttribute="height" constant="350" id="uad-uV-aVD"/>
+                                    <constraint firstAttribute="height" constant="22" id="9vh-gb-1Yp"/>
+                                    <constraint firstItem="z8M-Fy-sXy" firstAttribute="leading" secondItem="huH-fB-aL4" secondAttribute="leading" id="LvR-sc-eCj"/>
+                                    <constraint firstAttribute="bottom" secondItem="z8M-Fy-sXy" secondAttribute="bottom" id="gCJ-2K-BYu"/>
+                                    <constraint firstItem="z8M-Fy-sXy" firstAttribute="top" secondItem="huH-fB-aL4" secondAttribute="top" id="uBO-g4-uir"/>
+                                    <constraint firstAttribute="trailing" secondItem="z8M-Fy-sXy" secondAttribute="trailing" id="wwp-x2-7P4"/>
                                 </constraints>
                             </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="cuN-0S-i56" secondAttribute="bottom" id="70Y-vD-Ewg"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="DDl-Jn-qnv"/>
-                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" constant="20" id="Jm8-XA-vx3"/>
                             <constraint firstItem="cuN-0S-i56" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="KNA-7M-n21"/>
                             <constraint firstAttribute="trailing" secondItem="cuN-0S-i56" secondAttribute="trailing" id="PrY-52-nlb"/>
                             <constraint firstAttribute="bottom" secondItem="huH-fB-aL4" secondAttribute="bottom" id="Vxv-9U-I7I"/>
-                            <constraint firstItem="T8a-ij-cSF" firstAttribute="centerX" secondItem="8lE-GX-vtn" secondAttribute="centerX" id="iQU-FB-O8a"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" constant="20" id="aym-oJ-vNY"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="centerX" secondItem="8lE-GX-vtn" secondAttribute="centerX" id="nSl-Wf-bc8"/>
                             <constraint firstAttribute="trailing" secondItem="huH-fB-aL4" secondAttribute="trailing" id="rZB-ab-vsy"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="consoleDisclosureButton" destination="6k3-Nl-6gC" id="bgs-6c-6Yr"/>
                         <outlet property="consoleOutput" destination="TOB-oM-zhe" id="2h4-pO-jYf"/>
                         <outlet property="consoleView" destination="cuN-0S-i56" id="bQa-CC-Zem"/>
                         <outlet property="metalView" destination="T8a-ij-cSF" id="MV5-n6-pAk"/>
                     </connections>
                 </viewController>
                 <customObject id="rfb-of-pcj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController representsSharedInstance="YES" id="mq3-hL-toY"/>
             </objects>
             <point key="canvasLocation" x="-1652" y="-25"/>
         </scene>

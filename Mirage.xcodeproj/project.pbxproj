@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63471DF213452A10061BA36 /* AppDelegate.swift */; };
-		C63471E2213452A10061BA36 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63471E1213452A10061BA36 /* ViewController.swift */; };
 		C63471E4213452A10061BA36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C63471E3213452A10061BA36 /* Assets.xcassets */; };
 		C63471E7213452A10061BA36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63471E5213452A10061BA36 /* Main.storyboard */; };
 		C63E01BC21418F00000F3E85 /* Python in Frameworks */ = {isa = PBXBuildFile; fileRef = C63E01BB21418F00000F3E85 /* Python */; };
@@ -19,6 +18,7 @@
 		C650C3FE214EECE5001233D3 /* SceneOutline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650C3FD214EECE5001233D3 /* SceneOutline.swift */; };
 		C650C400214EEDC5001233D3 /* ContentAndConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650C3FF214EEDC5001233D3 /* ContentAndConsole.swift */; };
 		C650C402214EF502001233D3 /* startup.py in Resources */ = {isa = PBXBuildFile; fileRef = C650C401214EF502001233D3 /* startup.py */; };
+		C650C404214F0F9C001233D3 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650C403214F0F9C001233D3 /* WindowController.swift */; };
 		C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C654B6A621349EF6009BD4C1 /* MetalView.swift */; };
 		C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C654B6AA2134A0C6009BD4C1 /* Shader.metal */; };
 		C673062221347F620047DC3E /* PythonRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonRuntime.mm */; settings = {COMPILER_FLAGS = "-I3rdParty/pybind11/include -I3rdParty/python37/include"; }; };
@@ -40,7 +40,6 @@
 /* Begin PBXFileReference section */
 		C63471DC213452A10061BA36 /* Mirage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mirage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C63471DF213452A10061BA36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C63471E1213452A10061BA36 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C63471E3213452A10061BA36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C63471E6213452A10061BA36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C63471E8213452A10061BA36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -54,6 +53,7 @@
 		C650C3FD214EECE5001233D3 /* SceneOutline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneOutline.swift; sourceTree = "<group>"; };
 		C650C3FF214EEDC5001233D3 /* ContentAndConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentAndConsole.swift; sourceTree = "<group>"; };
 		C650C401214EF502001233D3 /* startup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = startup.py; sourceTree = "<group>"; };
+		C650C403214F0F9C001233D3 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		C654B6A621349EF6009BD4C1 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
 		C654B6A92134A0C6009BD4C1 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		C654B6AA2134A0C6009BD4C1 /* Shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 				C650C3FB214EEC37001233D3 /* ModulePathTable.swift */,
 				C650C3FD214EECE5001233D3 /* SceneOutline.swift */,
 				C650C3FF214EEDC5001233D3 /* ContentAndConsole.swift */,
-				C63471E1213452A10061BA36 /* ViewController.swift */,
+				C650C403214F0F9C001233D3 /* WindowController.swift */,
 				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
 				C63471E5213452A10061BA36 /* Main.storyboard */,
 				C63471E9213452A10061BA36 /* Mirage.entitlements */,
@@ -218,11 +218,11 @@
 			files = (
 				C64A51862134E8BE0031941D /* Scene.mm in Sources */,
 				C654B6A721349EF6009BD4C1 /* MetalView.swift in Sources */,
-				C63471E2213452A10061BA36 /* ViewController.swift in Sources */,
 				C650C400214EEDC5001233D3 /* ContentAndConsole.swift in Sources */,
 				C650C3FC214EEC37001233D3 /* ModulePathTable.swift in Sources */,
 				C673062221347F620047DC3E /* PythonRuntime.mm in Sources */,
 				C650C3FE214EECE5001233D3 /* SceneOutline.swift in Sources */,
+				C650C404214F0F9C001233D3 /* WindowController.swift in Sources */,
 				C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */,
 				C63E01C42141E49B000F3E85 /* Camera.swift in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,

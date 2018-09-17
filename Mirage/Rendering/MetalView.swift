@@ -44,6 +44,9 @@ class MetalView: NSView
         } catch {
             print("MetalView: pipeline state creation failed")
         }
+
+        self.updateSize()
+        self.render()
     }
 
     var representedObject: Int?
@@ -168,7 +171,7 @@ class MetalView: NSView
         d.colorAttachments[0].texture     = drawable.texture;
         d.colorAttachments[0].loadAction  = MTLLoadAction.clear;
         d.colorAttachments[0].storeAction = MTLStoreAction.store;
-        d.colorAttachments[0].clearColor  = MTLClearColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1)
+        d.colorAttachments[0].clearColor  = MTLClearColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
 
         d.depthAttachment.texture     = device.makeTexture(descriptor: self.depthTextureDescriptor(preparedFor: drawable.texture))
         d.depthAttachment.loadAction  = MTLLoadAction.clear

@@ -6,13 +6,14 @@ import Foundation
 // ============================================================================
 class ContentAndConsole: NSViewController
 {
+    @IBOutlet weak var consoleDisclosureButton: NSButton!
     @IBOutlet weak var consoleView: NSView!
     @IBOutlet weak var metalView: MetalView!
     @IBOutlet var consoleOutput: NSTextView!
 
-    @IBAction func toggleConsole(_ sender: NSButton)
+    @IBAction func toggleConsole(_ sender: AnyObject?)
     {
-        consoleView.isHidden = !consoleView.isHidden
+        consoleView.animator().isHidden = !consoleView.isHidden
     }
 
     @IBAction func textFieldAction(_ sender: NSTextField)
@@ -44,5 +45,10 @@ class ContentAndConsole: NSViewController
         let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : color]
         consoleOutput.textStorage?.append(NSAttributedString(string: ">>> " + message + "\n", attributes: attrs))
         consoleOutput.scrollToEndOfDocument(self)
+    }
+
+    func toggleConsoleShowing()
+    {
+        consoleDisclosureButton.performClick(nil)
     }
 }
