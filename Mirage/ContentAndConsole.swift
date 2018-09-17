@@ -10,60 +10,14 @@ import Foundation
 
 
 // ============================================================================
-class UserParameter
-{
-    enum ControlType {
-        case slider
-        case textBox
-        case codeBox
-    }
-    var control: ControlType = .textBox
-    var name: String = String()
-
-    init(name: String, control: ControlType)
-    {
-        self.name = name
-        self.control = control
-    }
-
-    func makeControl() -> NSView
-    {
-        switch control {
-        case .slider:
-            let slider = NSSlider()
-            slider.identifier = NSUserInterfaceItemIdentifier(name)
-            slider.target = self
-            slider.action = #selector(sliderHander)
-            return slider
-        case .textBox: return NSTextField()
-        case .codeBox: return NSTextField()
-        }
-    }
-
-    func makeLabel() -> NSTextField
-    {
-        return NSTextField(labelWithString: name)
-    }
-
-    @objc func sliderHander(_ sender: NSSlider)
-    {
-        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant.init(double: sender.doubleValue)];
-        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
-    }
-}
-
-
-
-
-// ============================================================================
 class UserParameterPanelController: NSViewController
 {
     @IBOutlet var userParameterPanel: UserParameterPanel!
 
     override func viewDidLoad()
     {
-        userParameterPanel.parameterList = [UserParameter(name: "Option 1", control: .textBox),
-                                            UserParameter(name: "Option 2", control: .slider)]
+        guard let scene = PythonRuntime.currentScene() else { return }
+        userParameterPanel.parameterList = SceneAPI.userParameters(scene)
     }
 }
 
@@ -73,7 +27,7 @@ class UserParameterPanelController: NSViewController
 // ============================================================================
 class UserParameterPanel: NSView
 {
-    private var grid: NSGridView!
+    private var grid: NSGridView?
 
     var parameterList = [UserParameter]()
     {
@@ -82,33 +36,58 @@ class UserParameterPanel: NSView
 
     override func layout()
     {
-        grid.frame = bounds
+        grid?.frame = bounds
     }
 
     private func setupGrid()
     {
         if grid != nil
         {
-            grid.removeFromSuperview()
+            grid!.removeFromSuperview()
         }
         grid = NSGridView()
 
         for parameter in parameterList
         {
-            grid.addRow(with: [parameter.makeLabel(), parameter.makeControl()])
+            grid!.addRow(with: [makeLabel(for: parameter), makeControl(for: parameter)])
         }
-        grid.row(at: 0).topPadding = 20
-        grid.row(at: parameterList.count - 1).bottomPadding = 20
-        grid.column(at: 0).xPlacement = .trailing
-        grid.column(at: 0).leadingPadding = 20
-        grid.column(at: 1).trailingPadding = 20
-        grid.rowAlignment = .none
-        grid.columnSpacing = 16
-        grid.rowSpacing = 16
-        grid.autoresizingMask = [.height, .width]
-        grid.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        grid.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        addSubview(grid)
+        grid!.row(at: 0).topPadding = 20
+        grid!.row(at: parameterList.count - 1).bottomPadding = 20
+        grid!.column(at: 0).xPlacement = .trailing
+        grid!.column(at: 0).leadingPadding = 20
+        grid!.column(at: 1).trailingPadding = 20
+        grid!.rowAlignment = .none
+        grid!.columnSpacing = 16
+        grid!.rowSpacing = 16
+        grid!.autoresizingMask = [.height, .width]
+        grid!.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        grid!.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        addSubview(grid!)
+    }
+
+    private func makeControl(for parameter: UserParameter) -> NSView
+    {
+        switch parameter.control() {
+        case .slider:
+            let slider = NSSlider()
+            slider.identifier = NSUserInterfaceItemIdentifier(parameter.name())
+            slider.target = self
+            slider.action = #selector(sliderHander)
+            return slider
+        case .text:
+            return NSTextField()
+        }
+    }
+
+    private func makeLabel(for parameter: UserParameter) -> NSTextField
+    {
+        return NSTextField(labelWithString: parameter.name())
+    }
+
+    @objc func sliderHander(_ sender: NSSlider)
+    {
+        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant.init(double: sender.doubleValue)];
+        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
     }
 }
 

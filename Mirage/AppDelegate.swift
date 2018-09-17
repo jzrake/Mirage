@@ -20,7 +20,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     static let UserParametersChange = Notification.Name("UserParametersChange")
 
     weak var mainDocumentWindow: WindowController?
-    var currentSceneIndex = 0
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
@@ -48,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     @objc func currentSceneChange(_ notification: Notification)
     {
-        currentSceneIndex = notification.object as! Int
+        PythonRuntime.setCurrentSceneIndex(Int32(notification.object as! Int))
     }
 
     @objc func userParameterChange(_ notification: Notification)

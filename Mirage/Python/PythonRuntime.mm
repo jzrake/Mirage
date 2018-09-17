@@ -25,7 +25,7 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
     {
         py::str k = std::string([key UTF8String]);
         Variant* v = dict[key];
-        
+
         switch (v.type)
         {
             case Integer: pythonDict[k] = v.asInteger; break;
@@ -135,6 +135,11 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
     currentSceneIndex = index;
 }
 
++ (struct Scene*) currentScene
+{
+    return currentSceneIndex == -1 ? nullptr : &pythonScenes[currentSceneIndex];
+}
+
 + (void) postMessageToConsole: (std::string) message
 {
     NSString* m = [[NSString alloc] initWithUTF8String:message.data()];
@@ -176,6 +181,16 @@ static Node nodeFrom(py::kwargs kwargs)
     return nodeHaving(Node(), kwargs);
 }
 
+static UserParameterCpp userParamaterFrom(py::kwargs kwargs)
+{
+    UserParameterCpp p;
+    py::object q = py::cast(p);
+
+    for (auto k : kwargs)
+        py::setattr(q, k.first, k.second);
+    return q.cast<UserParameterCpp>();
+}
+
 
 
 
@@ -200,11 +215,18 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def("with_rotation", &Node::withRotation)
     .def("having", nodeHaving);
 
+    py::class_<UserParameterCpp>(m, "UserParameter")
+    .def(py::init())
+    .def(py::init(&userParamaterFrom))
+    .def_property("control", nullptr, &UserParameterCpp::setControl)
+    .def_property("name", nullptr, &UserParameterCpp::setName);
+
     py::class_<Scene>(m, "Scene")
     .def(py::init())
     .def(py::init<std::string>())
     .def_readwrite("name", &Scene::name)
-    .def_readwrite("nodes", &Scene::nodes);
+    .def_readwrite("nodes", &Scene::nodes)
+    .def_readwrite("parameters", &Scene::parameters);
 
     py::class_<Image>(m, "Image")
     .def_property_readonly("width", &Image::getWidth)

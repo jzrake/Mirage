@@ -7,6 +7,33 @@
 
 
 // ============================================================================
+UserParameterCpp::UserParameterCpp()
+{
+    objc = [[UserParameter alloc] init];
+}
+
+UserParameterCpp::~UserParameterCpp()
+{
+    objc = nil;
+}
+
+void UserParameterCpp::setName(std::string name)
+{
+    objc.name = [[NSString alloc] initWithUTF8String:name.data()];
+}
+
+void UserParameterCpp::setControl(std::string control)
+{
+    if (![objc setControl:[[NSString alloc] initWithUTF8String:control.data()]])
+    {
+        throw std::invalid_argument("unknown control name '" + control + "'");
+    }
+}
+
+
+
+
+// ============================================================================
 Node::Node()
 {
     device = MTLCreateSystemDefaultDevice();
@@ -206,6 +233,17 @@ Scene::Scene(std::string name) : name(name)
 {
 }
 
+NSArray<UserParameter*>* Scene::getUserParameters() const
+{
+    NSMutableArray<UserParameter*>* params = [[NSMutableArray<UserParameter*> alloc] init];
+
+    for (const auto& p : parameters)
+    {
+        [params addObject:p.objc];
+    }
+    return params;
+}
+
 
 
 
@@ -215,6 +253,7 @@ Scene::Scene(std::string name) : name(name)
 + (int) numNodes: (struct Scene*) scene { return int(scene->nodes.size()); }
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) i { return i >=0 && i < scene->nodes.size() ? &scene->nodes[i] : nil; }
 + (NSString*) name: (struct Scene*) scene { return [[NSString alloc] initWithUTF8String:scene->name.data()]; }
++ (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene { return scene->getUserParameters(); }
 + (float) nodePositionX: (struct Node*) node { return node->x; }
 + (float) nodePositionY: (struct Node*) node { return node->y; }
 + (float) nodePositionZ: (struct Node*) node { return node->z; }

@@ -1,6 +1,7 @@
 #ifndef Scene_hpp
 #define Scene_hpp
 #include <Cocoa/Cocoa.h>
+#include "UserParameter.h"
 
 #ifdef __cplusplus
 #include <Metal/Metal.h>
@@ -19,6 +20,19 @@ public:
     int getWidth() const { return int(image.pixelsWide); }
     int getHeight() const { return int(image.pixelsHigh); }
     NSBitmapImageRep* image;
+};
+
+
+
+
+// ============================================================================
+struct UserParameterCpp
+{
+    UserParameterCpp();
+    ~UserParameterCpp();
+    void setName(std::string name);
+    void setControl(std::string control);
+    UserParameter* objc;
 };
 
 
@@ -82,8 +96,10 @@ struct Scene
 {
     Scene();
     Scene(std::string name);
+    NSArray<UserParameter*>* getUserParameters() const;
     std::string name;
     std::vector<Node> nodes;
+    std::vector<UserParameterCpp> parameters;
 };
 #endif // __cplusplus
 
@@ -103,6 +119,7 @@ struct Scene;
 + (int) numNodes: (struct Scene*) scene;
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
 + (NSString*) name: (struct Scene*) scene;
++ (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene;
 + (float) nodePositionX: (struct Node*) node;
 + (float) nodePositionY: (struct Node*) node;
 + (float) nodePositionZ: (struct Node*) node;

@@ -886,7 +886,7 @@ CA
                                             <action selector="textFieldAction:" target="RIU-PX-KI4" id="OXR-GJ-e6a"/>
                                         </connections>
                                     </textField>
-                                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jc4-3T-CKV">
+                                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="jc4-3T-CKV">
                                         <rect key="frame" x="0.0" y="22" width="578" height="178"/>
                                         <clipView key="contentView" id="fp9-ZD-oop">
                                             <rect key="frame" x="1" y="1" width="576" height="176"/>
@@ -933,7 +933,7 @@ CA
                                             <rect key="frame" x="0.0" y="0.0" width="578" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ewL-AV-dfZ">
+                                                <button toolTip="Toggle Console" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ewL-AV-dfZ">
                                                     <rect key="frame" x="10" y="3" width="16" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="disclosureTriangle" bezelStyle="disclosure" imagePosition="only" alignment="left" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aL3-er-NFd">
@@ -944,7 +944,7 @@ CA
                                                         <action selector="toggleConsole:" target="RIU-PX-KI4" id="rAH-9M-4ab"/>
                                                     </connections>
                                                 </button>
-                                                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OD2-bD-jyk">
+                                                <button toolTip="Show User Parameters" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OD2-bD-jyk">
                                                     <rect key="frame" x="60" y="3" width="16" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSActionTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="W1U-oo-CdE">
@@ -955,7 +955,7 @@ CA
                                                         <segue destination="vYS-oS-EzY" kind="popover" popoverAnchorView="OD2-bD-jyk" popoverBehavior="t" preferredEdge="maxY" id="Hsh-go-Xu5"/>
                                                     </connections>
                                                 </button>
-                                                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w6C-6f-Ljx">
+                                                <button toolTip="Edit Python sys.path" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w6C-6f-Ljx">
                                                     <rect key="frame" x="34" y="3" width="16" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSPathTemplate" imagePosition="right" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="IaK-JD-uDZ">

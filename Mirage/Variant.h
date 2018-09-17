@@ -1,9 +1,12 @@
 #ifndef Variant_h
 #define Variant_h
+#import <Foundation/Foundation.h>
+
 
 
 
 @interface Variant: NSObject
+
 enum Type
 {
     Integer, Double, String
@@ -15,6 +18,7 @@ enum Type
 - (int)       asInteger;
 - (double)    asDouble;
 - (NSString*) asString;
+
 @end
 
 #endif /* Variant_h */

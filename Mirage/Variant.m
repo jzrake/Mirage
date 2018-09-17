@@ -1,4 +1,3 @@
-#import <Foundation/Foundation.h>
 #include "Variant.h"
 
 
