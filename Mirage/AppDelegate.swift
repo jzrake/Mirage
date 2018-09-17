@@ -3,6 +3,12 @@ import Cocoa
 
 
 
+// Nice article on modern Cocoa apps:
+// https://medium.com/@avaidyam/an-exercise-in-modern-cocoa-views-e88bbdea277f
+
+
+
+
 // ============================================================================
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -25,8 +31,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         PythonRuntime.finalizeInterpreter()
         UserDefaults.standard.set(mainDocumentWindow?.pythonSourceURL, forKey: "pythonSourceURL")
-//        if let appDomain = Bundle.main.bundleIdentifier {
-//            UserDefaults.standard.removePersistentDomain(forName: appDomain)
-//        }
+    }
+
+    func clearUserDefaults()
+    {
+        if let appDomain = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+        }
     }
 }
