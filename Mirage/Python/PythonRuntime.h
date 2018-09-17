@@ -15,5 +15,6 @@
 + (bool) execString: (NSString*) expression;
 + (int) numberOfScenes;
 + (struct Scene*) scene: (int) atIndex;
-+ (void) handleEvent: (double) value;
++ (void) passDictionary: (NSDictionary*) dict;
++ (void) setCurrentSceneIndex: (int) index;
 @end

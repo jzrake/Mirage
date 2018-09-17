@@ -359,11 +359,11 @@ def run_mirage():
 
     plot3d = Plot3D()
 
-    def handler(t):
-        mirage.replace_scene(plot3d.scene(t))
-        mirage.replace_scene(example_triangle(t))
+    # def handler(name, t):
+    #     mirage.replace_scene(plot3d.scene(t))
+    #     mirage.replace_scene(example_triangle(t))
 
-    mirage.set_event_handler(handler)
+    # mirage.set_event_handler(handler)
 
     mirage.show([
         example_gridlines(),

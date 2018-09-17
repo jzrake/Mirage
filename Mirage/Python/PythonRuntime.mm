@@ -2,6 +2,7 @@
 #include <codecvt>
 #include <string>
 #include "PythonRuntime.h"
+#include "Variant.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/stl.h"
@@ -14,6 +15,26 @@ namespace py = pybind11;
 // ============================================================================
 static std::vector<Scene> pythonScenes;
 static py::object pythonEventHandler;
+static int currentSceneIndex = -1;
+
+static py::dict variantDictionaryToPython(NSDictionary* dict)
+{
+    auto pythonDict = py::dict();
+
+    for (NSString* key in dict)
+    {
+        py::str k = std::string([key UTF8String]);
+        Variant* v = dict[key];
+        
+        switch (v.type)
+        {
+            case Integer: pythonDict[k] = v.asInteger; break;
+            case Double:  pythonDict[k] = v.asDouble; break;
+            case String:  pythonDict[k] = std::string([v.asString UTF8String]); break;
+        }
+    }
+    return pythonDict;
+}
 
 
 
@@ -99,14 +120,19 @@ static py::object pythonEventHandler;
     return nil;
 }
 
-+ (void) handleEvent: (double) value
++ (void) passDictionary: (NSDictionary*) dict
 {
     try {
-        pythonEventHandler(value);
+        pythonEventHandler(variantDictionaryToPython(dict));
     }
     catch (std::exception& e) {
         [PythonRuntime postMessageToConsole:e.what()];
     }
+}
+
++ (void) setCurrentSceneIndex: (int) index
+{
+    currentSceneIndex = index;
 }
 
 + (void) postMessageToConsole: (std::string) message
@@ -210,6 +236,13 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     m.def("set_event_handler", [] (py::object handler)
     {
         pythonEventHandler = handler;
+    });
+
+    m.def("current_scene_name", [] () -> py::object
+    {
+        if (currentSceneIndex == -1)
+            return py::none();
+        return py::str(pythonScenes[currentSceneIndex].name);
     });
 
     m.def("text", [] (std::string str)

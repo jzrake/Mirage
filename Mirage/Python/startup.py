@@ -12,3 +12,4 @@ class _LogWriter:
 
 sys.stdout = _LogWriter()
 sys.stderr = _LogWriter()
+mirage.set_event_handler(lambda d: print(d))

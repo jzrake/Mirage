@@ -10,42 +10,105 @@ import Foundation
 
 
 // ============================================================================
-class PropertyPanel: NSView
+class UserParameter
 {
-    let stack = NSStackView()
+    enum ControlType {
+        case slider
+        case textBox
+        case codeBox
+    }
+    var control: ControlType = .textBox
+    var name: String = String()
 
-    override init(frame frameRect: NSRect)
+    init(name: String, control: ControlType)
     {
-        super.init(frame: frameRect)
-        self.commonInit()
+        self.name = name
+        self.control = control
     }
 
-    required init?(coder decoder: NSCoder)
+    func makeControl() -> NSView
     {
-        super.init(coder: decoder)
-        self.commonInit()
-    }
-
-    private func commonInit()
-    {
-        for _ in 0...4
-        {
+        switch control {
+        case .slider:
             let slider = NSSlider()
+            slider.identifier = NSUserInterfaceItemIdentifier(name)
             slider.target = self
-            slider.action = #selector(handler)
-            slider.identifier = NSUserInterfaceItemIdentifier(rawValue: "Thing")
-            stack.addArrangedSubview(slider)
+            slider.action = #selector(sliderHander)
+            return slider
+        case .textBox: return NSTextField()
+        case .codeBox: return NSTextField()
         }
-        stack.orientation = NSUserInterfaceLayoutOrientation.vertical
-        addSubview(stack)
     }
 
-    override func layout() {
-        stack.frame = bounds
-    }
-
-    @objc func handler(_ sender: NSSlider)
+    func makeLabel() -> NSTextField
     {
+        return NSTextField(labelWithString: name)
+    }
+
+    @objc func sliderHander(_ sender: NSSlider)
+    {
+        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant.init(double: sender.doubleValue)];
+        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
+    }
+}
+
+
+
+
+// ============================================================================
+class UserParameterPanelController: NSViewController
+{
+    @IBOutlet var userParameterPanel: UserParameterPanel!
+
+    override func viewDidLoad()
+    {
+        userParameterPanel.parameterList = [UserParameter(name: "Option 1", control: .textBox),
+                                            UserParameter(name: "Option 2", control: .slider)]
+    }
+}
+
+
+
+
+// ============================================================================
+class UserParameterPanel: NSView
+{
+    private var grid: NSGridView!
+
+    var parameterList = [UserParameter]()
+    {
+        didSet { setupGrid() }
+    }
+
+    override func layout()
+    {
+        grid.frame = bounds
+    }
+
+    private func setupGrid()
+    {
+        if grid != nil
+        {
+            grid.removeFromSuperview()
+        }
+        grid = NSGridView()
+
+        for parameter in parameterList
+        {
+            grid.addRow(with: [parameter.makeLabel(), parameter.makeControl()])
+        }
+        grid.row(at: 0).topPadding = 20
+        grid.row(at: parameterList.count - 1).bottomPadding = 20
+        grid.column(at: 0).xPlacement = .trailing
+        grid.column(at: 0).leadingPadding = 20
+        grid.column(at: 1).trailingPadding = 20
+        grid.rowAlignment = .none
+        grid.columnSpacing = 16
+        grid.rowSpacing = 16
+        grid.autoresizingMask = [.height, .width]
+        grid.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        grid.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        addSubview(grid)
     }
 }
 
@@ -70,19 +133,11 @@ class ContentAndConsole: NSViewController
         PythonRuntime.execString(sender.stringValue)
     }
 
-    // let propertyPanel = PropertyPanel()
-
     override func viewDidLoad()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: AppDelegate.ConsoleMesssage, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
-
-        // view.addSubview(propertyPanel)
-    }
-
-    override func viewDidLayout()
-    {
-        // propertyPanel.frame = NSRect(x: 50, y: 50, width: 200, height: 200)
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneReplace), name: AppDelegate.SceneReplace, object: nil)
     }
 
     @objc func currentSceneChange(_ notification: Notification)
@@ -103,6 +158,11 @@ class ContentAndConsole: NSViewController
         let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : color]
         consoleOutput.textStorage?.append(NSAttributedString(string: ">>> " + message + "\n", attributes: attrs))
         consoleOutput.scrollToEndOfDocument(self)
+    }
+
+    @objc func sceneReplace(_ notification: Notification)
+    {
+        metalView.render()
     }
 
     func toggleConsoleShowing()
