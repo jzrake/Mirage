@@ -12,13 +12,10 @@ class _LogWriter:
 
 sys.stdout = _LogWriter()
 sys.stderr = _LogWriter()
+
+slider = mirage.Control(name='Float', control='slider', value=0.5)
+text   = mirage.Control(name='Text', control='text', value="value")
+
+mirage.set_controls_callback(lambda: [slider, text])
 mirage.set_event_handler(lambda d: print(d))
-
-
-prop_slider = mirage.UserParameter(name='Float', control='slider', value=0.5)
-prop_text   = mirage.UserParameter(name='Text', control='text', value="value")
-
-test_scene = mirage.Scene('Scene')
-test_scene.parameters = [prop_text, prop_slider]
-
-mirage.show(test_scene)
+mirage.show(mirage.Scene('Scene'))

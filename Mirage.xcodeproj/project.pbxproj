@@ -23,7 +23,7 @@
 		C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C654B6AA2134A0C6009BD4C1 /* Shader.metal */; };
 		C673062221347F620047DC3E /* PythonRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = C673062121347F620047DC3E /* PythonRuntime.mm */; settings = {COMPILER_FLAGS = "-I3rdParty/pybind11/include -I3rdParty/python37/include"; }; };
 		C6FFB39E215046600057A1EA /* Variant.m in Sources */ = {isa = PBXBuildFile; fileRef = C6FFB39D215046600057A1EA /* Variant.m */; };
-		C6FFB3A221505CED0057A1EA /* UserParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = C6FFB3A121505CED0057A1EA /* UserParameter.m */; };
+		C6FFB3A221505CED0057A1EA /* UserControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C6FFB3A121505CED0057A1EA /* UserControl.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,8 +64,8 @@
 		C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mirage-Bridging-Header.h"; sourceTree = "<group>"; };
 		C6FFB39D215046600057A1EA /* Variant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Variant.m; sourceTree = "<group>"; };
 		C6FFB39F215046860057A1EA /* Variant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
-		C6FFB3A021505CED0057A1EA /* UserParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserParameter.h; sourceTree = "<group>"; };
-		C6FFB3A121505CED0057A1EA /* UserParameter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserParameter.m; sourceTree = "<group>"; };
+		C6FFB3A021505CED0057A1EA /* UserControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserControl.h; sourceTree = "<group>"; };
+		C6FFB3A121505CED0057A1EA /* UserControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserControl.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +109,8 @@
 				C650C3FF214EEDC5001233D3 /* ContentAndConsole.swift */,
 				C650C403214F0F9C001233D3 /* WindowController.swift */,
 				C6AEE05921346C500093C598 /* Mirage-Bridging-Header.h */,
-				C6FFB3A121505CED0057A1EA /* UserParameter.m */,
-				C6FFB3A021505CED0057A1EA /* UserParameter.h */,
+				C6FFB3A121505CED0057A1EA /* UserControl.m */,
+				C6FFB3A021505CED0057A1EA /* UserControl.h */,
 				C6FFB39D215046600057A1EA /* Variant.m */,
 				C6FFB39F215046860057A1EA /* Variant.h */,
 				C63471E5213452A10061BA36 /* Main.storyboard */,
@@ -236,7 +236,7 @@
 				C650C404214F0F9C001233D3 /* WindowController.swift in Sources */,
 				C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */,
 				C63E01C42141E49B000F3E85 /* Camera.swift in Sources */,
-				C6FFB3A221505CED0057A1EA /* UserParameter.m in Sources */,
+				C6FFB3A221505CED0057A1EA /* UserControl.m in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

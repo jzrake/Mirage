@@ -16,6 +16,7 @@
 + (int) numberOfScenes;
 + (struct Scene*) scene: (int) atIndex;
 + (struct Scene*) currentScene;
-+ (void) passDictionary: (NSDictionary*) dict;
 + (void) setCurrentSceneIndex: (int) index;
++ (void) passDictionary: (NSDictionary*) dict;
++ (NSArray<UserControl*>*) getUserControls;
 @end

@@ -7,14 +7,14 @@
 
 @interface Variant: NSObject
 
-typedef NS_ENUM(NSInteger, Type)
+typedef NS_ENUM(NSInteger, VariantType)
 {
-    Integer, Double, String
+    integerVariant, doubleVariant, stringVariant
 };
 
 - (Variant*) initWithDouble: (double) value;
 - (Variant*) initWithString: (NSString*) value;
-- (enum Type) type;
+- (enum VariantType) type;
 - (int)       asInteger;
 - (double)    asDouble;
 - (NSString*) asString;

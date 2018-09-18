@@ -4,14 +4,13 @@ import Foundation
 
 
 // ============================================================================
-class UserParameterPanelController: NSViewController
+class UserControlPanelController: NSViewController
 {
-    @IBOutlet var userParameterPanel: UserParameterPanel!
+    @IBOutlet var userControlPanel: UserControlPanel!
 
     override func viewDidLoad()
     {
-        guard let scene = PythonRuntime.currentScene() else { return }
-        userParameterPanel.parameterList = SceneAPI.userParameters(scene)
+        userControlPanel.controlList = PythonRuntime.getUserControls()
     }
 }
 
@@ -19,11 +18,11 @@ class UserParameterPanelController: NSViewController
 
 
 // ============================================================================
-class UserParameterPanel: NSView
+class UserControlPanel: NSView
 {
     private var grid: NSGridView?
 
-    var parameterList = [UserParameter]()
+    var controlList = [UserControl]()
     {
         didSet { setupGrid() }
     }
@@ -41,16 +40,16 @@ class UserParameterPanel: NSView
         }
         grid = NSGridView()
 
-        if (parameterList.isEmpty)
+        if (controlList.isEmpty)
         {
             return
         }
-        for parameter in parameterList
+        for control in controlList
         {
-            grid!.addRow(with: [makeLabel(for: parameter), makeControl(for: parameter)])
+            grid!.addRow(with: [makeLabel(for: control), makeControl(for: control)])
         }
         grid!.row(at: 0).topPadding = 20
-        grid!.row(at: parameterList.count - 1).bottomPadding = 20
+        grid!.row(at: controlList.count - 1).bottomPadding = 20
         grid!.column(at: 0).xPlacement = .trailing
         grid!.column(at: 0).leadingPadding = 20
         grid!.column(at: 1).trailingPadding = 20
@@ -63,41 +62,41 @@ class UserParameterPanel: NSView
         addSubview(grid!)
     }
 
-    private func makeControl(for parameter: UserParameter) -> NSView
+    private func makeControl(for control: UserControl) -> NSView
     {
-        switch parameter.control {
+        switch control.type {
         case .slider:
-            let control = NSSlider()
-            control.identifier = NSUserInterfaceItemIdentifier(parameter.name ?? "")
-            control.target = self
-            control.action = #selector(sliderHander)
-            control.doubleValue = parameter.value?.asDouble() ?? 0.0
-            return control
+            let view = NSSlider()
+            view.identifier = NSUserInterfaceItemIdentifier(control.name ?? "")
+            view.target = self
+            view.action = #selector(sliderHander)
+            view.doubleValue = control.value?.asDouble() ?? 0.0
+            return view
         case .text:
-            let control = NSTextField()
-            control.identifier = NSUserInterfaceItemIdentifier(parameter.name ?? "")
-            control.target = self
-            control.action = #selector(textHandler)
-            control.stringValue = parameter.value?.asString() ?? ""
-            return control
+            let view = NSTextField()
+            view.identifier = NSUserInterfaceItemIdentifier(control.name ?? "")
+            view.target = self
+            view.action = #selector(textHandler)
+            view.stringValue = control.value?.asString() ?? ""
+            return view
         }
     }
 
-    private func makeLabel(for parameter: UserParameter) -> NSTextField
+    private func makeLabel(for control: UserControl) -> NSTextField
     {
-        return NSTextField(labelWithString: parameter.name ?? "")
+        return NSTextField(labelWithString: control.name ?? "")
     }
 
     @objc func sliderHander(_ sender: NSSlider)
     {
         let dict: [String: Variant] = [sender.identifier!.rawValue : Variant(double: sender.doubleValue)];
-        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
+        NotificationCenter.default.post(name: AppDelegate.UserControlsChange, object: dict)
     }
 
     @objc func textHandler(_ sender: NSTextField)
     {
         let dict: [String: Variant] = [sender.identifier!.rawValue : Variant(string: sender.stringValue)];
-        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
+        NotificationCenter.default.post(name: AppDelegate.UserControlsChange, object: dict)
     }
 }
 

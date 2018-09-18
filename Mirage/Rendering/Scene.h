@@ -1,7 +1,7 @@
 #ifndef Scene_hpp
 #define Scene_hpp
 #include <Cocoa/Cocoa.h>
-#include "UserParameter.h"
+#include "UserControl.h"
 
 #ifdef __cplusplus
 #include <Metal/Metal.h>
@@ -26,15 +26,15 @@ public:
 
 
 // ============================================================================
-struct UserParameterCpp
+struct UserControlCpp
 {
-    UserParameterCpp();
-    ~UserParameterCpp();
+    UserControlCpp();
+    ~UserControlCpp();
     void setName(std::string name);
     void setControl(std::string control);
     void setDoubleValue(double value);
     void setStringValue(std::string value);
-    UserParameter* objc;
+    UserControl* objc;
 };
 
 
@@ -98,10 +98,8 @@ struct Scene
 {
     Scene();
     Scene(std::string name);
-    NSArray<UserParameter*>* getUserParameters() const;
     std::string name;
     std::vector<Node> nodes;
-    std::vector<UserParameterCpp> parameters;
 };
 #endif // __cplusplus
 
@@ -121,7 +119,6 @@ struct Scene;
 + (int) numNodes: (struct Scene*) scene;
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
 + (NSString*) name: (struct Scene*) scene;
-+ (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene;
 + (float) nodePositionX: (struct Node*) node;
 + (float) nodePositionY: (struct Node*) node;
 + (float) nodePositionZ: (struct Node*) node;

@@ -17,7 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     static let SceneListUpdate      = Notification.Name("SceneListUpdate")
     static let SceneReplace         = Notification.Name("SceneReplace")
     static let CurrentSceneChange   = Notification.Name("CurrentSceneChange")
-    static let UserParametersChange = Notification.Name("UserParametersChange")
+    static let UserControlsChange   = Notification.Name("UserControlsChange")
 
     weak var mainDocumentWindow: WindowController?
 
@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         PythonRuntime.evalFile(Bundle.main.url(forResource: "startup", withExtension: "py"))
         mainDocumentWindow?.pythonSourceURL = UserDefaults.standard.url(forKey: "pythonSourceURL")
 
-        NotificationCenter.default.addObserver(self, selector: #selector(userParameterChange), name: AppDelegate.UserParametersChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userControlsChange), name: AppDelegate.UserControlsChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
     }
 
@@ -52,10 +52,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         PythonRuntime.setCurrentSceneIndex(Int32(notification.object as! Int))
     }
 
-    @objc func userParameterChange(_ notification: Notification)
+    @objc func userControlsChange(_ notification: Notification)
     {
         guard let dict = notification.object as? [String : Variant] else {
-            print("UserParameterChange for non-double value")
+            print("UserControlChange for non-double value")
             return
         }
         PythonRuntime.pass(dict)

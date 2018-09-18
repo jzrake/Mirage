@@ -15,26 +15,14 @@ namespace py = pybind11;
 // ============================================================================
 static std::vector<Scene> pythonScenes;
 static py::object pythonEventHandler;
+static py::object pythonControlsCallback;
 static int currentSceneIndex = -1;
 
-static py::dict variantDictionaryToPython(NSDictionary* dict)
-{
-    auto pythonDict = py::dict();
-
-    for (NSString* key in dict)
-    {
-        py::str k = std::string([key UTF8String]);
-        Variant* v = dict[key];
-
-        switch (v.type)
-        {
-            case Integer: pythonDict[k] = v.asInteger; break;
-            case Double:  pythonDict[k] = v.asDouble; break;
-            case String:  pythonDict[k] = std::string([v.asString UTF8String]); break;
-        }
-    }
-    return pythonDict;
-}
+static py::dict variantDictionaryToPython(NSDictionary* dict);
+static Node nodeHaving(const Node& node, py::kwargs kwargs);
+static Node nodeFrom(py::kwargs kwargs);
+static UserControlCpp userControlFrom(py::kwargs kwargs);
+static void userParameterSetValue(UserControlCpp& p, py::object value);
 
 
 
@@ -56,12 +44,16 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
     Py_SetPath(pythonPathWide.data());
 
     pythonEventHandler = py::none();
+    pythonControlsCallback = py::none();
+
     py::initialize_interpreter();
 }
 
 + (void) finalizeInterpreter
 {
     pythonEventHandler = py::object();
+    pythonControlsCallback = py::object();
+
     py::finalize_interpreter();
 }
 
@@ -120,6 +112,16 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
     return nil;
 }
 
++ (struct Scene*) currentScene
+{
+    return currentSceneIndex == -1 ? nullptr : &pythonScenes[currentSceneIndex];
+}
+
++ (void) setCurrentSceneIndex: (int) index
+{
+    currentSceneIndex = index;
+}
+
 + (void) passDictionary: (NSDictionary*) dict
 {
     try {
@@ -130,14 +132,20 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
     }
 }
 
-+ (void) setCurrentSceneIndex: (int) index
++ (NSArray<UserControl*>*) getUserControls
 {
-    currentSceneIndex = index;
-}
+    try {
+        auto controls = pythonControlsCallback().cast<std::vector<UserControlCpp>>();
+        NSMutableArray<UserControl*>* objcControls = [[NSMutableArray<UserControl*> alloc] init];
 
-+ (struct Scene*) currentScene
-{
-    return currentSceneIndex == -1 ? nullptr : &pythonScenes[currentSceneIndex];
+        for (const auto& c : controls)
+            [objcControls addObject:c.objc];
+        return objcControls;
+    }
+    catch (const std::exception& e) {
+        [PythonRuntime postMessageToConsole:e.what()];
+        return @[];
+    }
 }
 
 + (void) postMessageToConsole: (std::string) message
@@ -167,7 +175,26 @@ static py::dict variantDictionaryToPython(NSDictionary* dict)
 // ============================================================================
 using array_t = py::array_t<float, py::array::c_style | py::array::forcecast>;
 
-static Node nodeHaving(const Node& node, py::kwargs kwargs)
+py::dict variantDictionaryToPython(NSDictionary* dict)
+{
+    auto pythonDict = py::dict();
+
+    for (NSString* key in dict)
+    {
+        py::str k = std::string([key UTF8String]);
+        Variant* v = dict[key];
+
+        switch (v.type)
+        {
+            case integerVariant: pythonDict[k] = v.asInteger; break;
+            case doubleVariant:  pythonDict[k] = v.asDouble; break;
+            case stringVariant:  pythonDict[k] = std::string([v.asString UTF8String]); break;
+        }
+    }
+    return pythonDict;
+}
+
+Node nodeHaving(const Node& node, py::kwargs kwargs)
 {
     py::object n = py::cast(node);
 
@@ -176,22 +203,22 @@ static Node nodeHaving(const Node& node, py::kwargs kwargs)
     return n.cast<Node>();
 }
 
-static Node nodeFrom(py::kwargs kwargs)
+Node nodeFrom(py::kwargs kwargs)
 {
     return nodeHaving(Node(), kwargs);
 }
 
-static UserParameterCpp userParamaterFrom(py::kwargs kwargs)
+UserControlCpp userControlFrom(py::kwargs kwargs)
 {
-    UserParameterCpp p;
+    UserControlCpp p;
     py::object q = py::cast(p);
 
     for (auto k : kwargs)
         py::setattr(q, k.first, k.second);
-    return q.cast<UserParameterCpp>();
+    return q.cast<UserControlCpp>();
 }
 
-static void userParameterSetValue(UserParameterCpp& p, py::object value)
+void userParameterSetValue(UserControlCpp& p, py::object value)
 {
     try { p.setDoubleValue(value.cast<double>()); return; } catch (...) {}
     try { p.setStringValue(value.cast<std::string>()); return; } catch (...) {}
@@ -222,19 +249,19 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def("with_rotation", &Node::withRotation)
     .def("having", nodeHaving);
 
-    py::class_<UserParameterCpp>(m, "UserParameter")
+    py::class_<UserControlCpp>(m, "Control")
     .def(py::init())
-    .def(py::init(&userParamaterFrom))
-    .def_property("control", nullptr, &UserParameterCpp::setControl)
-    .def_property("name", nullptr, &UserParameterCpp::setName)
+    .def(py::init(&userControlFrom))
+    .def_property("control", nullptr, &UserControlCpp::setControl)
+    .def_property("name", nullptr, &UserControlCpp::setName)
     .def_property("value", nullptr, &userParameterSetValue);
 
     py::class_<Scene>(m, "Scene")
     .def(py::init())
     .def(py::init<std::string>())
     .def_readwrite("name", &Scene::name)
-    .def_readwrite("nodes", &Scene::nodes)
-    .def_readwrite("parameters", &Scene::parameters);
+    .def_readwrite("nodes", &Scene::nodes);
+    // .def_readwrite("parameters", &Scene::parameters);
 
     py::class_<Image>(m, "Image")
     .def_property_readonly("width", &Image::getWidth)
@@ -260,20 +287,13 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     m.def("replace_scene", [] (const Scene& scene)
     {
         for (auto& s : pythonScenes)
-        {
             if (s.name == scene.name)
-            {
                 s = scene;
-            }
-        }
         [PythonRuntime postSceneReplaced:scene.name];
     });
 
-    m.def("set_event_handler", [] (py::object handler)
-    {
-        pythonEventHandler = handler;
-    });
-
+    m.def("set_event_handler", [] (py::object handler) { pythonEventHandler = handler; });
+    m.def("set_controls_callback", [] (py::object callback) { pythonControlsCallback = callback; });
     m.def("current_scene_name", [] () -> py::object
     {
         if (currentSceneIndex == -1)

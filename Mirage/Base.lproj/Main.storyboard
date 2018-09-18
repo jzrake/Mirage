@@ -952,7 +952,7 @@ CA
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
                                                     <connections>
-                                                        <segue destination="vYS-oS-EzY" kind="popover" popoverAnchorView="OD2-bD-jyk" popoverBehavior="t" preferredEdge="maxY" id="Hsh-go-Xu5"/>
+                                                        <segue destination="XWY-JK-CL5" kind="popover" popoverAnchorView="OD2-bD-jyk" popoverBehavior="t" preferredEdge="maxY" id="Oex-1u-Il9"/>
                                                     </connections>
                                                 </button>
                                                 <button toolTip="Edit Python sys.path" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w6C-6f-Ljx">
@@ -1002,22 +1002,6 @@ CA
                 <userDefaultsController representsSharedInstance="YES" id="mq3-hL-toY"/>
             </objects>
             <point key="canvasLocation" x="-1652" y="-25"/>
-        </scene>
-        <!--User Parameter Panel Controller-->
-        <scene sceneID="Dbs-xG-KgU">
-            <objects>
-                <viewController id="vYS-oS-EzY" customClass="UserParameterPanelController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="GWw-zF-1Wm" customClass="UserParameterPanel" customModule="Mirage" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                    <connections>
-                        <outlet property="userParameterPanel" destination="GWw-zF-1Wm" id="afx-ma-lbw"/>
-                    </connections>
-                </viewController>
-                <customObject id="xni-IE-J95" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1627" y="613"/>
         </scene>
         <!--Module Path Table-->
         <scene sceneID="Elb-OQ-7xa">
@@ -1122,6 +1106,22 @@ CA
                 <customObject id="eNC-ln-09Z" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2128" y="613"/>
+        </scene>
+        <!--User Control Panel Controller-->
+        <scene sceneID="CN3-zJ-F8Y">
+            <objects>
+                <viewController id="XWY-JK-CL5" customClass="UserControlPanelController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="AKY-bA-VN8" customClass="UserControlPanel" customModule="Mirage" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                    <connections>
+                        <outlet property="userControlPanel" destination="AKY-bA-VN8" id="zav-xK-aWo"/>
+                    </connections>
+                </viewController>
+                <customObject id="zWz-Z2-PO4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1626" y="613"/>
         </scene>
     </scenes>
     <resources>

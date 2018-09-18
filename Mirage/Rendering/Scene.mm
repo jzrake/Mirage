@@ -7,22 +7,22 @@
 
 
 // ============================================================================
-UserParameterCpp::UserParameterCpp()
+UserControlCpp::UserControlCpp()
 {
-    objc = [[UserParameter alloc] init];
+    objc = [[UserControl alloc] init];
 }
 
-UserParameterCpp::~UserParameterCpp()
+UserControlCpp::~UserControlCpp()
 {
     objc = nil;
 }
 
-void UserParameterCpp::setName(std::string name)
+void UserControlCpp::setName(std::string name)
 {
     objc.name = [[NSString alloc] initWithUTF8String:name.data()];
 }
 
-void UserParameterCpp::setControl(std::string control)
+void UserControlCpp::setControl(std::string control)
 {
     if (![objc setControlTypeName:[[NSString alloc] initWithUTF8String:control.data()]])
     {
@@ -30,12 +30,12 @@ void UserParameterCpp::setControl(std::string control)
     }
 }
 
-void UserParameterCpp::setDoubleValue(double value)
+void UserControlCpp::setDoubleValue(double value)
 {
     objc.value = [[Variant alloc] initWithDouble:value];
 }
 
-void UserParameterCpp::setStringValue(std::string value)
+void UserControlCpp::setStringValue(std::string value)
 {
     objc.value = [[Variant alloc] initWithString:[[NSString alloc] initWithUTF8String:value.data()]];
 }
@@ -243,17 +243,6 @@ Scene::Scene(std::string name) : name(name)
 {
 }
 
-NSArray<UserParameter*>* Scene::getUserParameters() const
-{
-    NSMutableArray<UserParameter*>* params = [[NSMutableArray<UserParameter*> alloc] init];
-
-    for (const auto& p : parameters)
-    {
-        [params addObject:p.objc];
-    }
-    return params;
-}
-
 
 
 
@@ -263,7 +252,7 @@ NSArray<UserParameter*>* Scene::getUserParameters() const
 + (int) numNodes: (struct Scene*) scene { return int(scene->nodes.size()); }
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) i { return i >=0 && i < scene->nodes.size() ? &scene->nodes[i] : nil; }
 + (NSString*) name: (struct Scene*) scene { return [[NSString alloc] initWithUTF8String:scene->name.data()]; }
-+ (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene { return scene->getUserParameters(); }
+// + (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene { return scene->getUserParameters(); }
 + (float) nodePositionX: (struct Node*) node { return node->x; }
 + (float) nodePositionY: (struct Node*) node { return node->y; }
 + (float) nodePositionZ: (struct Node*) node { return node->z; }

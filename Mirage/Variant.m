@@ -5,7 +5,7 @@
 
 @implementation Variant
 {
-    enum Type _type;
+    enum VariantType _type;
 
     int       _i_value;
     double    _d_value;
@@ -15,7 +15,7 @@
 - (Variant*) initWithString:(NSString *)value
 {
     self = [super init];
-    _type = String;
+    _type = stringVariant;
     _s_value = value;
     return self;
 }
@@ -23,29 +23,29 @@
 - (Variant*) initWithDouble:(double)value
 {
     self = [super init];
-    _type = Double;
+    _type = doubleVariant;
     _d_value = value;
     return self;
 }
 
-- (enum Type) type
+- (enum VariantType) type
 {
     return _type;
 }
 
 - (int) asInteger
 {
-    return _type == Integer ? _i_value : 0;
+    return _type == integerVariant ? _i_value : 0;
 }
 
 - (double) asDouble
 {
-    return _type == Double ? _d_value : 0.0;
+    return _type == doubleVariant ? _d_value : 0.0;
 }
 
 - (NSString*) asString
 {
-    return _type == String ? _s_value : nil;
+    return _type == stringVariant ? _s_value : nil;
 }
 
 @end
