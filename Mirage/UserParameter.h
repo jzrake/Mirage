@@ -1,6 +1,7 @@
 #ifndef UserParameter_h
 #define UserParameter_h
 #import <Foundation/Foundation.h>
+#include "Variant.h"
 
 
 
@@ -12,11 +13,12 @@ typedef NS_ENUM(NSInteger, ControlType)
     slider, text
 };
 
-- (UserParameter*) init;
-- (bool) setControl: (NSString*) control;
-- (void) setName: (NSString*) name;
-- (ControlType) control;
-- (NSString*) name;
+- (UserParameter*_Nonnull) init;
+- (bool) setControlTypeName: (NSString*_Nonnull) controlTypeName;
+
+@property ControlType control;
+@property (nullable) NSString* name;
+@property (nullable) Variant* value;
 
 @end
 

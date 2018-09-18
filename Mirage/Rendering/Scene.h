@@ -32,6 +32,8 @@ struct UserParameterCpp
     ~UserParameterCpp();
     void setName(std::string name);
     void setControl(std::string control);
+    void setDoubleValue(double value);
+    void setStringValue(std::string value);
     UserParameter* objc;
 };
 

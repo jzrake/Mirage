@@ -65,25 +65,27 @@ class UserParameterPanel: NSView
 
     private func makeControl(for parameter: UserParameter) -> NSView
     {
-        switch parameter.control() {
+        switch parameter.control {
         case .slider:
             let control = NSSlider()
-            control.identifier = NSUserInterfaceItemIdentifier(parameter.name())
+            control.identifier = NSUserInterfaceItemIdentifier(parameter.name ?? "")
             control.target = self
             control.action = #selector(sliderHander)
+            control.doubleValue = parameter.value?.asDouble() ?? 0.0
             return control
         case .text:
             let control = NSTextField()
-            control.identifier = NSUserInterfaceItemIdentifier(parameter.name())
+            control.identifier = NSUserInterfaceItemIdentifier(parameter.name ?? "")
             control.target = self
             control.action = #selector(textHandler)
+            control.stringValue = parameter.value?.asString() ?? ""
             return control
         }
     }
 
     private func makeLabel(for parameter: UserParameter) -> NSTextField
     {
-        return NSTextField(labelWithString: parameter.name())
+        return NSTextField(labelWithString: parameter.name ?? "")
     }
 
     @objc func sliderHander(_ sender: NSSlider)

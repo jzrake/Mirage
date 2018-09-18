@@ -24,10 +24,20 @@ void UserParameterCpp::setName(std::string name)
 
 void UserParameterCpp::setControl(std::string control)
 {
-    if (![objc setControl:[[NSString alloc] initWithUTF8String:control.data()]])
+    if (![objc setControlTypeName:[[NSString alloc] initWithUTF8String:control.data()]])
     {
         throw std::invalid_argument("unknown control name '" + control + "'");
     }
+}
+
+void UserParameterCpp::setDoubleValue(double value)
+{
+    objc.value = [[Variant alloc] initWithDouble:value];
+}
+
+void UserParameterCpp::setStringValue(std::string value)
+{
+    objc.value = [[Variant alloc] initWithString:[[NSString alloc] initWithUTF8String:value.data()]];
 }
 
 

@@ -191,6 +191,13 @@ static UserParameterCpp userParamaterFrom(py::kwargs kwargs)
     return q.cast<UserParameterCpp>();
 }
 
+static void userParameterSetValue(UserParameterCpp& p, py::object value)
+{
+    try { p.setDoubleValue(value.cast<double>()); return; } catch (...) {}
+    try { p.setStringValue(value.cast<std::string>()); return; } catch (...) {}
+    throw std::invalid_argument("value must have type str or float");
+}
+
 
 
 
@@ -219,7 +226,8 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def(py::init())
     .def(py::init(&userParamaterFrom))
     .def_property("control", nullptr, &UserParameterCpp::setControl)
-    .def_property("name", nullptr, &UserParameterCpp::setName);
+    .def_property("name", nullptr, &UserParameterCpp::setName)
+    .def_property("value", nullptr, &userParameterSetValue);
 
     py::class_<Scene>(m, "Scene")
     .def(py::init())

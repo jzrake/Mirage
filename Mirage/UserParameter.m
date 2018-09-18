@@ -7,6 +7,7 @@
 {
     ControlType _control;
     NSString* _name;
+    Variant* _value;
 }
 
 - (UserParameter*) init
@@ -17,26 +18,11 @@
     return self;
 }
 
-- (bool) setControl: (NSString*) control
+- (bool) setControlTypeName:(NSString *)controlTypeName
 {
-    if ([control isEqualToString:@"slider"]) { _control = slider; return true; }
-    if ([control isEqualToString:@"text"])   { _control = text; return true; }
+    if ([controlTypeName isEqualToString:@"slider"]) { _control = slider; return true; }
+    if ([controlTypeName isEqualToString:@"text"])   { _control = text; return true; }
     return false;
-}
-
-- (void) setName: (NSString*) name
-{
-    _name = name;
-}
-
-- (ControlType) control
-{
-    return _control;
-}
-
-- (NSString*) name
-{
-    return _name ? _name : @"";
 }
 
 @end
