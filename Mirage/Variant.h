@@ -7,7 +7,7 @@
 
 @interface Variant: NSObject
 
-enum Type
+typedef NS_ENUM(NSInteger, Type)
 {
     Integer, Double, String
 };

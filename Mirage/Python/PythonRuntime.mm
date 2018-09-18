@@ -243,6 +243,12 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
         [PythonRuntime postSceneListUpdated];
     });
 
+    m.def("show", [] (const Scene& scene)
+    {
+        pythonScenes.push_back(scene);
+        [PythonRuntime postSceneListUpdated];
+    });
+
     m.def("replace_scene", [] (const Scene& scene)
     {
         for (auto& s : pythonScenes)

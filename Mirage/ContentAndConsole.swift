@@ -3,12 +3,6 @@ import Foundation
 
 
 
-// Article on using NSGridView:
-// http://www.tothenew.com/blog/nsgridview-a-new-layout-container-for-macos/
-
-
-
-
 // ============================================================================
 class UserParameterPanelController: NSViewController
 {
@@ -47,6 +41,10 @@ class UserParameterPanel: NSView
         }
         grid = NSGridView()
 
+        if (parameterList.isEmpty)
+        {
+            return
+        }
         for parameter in parameterList
         {
             grid!.addRow(with: [makeLabel(for: parameter), makeControl(for: parameter)])
@@ -69,13 +67,17 @@ class UserParameterPanel: NSView
     {
         switch parameter.control() {
         case .slider:
-            let slider = NSSlider()
-            slider.identifier = NSUserInterfaceItemIdentifier(parameter.name())
-            slider.target = self
-            slider.action = #selector(sliderHander)
-            return slider
+            let control = NSSlider()
+            control.identifier = NSUserInterfaceItemIdentifier(parameter.name())
+            control.target = self
+            control.action = #selector(sliderHander)
+            return control
         case .text:
-            return NSTextField()
+            let control = NSTextField()
+            control.identifier = NSUserInterfaceItemIdentifier(parameter.name())
+            control.target = self
+            control.action = #selector(textHandler)
+            return control
         }
     }
 
@@ -86,7 +88,13 @@ class UserParameterPanel: NSView
 
     @objc func sliderHander(_ sender: NSSlider)
     {
-        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant.init(double: sender.doubleValue)];
+        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant(double: sender.doubleValue)];
+        NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
+    }
+
+    @objc func textHandler(_ sender: NSTextField)
+    {
+        let dict: [String: Variant] = [sender.identifier!.rawValue : Variant(string: sender.stringValue)];
         NotificationCenter.default.post(name: AppDelegate.UserParametersChange, object: dict)
     }
 }
