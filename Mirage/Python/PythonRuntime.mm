@@ -280,16 +280,17 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
 
     m.def("show", [] (const Scene& scene)
     {
+        for (auto& s : pythonScenes)
+        {
+            if (s.name == scene.name)
+            {
+                s = scene;
+                [PythonRuntime postSceneReplaced:scene.name];
+                return;
+            }
+        }
         pythonScenes.push_back(scene);
         [PythonRuntime postSceneListUpdated];
-    });
-
-    m.def("replace_scene", [] (const Scene& scene)
-    {
-        for (auto& s : pythonScenes)
-            if (s.name == scene.name)
-                s = scene;
-        [PythonRuntime postSceneReplaced:scene.name];
     });
 
     m.def("set_event_handler", [] (py::object handler) { pythonEventHandler = handler; });

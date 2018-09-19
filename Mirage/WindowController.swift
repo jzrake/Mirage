@@ -18,9 +18,7 @@ class WindowController: NSWindowController
 
 
 
+
 class SplitViewController: NSSplitViewController
 {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
 }

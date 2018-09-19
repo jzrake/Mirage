@@ -49,10 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         PythonRuntime.add(toSystemPath: URL(fileURLWithPath: "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages"))
         PythonRuntime.evalFile(Bundle.main.url(forResource: "startup", withExtension: "py"))
 
-        watchedPaths = (UserDefaults.standard.array(forKey: "watchedPaths") as? [String]) ?? []
-
         NotificationCenter.default.addObserver(self, selector: #selector(userControlsChange), name: AppDelegate.UserControlsChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
+
+        watchedPaths = (UserDefaults.standard.array(forKey: "watchedPaths") as? [String]) ?? []
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
@@ -93,7 +93,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 witness = nil
             }
             else {
-                witness = Witness(paths: watchedPaths, flags: .FileEvents, latency: 0.1)
+                let filePaths = watchedPaths.filter() { FileManager.default.fileExists(atPath: $0) }
+
+                for filePath in filePaths
+                {
+                    evalSourceAsAppropriate(path: filePath)
+                }
+
+                witness = Witness(paths: filePaths, flags: .FileEvents, latency: 0.1)
                 { [weak self] events in
                     for e in events
                     {
@@ -106,7 +113,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     private func handleFileEvent(_ event: FileEvent)
     {
-        let url = URL(fileURLWithPath: event.path)
+        evalSourceAsAppropriate(path: event.path)
+    }
+
+    private func evalSourceAsAppropriate(path: String)
+    {
+        let url = URL(fileURLWithPath: path)
 
         if url.pathExtension == "py"
         {
