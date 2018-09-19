@@ -31,11 +31,12 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate
 {
     // ========================================================================
-    static let ConsoleMesssage      = Notification.Name("ConsoleMessage")
-    static let SceneListUpdate      = Notification.Name("SceneListUpdate")
-    static let SceneReplace         = Notification.Name("SceneReplace")
-    static let CurrentSceneChange   = Notification.Name("CurrentSceneChange")
-    static let UserControlsChange   = Notification.Name("UserControlsChange")
+    static let LogMesssageFromPython = Notification.Name("LogMesssageFromPython")
+    static let LogMesssageFromApp    = Notification.Name("LogMesssageFromApp")
+    static let SceneListUpdate       = Notification.Name("SceneListUpdate")
+    static let SceneReplace          = Notification.Name("SceneReplace")
+    static let CurrentSceneChange    = Notification.Name("CurrentSceneChange")
+    static let UserControlsChange    = Notification.Name("UserControlsChange")
 
     // weak var mainDocumentWindow: WindowController?
 
@@ -92,8 +93,25 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 witness = nil
             }
             else {
-                witness = Witness(paths: watchedPaths, flags: .FileEvents, latency: 0.1) { e in print(e) }
+                witness = Witness(paths: watchedPaths, flags: .FileEvents, latency: 0.1)
+                { [weak self] events in
+                    for e in events
+                    {
+                        self?.handleFileEvent(e)
+                    }
+                }
             }
+        }
+    }
+
+    private func handleFileEvent(_ event: FileEvent)
+    {
+        let url = URL(fileURLWithPath: event.path)
+
+        if url.pathExtension == "py"
+        {
+            NotificationCenter.default.post(name: AppDelegate.LogMesssageFromApp, object: "Reload " + url.path)
+            PythonRuntime.evalFile(url)
         }
     }
 }

@@ -151,7 +151,7 @@ static void userParameterSetValue(UserControlCpp& p, py::object value);
 + (void) postMessageToConsole: (std::string) message
 {
     NSString* m = [[NSString alloc] initWithUTF8String:message.data()];
-    NSNotification* notification = [[NSNotification alloc] initWithName:@"ConsoleMessage" object:m userInfo:nil];
+    NSNotification* notification = [[NSNotification alloc] initWithName:@"LogMesssageFromPython" object:m userInfo:nil];
     [NSNotificationCenter.defaultCenter postNotification:notification];
 }
 

@@ -4,8 +4,6 @@ import Foundation
 
 class ModulePathTable: NSViewController
 {
-    // var urls = [URL]()
-
     let pathColumnId = NSUserInterfaceItemIdentifier(rawValue: "PathColumn")
     let app = NSApp.delegate as! AppDelegate
 
@@ -13,7 +11,6 @@ class ModulePathTable: NSViewController
 
     @IBAction func addPathAction(_ sender: NSButton)
     {
-        // urls.append(URL(fileURLWithPath: "/"))
         app.watchedPaths.append("/")
 
         reloadDataKeepingSelection()
@@ -21,10 +18,7 @@ class ModulePathTable: NSViewController
 
     @IBAction func editAction(_ sender: NSTextField)
     {
-        //urls[tableView.selectedRow] = URL(fileURLWithPath: sender.stringValue)
-
         app.watchedPaths[tableView.selectedRow] = sender.stringValue
-
         reloadDataKeepingSelection()
     }
 
@@ -32,9 +26,7 @@ class ModulePathTable: NSViewController
     {
         if tableView.selectedRow != -1
         {
-            // urls.remove(at: tableView.selectedRow)
             app.watchedPaths.remove(at: tableView.selectedRow)
-
             reloadDataKeepingSelection()
         }
     }
@@ -78,7 +70,11 @@ extension ModulePathTable: NSTableViewDelegate, NSTableViewDataSource
 
         if pathExists && pathIsDirectory.boolValue
         {
-            image = NSImage(named: NSImage.Name.statusAvailable)
+            image = NSImage(named: NSImage.Name.folder)
+        }
+        else if pathExists
+        {
+            image = NSImage(named: NSImage.Name.multipleDocuments)
         }
         else
         {

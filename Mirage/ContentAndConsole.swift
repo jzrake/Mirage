@@ -123,7 +123,8 @@ class ContentAndConsole: NSViewController
 
     override func viewDidLoad()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(consoleMessage), name: AppDelegate.ConsoleMesssage, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(messageFromApp), name: AppDelegate.LogMesssageFromApp, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(messageFromPython), name: AppDelegate.LogMesssageFromPython, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sceneReplace), name: AppDelegate.SceneReplace, object: nil)
     }
@@ -133,7 +134,16 @@ class ContentAndConsole: NSViewController
         metalView.representedObject = notification.object as? Int
     }
 
-    @objc func consoleMessage(_ notification: Notification)
+    @objc func messageFromApp(_ notification: Notification)
+    {
+        let message = notification.object as! String
+        let font = NSFont(name: "Monaco", size: 10) as Any
+        let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : NSColor.systemGray]
+        consoleOutput.textStorage?.append(NSAttributedString(string: "->   " + message + "\n", attributes: attrs))
+        consoleOutput.scrollToEndOfDocument(nil)
+    }
+
+    @objc func messageFromPython(_ notification: Notification)
     {
         let message = notification.object as! String
 
@@ -145,7 +155,7 @@ class ContentAndConsole: NSViewController
         let color = message.contains("Error") ? NSColor.red : NSColor.black
         let attrs = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : color]
         consoleOutput.textStorage?.append(NSAttributedString(string: ">>> " + message + "\n", attributes: attrs))
-        consoleOutput.scrollToEndOfDocument(self)
+        consoleOutput.scrollToEndOfDocument(nil)
     }
 
     @objc func sceneReplace(_ notification: Notification)
