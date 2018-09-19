@@ -9,6 +9,23 @@ import Cocoa
 
 
 
+// Code for opening files:
+//        let openPanel = NSOpenPanel()
+//        openPanel.showsHiddenFiles = false
+//        openPanel.canChooseFiles = true
+//        openPanel.canChooseDirectories = true
+//        openPanel.allowedFileTypes = ["py"]
+//
+//        openPanel.beginSheetModal(for: window!) { response in
+//            guard response.rawValue == NSFileHandlingPanelOKButton else {
+//                return
+//            }
+//            let myUrl = openPanel.url
+//        }
+
+
+
+
 // ============================================================================
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -20,15 +37,18 @@ class AppDelegate: NSObject, NSApplicationDelegate
     static let CurrentSceneChange   = Notification.Name("CurrentSceneChange")
     static let UserControlsChange   = Notification.Name("UserControlsChange")
 
-    weak var mainDocumentWindow: WindowController?
+    // weak var mainDocumentWindow: WindowController?
 
     // ========================================================================
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
+        // clearUserDefaults()
+
         PythonRuntime.initializeInterpreter()
         PythonRuntime.add(toSystemPath: URL(fileURLWithPath: "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages"))
         PythonRuntime.evalFile(Bundle.main.url(forResource: "startup", withExtension: "py"))
-        mainDocumentWindow?.pythonSourceURL = UserDefaults.standard.url(forKey: "pythonSourceURL")
+
+        watchedPaths = (UserDefaults.standard.array(forKey: "watchedPaths") as? [String]) ?? []
 
         NotificationCenter.default.addObserver(self, selector: #selector(userControlsChange), name: AppDelegate.UserControlsChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
@@ -37,7 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         PythonRuntime.finalizeInterpreter()
-        UserDefaults.standard.set(mainDocumentWindow?.pythonSourceURL, forKey: "pythonSourceURL")
+        UserDefaults.standard.set(watchedPaths, forKey: "watchedPaths")
     }
 
     // ========================================================================

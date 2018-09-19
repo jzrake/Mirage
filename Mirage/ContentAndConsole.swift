@@ -157,4 +157,9 @@ class ContentAndConsole: NSViewController
     {
         consoleDisclosureButton.performClick(nil)
     }
+    
+    func clearConsole()
+    {
+        consoleOutput.string = ""
+    }
 }

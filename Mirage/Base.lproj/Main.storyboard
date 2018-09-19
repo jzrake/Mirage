@@ -173,12 +173,6 @@ CA
                                                 <action selector="selectAll:" target="Ady-hI-5gd" id="VNm-Mi-diN"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Reload" keyEquivalent="r" id="AMD-8b-uIy">
-                                            <modifierMask key="keyEquivalentModifierMask" control="YES"/>
-                                            <connections>
-                                                <action selector="reload:" target="Ady-hI-5gd" id="Pz3-Q7-3u9"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
                                         <menuItem title="Find" id="4EN-yA-p0u">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -631,6 +625,7 @@ CA
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
                                         <menuItem title="Show Sidebar" keyEquivalent="k" id="kIP-vf-haE">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES"/>
                                             <connections>
                                                 <action selector="toggleSidebar:" target="Ady-hI-5gd" id="ak1-sM-hJV"/>
                                             </connections>
@@ -639,6 +634,11 @@ CA
                                             <modifierMask key="keyEquivalentModifierMask" control="YES"/>
                                             <connections>
                                                 <action selector="toggleConsole:" target="Ady-hI-5gd" id="sPr-jb-OpV"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Clear Console" keyEquivalent="k" id="YDo-6p-nOe">
+                                            <connections>
+                                                <action selector="clearConsole:" target="Ady-hI-5gd" id="MeB-aa-ewx"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
