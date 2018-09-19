@@ -13,6 +13,7 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
+    // ========================================================================
     static let ConsoleMesssage      = Notification.Name("ConsoleMessage")
     static let SceneListUpdate      = Notification.Name("SceneListUpdate")
     static let SceneReplace         = Notification.Name("SceneReplace")
@@ -21,10 +22,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     weak var mainDocumentWindow: WindowController?
 
+    // ========================================================================
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
-        clearUserDefaults()
-
         PythonRuntime.initializeInterpreter()
         PythonRuntime.add(toSystemPath: URL(fileURLWithPath: "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages"))
         PythonRuntime.evalFile(Bundle.main.url(forResource: "startup", withExtension: "py"))
@@ -40,13 +40,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
         UserDefaults.standard.set(mainDocumentWindow?.pythonSourceURL, forKey: "pythonSourceURL")
     }
 
-    func clearUserDefaults()
+    // ========================================================================
+    private func clearUserDefaults()
     {
         if let appDomain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }
     }
 
+    // ========================================================================
     @objc func currentSceneChange(_ notification: Notification)
     {
         PythonRuntime.setCurrentSceneIndex(Int32(notification.object as! Int))
@@ -59,5 +61,19 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return
         }
         PythonRuntime.pass(dict)
+    }
+
+    // ========================================================================
+    private var witness: Witness?
+
+    var watchedPaths = [String]() {
+        didSet {
+            if watchedPaths.isEmpty {
+                witness = nil
+            }
+            else {
+                witness = Witness(paths: watchedPaths, flags: .FileEvents, latency: 0.1) { e in print(e) }
+            }
+        }
     }
 }

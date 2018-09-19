@@ -4,20 +4,27 @@ import Foundation
 
 class ModulePathTable: NSViewController
 {
-    var urls = [URL]()
+    // var urls = [URL]()
+
     let pathColumnId = NSUserInterfaceItemIdentifier(rawValue: "PathColumn")
+    let app = NSApp.delegate as! AppDelegate
 
     @IBOutlet weak var tableView: NSTableView!
 
     @IBAction func addPathAction(_ sender: NSButton)
     {
-        urls.append(URL(fileURLWithPath: "/"))
+        // urls.append(URL(fileURLWithPath: "/"))
+        app.watchedPaths.append("/")
+
         reloadDataKeepingSelection()
     }
 
     @IBAction func editAction(_ sender: NSTextField)
     {
-        urls[tableView.selectedRow] = URL(fileURLWithPath: sender.stringValue)
+        //urls[tableView.selectedRow] = URL(fileURLWithPath: sender.stringValue)
+
+        app.watchedPaths[tableView.selectedRow] = sender.stringValue
+
         reloadDataKeepingSelection()
     }
 
@@ -25,7 +32,9 @@ class ModulePathTable: NSViewController
     {
         if tableView.selectedRow != -1
         {
-            urls.remove(at: tableView.selectedRow)
+            // urls.remove(at: tableView.selectedRow)
+            app.watchedPaths.remove(at: tableView.selectedRow)
+
             reloadDataKeepingSelection()
         }
     }
@@ -42,15 +51,16 @@ extension ModulePathTable: NSTableViewDelegate, NSTableViewDataSource
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
     {
+        let urls = app.watchedPaths
         let view = tableView.makeView(withIdentifier: pathColumnId, owner: self) as! NSTableCellView
-        view.textField?.stringValue = urls[row].path
+        view.textField?.stringValue = urls[row]
         view.imageView?.image = statusImage(for: urls[row])
         return view
     }
 
     func numberOfRows(in tableView: NSTableView) -> Int
     {
-        return urls.count
+        return app.watchedPaths.count
     }
 
     private func reloadDataKeepingSelection()
@@ -60,11 +70,11 @@ extension ModulePathTable: NSTableViewDelegate, NSTableViewDataSource
         tableView.selectRowIndexes(selected, byExtendingSelection: true)
     }
 
-    private func statusImage(for url: URL) -> NSImage
+    private func statusImage(for path: String) -> NSImage
     {
         let image: NSImage!
         var pathIsDirectory: ObjCBool = false
-        let pathExists = FileManager.default.fileExists(atPath: url.path, isDirectory: &pathIsDirectory)
+        let pathExists = FileManager.default.fileExists(atPath: path, isDirectory: &pathIsDirectory)
 
         if pathExists && pathIsDirectory.boolValue
         {

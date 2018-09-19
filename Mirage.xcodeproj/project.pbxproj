@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C621288E2151F3DC00C7583D /* FileEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62128892151F3DC00C7583D /* FileEvent.swift */; };
+		C621288F2151F3DC00C7583D /* EventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621288A2151F3DC00C7583D /* EventStream.swift */; };
+		C62128902151F3DC00C7583D /* Witness.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621288B2151F3DC00C7583D /* Witness.swift */; };
+		C62128912151F3DC00C7583D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C621288D2151F3DC00C7583D /* Info.plist */; };
 		C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63471DF213452A10061BA36 /* AppDelegate.swift */; };
 		C63471E4213452A10061BA36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C63471E3213452A10061BA36 /* Assets.xcassets */; };
 		C63471E7213452A10061BA36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C63471E5213452A10061BA36 /* Main.storyboard */; };
@@ -40,6 +44,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C62128892151F3DC00C7583D /* FileEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEvent.swift; sourceTree = "<group>"; };
+		C621288A2151F3DC00C7583D /* EventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStream.swift; sourceTree = "<group>"; };
+		C621288B2151F3DC00C7583D /* Witness.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Witness.swift; sourceTree = "<group>"; };
+		C621288C2151F3DC00C7583D /* Witness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Witness.h; sourceTree = "<group>"; };
+		C621288D2151F3DC00C7583D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C63471DC213452A10061BA36 /* Mirage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mirage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C63471DF213452A10061BA36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C63471E3213452A10061BA36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -80,6 +89,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C62128882151F3DC00C7583D /* Witness */ = {
+			isa = PBXGroup;
+			children = (
+				C62128892151F3DC00C7583D /* FileEvent.swift */,
+				C621288A2151F3DC00C7583D /* EventStream.swift */,
+				C621288B2151F3DC00C7583D /* Witness.swift */,
+				C621288C2151F3DC00C7583D /* Witness.h */,
+				C621288D2151F3DC00C7583D /* Info.plist */,
+			);
+			name = Witness;
+			path = 3rdParty/witness/Witness;
+			sourceTree = SOURCE_ROOT;
+		};
 		C63471D3213452A10061BA36 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +123,7 @@
 		C63471DE213452A10061BA36 /* Mirage */ = {
 			isa = PBXGroup;
 			children = (
+				C62128882151F3DC00C7583D /* Witness */,
 				C6AEE05821346BED0093C598 /* Python */,
 				C654B6A82134A094009BD4C1 /* Rendering */,
 				C63471DF213452A10061BA36 /* AppDelegate.swift */,
@@ -213,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C62128912151F3DC00C7583D /* Info.plist in Resources */,
 				C63471E4213452A10061BA36 /* Assets.xcassets in Resources */,
 				C650C402214EF502001233D3 /* startup.py in Resources */,
 				C63471E7213452A10061BA36 /* Main.storyboard in Resources */,
@@ -234,9 +258,12 @@
 				C673062221347F620047DC3E /* PythonRuntime.mm in Sources */,
 				C650C3FE214EECE5001233D3 /* SceneOutline.swift in Sources */,
 				C650C404214F0F9C001233D3 /* WindowController.swift in Sources */,
+				C621288F2151F3DC00C7583D /* EventStream.swift in Sources */,
 				C654B6AB2134A0C6009BD4C1 /* Shader.metal in Sources */,
+				C621288E2151F3DC00C7583D /* FileEvent.swift in Sources */,
 				C63E01C42141E49B000F3E85 /* Camera.swift in Sources */,
 				C6FFB3A221505CED0057A1EA /* UserControl.m in Sources */,
+				C62128902151F3DC00C7583D /* Witness.swift in Sources */,
 				C63471E0213452A10061BA36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

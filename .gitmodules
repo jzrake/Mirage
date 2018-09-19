@@ -4,3 +4,6 @@
 [submodule "3rdParty/pybind11"]
 	path = 3rdParty/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "3rdParty/witness"]
+	path = 3rdParty/witness
+	url = https://github.com/njdehoog/Witness.git
