@@ -42,6 +42,10 @@ class SceneOutline: NSViewController, NSOutlineViewDelegate, NSOutlineViewDataSo
             {
                 textField.stringValue = SceneAPI.name(scene)
             }
+            if let imageView = view?.imageView
+            {
+                imageView.image = NSImage(named: NSImage.Name.iconViewTemplate)
+            }
         }
         return view
     }

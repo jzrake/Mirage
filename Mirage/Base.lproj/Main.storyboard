@@ -863,11 +863,7 @@ CA
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="T8a-ij-cSF" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
-                                <rect key="frame" x="39" y="80" width="500" height="500"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="500" id="8TY-EN-s70"/>
-                                    <constraint firstAttribute="height" constant="500" id="9yA-eu-VSi"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="22" width="578" height="578"/>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="cuN-0S-i56">
                                 <rect key="frame" x="0.0" y="22" width="578" height="200"/>
@@ -981,13 +977,15 @@ CA
                             </customView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="1e7-7V-zYb"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="cuN-0S-i56" secondAttribute="bottom" id="70Y-vD-Ewg"/>
+                            <constraint firstAttribute="trailing" secondItem="T8a-ij-cSF" secondAttribute="trailing" id="891-mv-sKv"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="DDl-Jn-qnv"/>
                             <constraint firstItem="cuN-0S-i56" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="KNA-7M-n21"/>
                             <constraint firstAttribute="trailing" secondItem="cuN-0S-i56" secondAttribute="trailing" id="PrY-52-nlb"/>
                             <constraint firstAttribute="bottom" secondItem="huH-fB-aL4" secondAttribute="bottom" id="Vxv-9U-I7I"/>
-                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" constant="20" id="aym-oJ-vNY"/>
-                            <constraint firstItem="T8a-ij-cSF" firstAttribute="centerX" secondItem="8lE-GX-vtn" secondAttribute="centerX" id="nSl-Wf-bc8"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" id="aJO-VO-vSX"/>
+                            <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="T8a-ij-cSF" secondAttribute="bottom" id="lTA-LC-zhU"/>
                             <constraint firstAttribute="trailing" secondItem="huH-fB-aL4" secondAttribute="trailing" id="rZB-ab-vsy"/>
                         </constraints>
                     </view>

@@ -87,9 +87,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // ========================================================================
     private var witness: Witness?
 
-    var watchedPaths = [String]() {
-        didSet {
-            if watchedPaths.isEmpty {
+    var watchedPaths = [String]()
+    {
+        didSet
+        {
+            if watchedPaths == oldValue
+            {
+            }
+            else if watchedPaths.isEmpty
+            {
                 witness = nil
             }
             else {

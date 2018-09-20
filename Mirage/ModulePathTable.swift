@@ -46,7 +46,7 @@ extension ModulePathTable: NSTableViewDelegate, NSTableViewDataSource
         let urls = app.watchedPaths
         let view = tableView.makeView(withIdentifier: pathColumnId, owner: self) as! NSTableCellView
         view.textField?.stringValue = urls[row]
-        view.imageView?.image = statusImage(for: urls[row])
+        view.imageView?.image = NSWorkspace.shared.icon(forFile: urls[row]) //statusImage(for: urls[row])
         return view
     }
 
