@@ -1,4 +1,5 @@
 import Foundation
+import Quartz
 
 
 
@@ -109,6 +110,7 @@ class ContentAndConsole: NSViewController
     @IBOutlet weak var consoleDisclosureButton: NSButton!
     @IBOutlet weak var consoleView: NSView!
     @IBOutlet weak var metalView: MetalView!
+    @IBOutlet weak var pdfView: PDFView!
     @IBOutlet var consoleOutput: NSTextView!
 
     @IBAction func toggleConsole(_ sender: AnyObject?)
@@ -123,6 +125,9 @@ class ContentAndConsole: NSViewController
 
     override func viewDidLoad()
     {
+        pdfView.isHidden = true
+        metalView.isHidden = true
+
         NotificationCenter.default.addObserver(self, selector: #selector(messageFromApp), name: AppDelegate.LogMesssageFromApp, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(messageFromPython), name: AppDelegate.LogMesssageFromPython, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(currentSceneChange), name: AppDelegate.CurrentSceneChange, object: nil)
@@ -131,7 +136,31 @@ class ContentAndConsole: NSViewController
 
     @objc func currentSceneChange(_ notification: Notification)
     {
-        metalView.representedObject = notification.object as? Int
+        let index = notification.object as! Int
+
+        if index == -1
+        {
+            metalView.isHidden = true
+            pdfView.isHidden = true
+        }
+        else
+        {
+            let scene = PythonRuntime.scene(Int32(index))
+            let pdf = SceneAPI.pdf(scene)!
+
+            if pdf.isEmpty
+            {
+                pdfView.isHidden = true
+                metalView.isHidden = false
+                metalView.representedObject = index
+            }
+            else
+            {
+                metalView.isHidden = true
+                pdfView.isHidden = false
+                pdfView.document = PDFDocument(data: pdf)
+            }
+        }
     }
 
     @objc func messageFromApp(_ notification: Notification)

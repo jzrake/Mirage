@@ -252,7 +252,7 @@ Scene::Scene(std::string name) : name(name)
 + (int) numNodes: (struct Scene*) scene { return int(scene->nodes.size()); }
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) i { return i >=0 && i < scene->nodes.size() ? &scene->nodes[i] : nil; }
 + (NSString*) name: (struct Scene*) scene { return [[NSString alloc] initWithUTF8String:scene->name.data()]; }
-// + (NSArray<UserParameter*>*) userParameters: (struct Scene*) scene { return scene->getUserParameters(); }
++ (NSData*) pdf:(struct Scene *) scene { return [[NSData alloc] initWithBytes:scene->pdf.data() length:scene->pdf.size()]; }
 + (float) nodePositionX: (struct Node*) node { return node->x; }
 + (float) nodePositionY: (struct Node*) node { return node->y; }
 + (float) nodePositionZ: (struct Node*) node { return node->z; }

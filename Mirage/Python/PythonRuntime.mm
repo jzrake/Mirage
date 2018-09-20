@@ -260,8 +260,8 @@ PYBIND11_EMBEDDED_MODULE(mirage, m)
     .def(py::init())
     .def(py::init<std::string>())
     .def_readwrite("name", &Scene::name)
-    .def_readwrite("nodes", &Scene::nodes);
-    // .def_readwrite("parameters", &Scene::parameters);
+    .def_readwrite("nodes", &Scene::nodes)
+    .def_property("pdf_data", [] (const Scene& s) { return py::bytes(s.pdf); }, [] (Scene& s, py::bytes b) { s.pdf = b; });
 
     py::class_<Image>(m, "Image")
     .def_property_readonly("width", &Image::getWidth)

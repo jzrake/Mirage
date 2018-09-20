@@ -3,7 +3,6 @@ import numpy as np
 import mirage
 
 
-
 class _LogWriter:
     def flush(self):
         pass
@@ -234,3 +233,22 @@ def text_node(text, scale=10):
         texture   = text)
 
 
+
+
+
+try:
+    import matplotlib
+    matplotlib.use('pdf')
+except ImportError:
+    print("Warning: matplotlib was not found.")
+
+
+
+def show(name='Figure'):
+    import matplotlib.pyplot as plt
+    import io
+    buf = io.BytesIO()
+    plt.savefig(buf, format='pdf')
+    s = mirage.Scene(name)
+    s.pdf_data = buf.getvalue()
+    mirage.show(s)

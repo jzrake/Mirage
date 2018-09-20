@@ -100,6 +100,7 @@ struct Scene
     Scene(std::string name);
     std::string name;
     std::vector<Node> nodes;
+    std::string pdf;
 };
 #endif // __cplusplus
 
@@ -119,6 +120,7 @@ struct Scene;
 + (int) numNodes: (struct Scene*) scene;
 + (struct Node*) node: (struct Scene*) scene atIndex: (int) index;
 + (NSString*) name: (struct Scene*) scene;
++ (NSData*) pdf: (struct Scene*) scene;
 + (float) nodePositionX: (struct Node*) node;
 + (float) nodePositionY: (struct Node*) node;
 + (float) nodePositionZ: (struct Node*) node;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="670-nH-cDz">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="670-nH-cDz">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14313.18"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -700,7 +700,7 @@ CA
         <scene sceneID="2Iy-dQ-puf">
             <objects>
                 <windowController id="670-nH-cDz" customClass="WindowController" customModule="Mirage" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Faz-ha-bcf">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Faz-ha-bcf">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
@@ -763,7 +763,7 @@ CA
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="" width="175" minWidth="16" maxWidth="1000" id="zvl-90-o8q">
+                                                <tableColumn width="175" minWidth="16" maxWidth="1000" id="zvl-90-o8q">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -865,6 +865,9 @@ CA
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="T8a-ij-cSF" customClass="MetalView" customModule="Mirage" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="22" width="578" height="578"/>
                             </customView>
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Ae-Or-RDi">
+                                <rect key="frame" x="0.0" y="22" width="578" height="578"/>
+                            </pdfView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="cuN-0S-i56">
                                 <rect key="frame" x="0.0" y="22" width="578" height="200"/>
                                 <subviews>
@@ -875,7 +878,7 @@ CA
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" focusRingType="none" placeholderString="Code" drawsBackground="YES" id="UK2-St-5Lc">
                                             <font key="font" size="11" name="Monaco"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <connections>
@@ -884,20 +887,20 @@ CA
                                     </textField>
                                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="jc4-3T-CKV">
                                         <rect key="frame" x="0.0" y="22" width="578" height="178"/>
-                                        <clipView key="contentView" id="fp9-ZD-oop">
+                                        <clipView key="contentView" drawsBackground="NO" id="fp9-ZD-oop">
                                             <rect key="frame" x="1" y="1" width="576" height="176"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="TOB-oM-zhe">
                                                     <rect key="frame" x="0.0" y="0.0" width="576" height="176"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <size key="minSize" width="576" height="176"/>
                                                     <size key="maxSize" width="578" height="10000000"/>
-                                                    <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 </textView>
                                             </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="eII-FN-cU1">
                                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
@@ -978,15 +981,23 @@ CA
                         </subviews>
                         <constraints>
                             <constraint firstItem="T8a-ij-cSF" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="1e7-7V-zYb"/>
+                            <constraint firstAttribute="trailing" secondItem="4Ae-Or-RDi" secondAttribute="trailing" id="2AY-Z2-pAd"/>
+                            <constraint firstAttribute="trailing" secondItem="T8a-ij-cSF" secondAttribute="trailing" id="2t7-Pz-idm"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="3s9-aG-U7T"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="cuN-0S-i56" secondAttribute="bottom" id="70Y-vD-Ewg"/>
                             <constraint firstAttribute="trailing" secondItem="T8a-ij-cSF" secondAttribute="trailing" id="891-mv-sKv"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="DDl-Jn-qnv"/>
                             <constraint firstItem="cuN-0S-i56" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="KNA-7M-n21"/>
+                            <constraint firstItem="4Ae-Or-RDi" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" id="NrF-cj-df1"/>
+                            <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" id="OkG-Co-JYA"/>
                             <constraint firstAttribute="trailing" secondItem="cuN-0S-i56" secondAttribute="trailing" id="PrY-52-nlb"/>
                             <constraint firstAttribute="bottom" secondItem="huH-fB-aL4" secondAttribute="bottom" id="Vxv-9U-I7I"/>
+                            <constraint firstItem="4Ae-Or-RDi" firstAttribute="leading" secondItem="8lE-GX-vtn" secondAttribute="leading" id="W0o-EL-zdf"/>
                             <constraint firstItem="T8a-ij-cSF" firstAttribute="top" secondItem="8lE-GX-vtn" secondAttribute="top" id="aJO-VO-vSX"/>
+                            <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="T8a-ij-cSF" secondAttribute="bottom" id="asc-FU-J83"/>
                             <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="T8a-ij-cSF" secondAttribute="bottom" id="lTA-LC-zhU"/>
                             <constraint firstAttribute="trailing" secondItem="huH-fB-aL4" secondAttribute="trailing" id="rZB-ab-vsy"/>
+                            <constraint firstItem="huH-fB-aL4" firstAttribute="top" secondItem="4Ae-Or-RDi" secondAttribute="bottom" id="zeL-IW-cPv"/>
                         </constraints>
                     </view>
                     <connections>
@@ -994,6 +1005,7 @@ CA
                         <outlet property="consoleOutput" destination="TOB-oM-zhe" id="2h4-pO-jYf"/>
                         <outlet property="consoleView" destination="cuN-0S-i56" id="bQa-CC-Zem"/>
                         <outlet property="metalView" destination="T8a-ij-cSF" id="MV5-n6-pAk"/>
+                        <outlet property="pdfView" destination="4Ae-Or-RDi" id="ww2-UI-g4z"/>
                     </connections>
                 </viewController>
                 <customObject id="rfb-of-pcj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
